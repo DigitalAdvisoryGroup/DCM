@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <t t-name="social.StreamPostCommentsOriginalPost" t-extend="social.StreamPostCommentsOriginalPost">
+        <t t-jquery="span.o_social_original_post_author_image" t-operation="append">
+            <img t-if="originalPost.bitProfileImageUrl" t-att-src="originalPost.bitProfileImageUrl" alt="Author Image"/>
+        </t>
+        <t t-jquery="div.o_social_comments_modal_original_post_content" t-operation="append">
+            <div class="o_social_original_post_bit_stats d-flex justify-content-around"
+                t-if="originalPost.mediaType === 'bit'">
+            </div>
+        </t>
+    </t>
+    <t t-name="social.StreamPostReply" t-extend="social.StreamPostReply">
+        <t t-jquery="div.o_social_write_reply" t-operation="attributes">
+            <t t-if="widget.originalPost.mediaType === 'bit'">
+                <attribute name="class" value="o_social_write_reply o_hidden" />
+            </t>
+        </t>
+        <t t-jquery="div.position-relative.flex-grow-1" t-operation="attributes">
+            <t t-if="widget.originalPost.mediaType === 'bit'">
+                <attribute name="class" value="position-relative flex-grow-1 o_hidden" />
+            </t>
+        </t>
+        <t t-jquery="div.o_social_author_image" t-operation="attributes">
+            <t t-if="widget.originalPost.mediaType === 'bit'">
+                <attribute name="class" value="o_social_author_image o_hidden" />
+            </t>
+        </t>
+        
+        
+    </t>
+
+    <t t-name="social.StreamPostComment" t-extend="social.StreamPostComment">
+        <t t-jquery="div.o_social_comment_commands" t-operation="attributes">
+            <t t-if="widget.originalPost.mediaType === 'bit'">
+                <attribute name="class" value="o_social_comment_commands o_hidden" />
+            </t>
+        </t>
+    </t>
+
+    <t t-name="social.AccountsStats" t-extend="social.AccountsStats">
+        <t t-jquery="div.o_social_stream_stat_box" t-operation="replace">
+            <div t-foreach="socialAccounts" t-as="socialAccount"
+            class="o_social_stream_stat_box flex-shrink-0 w-auto d-flex flex-column bg-white border-bottom border-right">
+                <div class="pt-3 pb-2 px-4 d-flex justify-content-between">
+                    <div class="d-flex align-items-center">
+                        <img class="mr-2" width="16" t-attf-src="/web/image/social.media/#{socialAccount.media_id[0]}/image/16x16" alt="Social Media"/>
+                        <h5 class="d-inline m-0" t-esc="socialAccount.name"/>
+                    </div>
+                    <div class="d-flex align-items-center ml-4">
+                        <a t-if="socialAccount.stats_link and !socialAccount.is_bit_account" t-att-href="socialAccount.stats_link" class="small" target="_blank">
+                            Insights
+                        </a>
+                    </div>
+                </div>
+
+                <div class="d-flex flex-nowrap flex-grow-1 px-4 pt-2 pb-3">
+                    <t t-if="!socialAccount.is_bit_account" t-set="audience_content">Number of Followers of your channel</t>
+                    <t t-if="socialAccount.is_bit_account" t-set="audience_content">Number of Shares of your channel post</t>
+                    <div class="d-flex align-items-center flex-grow-1 pr-3"
+                        data-toggle="popover" title="Audience"
+                        t-att-data-content="audience_content">
+                        <t t-call="social.AccountsStatsValue">
+                            <t t-set="icon" t-value="'fa-bullseye'" t-if="!socialAccount.is_bit_account"/>
+                            <t t-set="icon" t-value="'fa-share-alt'" t-if="socialAccount.is_bit_account"/>
+                            <t t-set="value" t-value="socialAccount.audience"/>
+                            <t t-set="trend" t-value="socialAccount.audience_trend"/>
+                        </t>
+                    </div>
+                    <t t-set="engagement_content">Number of times people have engaged with your posts (likes, comments, shares,...)</t>
+                    <div class="d-flex align-items-center justify-content-center flex-grow-1 px-3"
+                        data-toggle="popover" title="Engagement"
+                        t-att-data-content="engagement_content">
+                        <t t-call="social.AccountsStatsValue">
+                            <t t-set="icon" t-value="'fa-hand-o-up'"/>
+                            <t t-set="value" t-value="socialAccount.engagement"/>
+                            <t t-set="trend" t-value="socialAccount.engagement_trend"/>
+                        </t>
+                    </div>
+                    <t t-if="!socialAccount.is_bit_account" t-set="stories_content">Number of times people who have engaged with your channel have created stories on their friends' or followers' feed (Shares, Retweets...)</t>
+                    <t t-if="socialAccount.is_bit_account" t-set="stories_content">Number of times people Comments</t>
+                    <div class="d-flex align-items-center justify-content-end flex-grow-1 pl-3"
+                        data-toggle="popover" title="Stories"
+                        t-att-data-content="stories_content">
+                        <t t-call="social.AccountsStatsValue">
+                            <t t-set="icon" t-value="'fa-book'" t-if="!socialAccount.is_bit_account"/>
+                            <t t-set="icon" t-value="'fa-comments'" t-if="socialAccount.is_bit_account"/>
+                            <t t-set="value" t-value="socialAccount.stories"/>
+                            <t t-set="trend" t-value="socialAccount.stories_trend"/>
+                        </t>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </t>
+
+
+    
+
+    
+    
+</odoo>
