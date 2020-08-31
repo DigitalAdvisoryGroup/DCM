@@ -1,0 +1,57 @@
+<odoo>
+
+    <template id="portal_my_details" name="frontend portal" inherit_id="portal.portal_my_details">
+        <xpath expr="//label[@for='company_name']" position="replace">
+        </xpath>
+        <xpath expr="//input[@name='company_name']" position="replace">
+        </xpath>
+        <xpath expr="//p[@t-esc='partner.commercial_company_name']" position="replace">
+        </xpath>
+        <xpath expr="//label[@for='vat']" position="replace">
+        </xpath>
+        <xpath expr="//input[@name='vat']" position="replace">
+        </xpath>
+        <xpath expr="//div[@class='col-lg-12']" position="after">
+            <div class="col-lg-12" id="bit_portal_avatar">
+                <input type="file" class="d-none bit_portal_avatar_upload" name="image_1920" />
+                <img class="mb-3 bit_portal_avatar_img" t-att-src="website.image_url(partner, 'image_128')" style="object-fit: cover; border-radius: 50%; width: 128px; height: 128px;"/>
+                <div class="text-left">
+                    <a href="#" class="btn btn-primary bit_portal_avatar_edit" aria-label="Edit">
+                        <i class="fa fa-pencil fa-1g float-sm-none float-md-left" title="Edit"/>
+                    </a>
+                    <a href="#" title="Clear" aria-label="Clear" class="btn border-primary bit_portal_avatar_clear">
+                        <i class="fa fa-trash-o float-sm-none float-md-right"/>
+                    </a>
+                </div>
+            </div>
+        </xpath>
+        <xpath expr="//form" position="attributes">
+            <attribute name="enctype">multipart/form-data</attribute>
+        </xpath>
+    </template>
+
+    <template id="portal_layout" inherit_id="portal.portal_layout">
+        <xpath expr="//div[@t-field='user_id.partner_id']" position="replace">
+            <div t-field="user_id.partner_id" t-options='{"widget": "contact", "fields": ["avatar", "email", "phone", "address", "name"]}'/>
+        </xpath>
+    </template>
+
+    <template id="contact_name" inherit_id="base.contact_name">
+        <xpath expr="//div" position="replace">
+            <div t-if="'avatar' in fields" class="m-1 d-inline-block">
+                <span t-field="object.image_128" t-options='{"widget": "image", "style": "object-fit: cover; border-radius: 50%; width: 50px; height: 50px;"}'/>
+            </div>
+            <div t-if="'name' in fields" class="d-inline-block">
+                <t t-if="object.name">
+                    <span itemprop="name" t-esc="name"/>
+                </t>
+                <t t-if="not object.name and object.parent_name">
+                    <span itemprop="name" t-esc="object.parent_name"/>
+                </t>
+                <t t-if="options.get('country_image') and 'country_id' in fields and object.country_id and object.country_id.image">
+                    <span t-field="object.country_id.image" t-options='{"widget": "image", "class": "country_flag"}'/>
+                </t>
+            </div>
+        </xpath>
+    </template>
+</odoo>
