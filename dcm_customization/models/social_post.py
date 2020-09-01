@@ -4,7 +4,7 @@
 
 import requests
 import base64
-
+import json
 from odoo import models, api, fields
 from odoo.osv import expression
 from werkzeug.urls import url_join
@@ -24,6 +24,13 @@ class SocialPostBIT(models.Model):
     social_partner_ids = fields.Many2many("res.partner","social_partner_post",string="Social Partners")
     like_partner_ids = fields.Many2many("res.partner","social_partner_post_like",string="Likes")
     is_bit_post = fields.Boolean("Is Bit Post?")
+
+    @api.constrains('image_ids')
+    def _check_image_ids_mimetype(self):
+        for social_post in self:
+            if not  social_post.is_bit_post:
+                if any(not image.mimetype.startswith('image') for image in social_post.image_ids):
+                    raise UserError(_('Uploaded file does not seem to be a valid image.'))
     
 
     @api.onchange('social_groups_ids')
@@ -53,6 +60,7 @@ class SocialPostBIT(models.Model):
             for post in posts:
                 image_url = url_join(base_url,'/web/myimage/res.partner/%s/image_1920'%post.create_uid.partner_id.id)
                 comments = post.getComments()
+                media_ids = post.getMedia()
                 data.append({
                     'id':post.id,
                     'name':post.create_uid.partner_id.name,
@@ -60,12 +68,27 @@ class SocialPostBIT(models.Model):
                     'like':True if int(partner_id) in post.like_partner_ids.ids else False,
                     'image':image_url,
                     'message':post.message,
-                    'comments':comments
+                    'comments':comments,
+                    'media_ids':media_ids
                     })
             _logger.info("Get Post Records From mobile records:- \n%s"%pprint.pformat(data))
             return {'data':data}        
         else:
             False
+
+    def getMedia(self):
+        base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+        media_ids = []
+        for media in self.image_ids:
+            image_url = url_join(base_url,'/web/image/%s'%media.id)
+            mimetype = 'image'
+            if not media.mimetype.startswith('image'):
+                mimetype = 'video'
+            media_ids.append({
+                            'url':image_url,
+                            'mimetype':mimetype
+                            })
+        return media_ids
     
     def getComments(self):
         base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
@@ -101,6 +124,7 @@ class SocialPostBIT(models.Model):
             
     def action_post(self):
         res = super(SocialPostBIT,self).action_post()
+        self.image_ids.write({'public':True})
         if self.is_bit_post:
             self.send_fcm_push_notification()
 
@@ -139,6 +163,7 @@ class SocialPostBIT(models.Model):
             post.bit_preview = self.env.ref('dcm_customization.bit_preview').render({
                 'message': post.message,
                 'published_date': post.scheduled_date if post.scheduled_date else fields.Datetime.now(),
+                'image_ids':post.image_ids,
                 'images': [
                     image.datas if not image.id
                     else base64.b64encode(open(image._full_path(image.store_fname), 'rb').read()) for image in post.image_ids
@@ -152,3 +177,14 @@ class SocialPostBIT(models.Model):
             stream_post = self.env['social.live.post'].search([('post_id','=',record.id)])
             stream_post.unlink()
         return super(SocialPostBIT, self).unlink()    
+
+
+    # @api.depends('image_ids')
+    # def _compute_image_urls(self):
+    #     """ See field 'help' for more information. """
+    #     base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+    #     for post in self:
+    #         if post.is_bit_post:
+    #             post.image_urls = json.dumps([{'url':url_join(base_url,'web/image/%s' % image_id.id), 'mimetype':image_id.mimetype} for image_id in post.image_ids])
+    #         else:
+    #             super(SocialPostBIT,self)._compute_image_urls()
