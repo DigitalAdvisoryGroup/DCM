@@ -1,0 +1,28 @@
+<?xml version="1.0" ?>
+<odoo>
+
+    <data noupdate="1">
+        <!--Email template -->
+        <record id="email_template_otp_partner" model="mail.template">
+            <field name="name">Partner: OTP Send by Email</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="email_from">${(user.email_formatted) |safe}</field>
+            <field name="partner_to">${object.id}</field>
+            <field name="subject">Midar - One Time Password (OTP) To Verify Your Login</field>
+            <field name="body_html" type="html">
+<div style="margin: 0px; padding: 0px;">
+    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+        Dear ${object.name},
+        <br/>
+        <p>Greetings from Midar!</p>
+        <br/>
+        <p>One Time Password : <strong>${object.otp_token}</strong></p>
+    </p>
+</div>
+            </field>
+            <field name="lang">${object.lang}</field>
+            <field name="user_signature" eval="False"/>
+            <field name="auto_delete" eval="True"/>
+        </record>
+    </data>
+</odoo>

@@ -18,6 +18,11 @@ class SocialStreamPostBIT(models.Model):
     bit_post_likes = fields.Integer("Bit Post Likes",compute="compute_bit_post_like",store=True)
     bit_post_comments = fields.Integer("Bit Post Comments",compute="compute_bit_post_like",store=True)
     bit_post_share = fields.Integer("Bit Post Share",compute="compute_bit_post_like",store=True)
+    image_ids = fields.Many2many('ir.attachment', string='Attach Images',compute="compute_image_ids")
+
+    def compute_image_ids(self):
+        for record in self:
+            record.image_ids = record.post_id.image_ids
 
     @api.depends('post_id.like_partner_ids','post_id.comments_ids','post_id.share_ids')
     def compute_bit_post_like(self):

@@ -2,19 +2,19 @@
 <odoo>
     <data noupdate="1">
         <record id="social_media_bit" model="social.media">
-            <field name="name">BIT</field>
+            <field name="name">Midar</field>
             <field name="media_type">bit</field>
-            <field name="description" type="html"><p>Manage your BIT pages and schedule posts</p></field>
+            <field name="description" type="html"><p>Manage your Midar pages and schedule posts</p></field>
             <field name="image" type="base64" file="dcm_customization/static/src/img/bit.png"/>
         </record>
 
         <record id="social_account_bit" model="social.account">
-            <field name="name">BIT</field>
+            <field name="name">Midar</field>
             <field name="media_id" ref="social_media_bit"></field>
         </record>
 
         <record id="stream_type_bit_posts" model="social.stream.type">
-            <field name="name">BIT Posts</field>
+            <field name="name">Midar Posts</field>
             <field name="stream_type">bit_posts</field>
             <field name="media_id" ref="social_media_bit"></field>
         </record>

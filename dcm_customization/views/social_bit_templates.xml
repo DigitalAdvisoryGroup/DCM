@@ -6,14 +6,14 @@
             <div class="o_social_preview_header d-flex my-3">
                 <span class="o_social_preview_icon_wrapper d-inline-block rounded-circle overflow-hidden mr-2" style="background-color: white;border: solid 1px grey;">
                     <img src="/dcm_customization/static/src/img/bit.png" style="width: 100%;
-    margin-top: 5px;
+    margin-top: 2px;
     background-color: white !important;"/>
                 </span>
 
                 <div class="o_social_preview_author">
-                    <b class="d-block mb-2">BIT</b>
+                    <b class="d-block mb-2">Midar</b>
                     <div class="text-muted o_social_preview_description">
-                        Published by BIT • <time t-esc="published_date"/> • <i class="fa fa-globe"/>
+                        Published by Midar • <time t-esc="published_date"/> • <i class="fa fa-globe"/>
                     </div>
                 </div>
             </div>
@@ -21,14 +21,16 @@
                 <t t-esc="message" />
             </div>
             <div class="o_social_stream_post_image d-flex mx-n3 overflow-hidden">
-                <t t-foreach="images" t-as="image">
+                <t t-foreach="image_ids" t-as="image">
                     <a t-if="image_index == 1 and len(images) > 2" class="o_social_stream_post_image_more position-relative d-flex ml-1">
-                        <img t-attf-src="data:image/png;base64, #{image}" alt="Post Image" />
+                        <img t-attf-src="/web/image/#{image.id}" alt="Post Image" t-if="image.mimetype.startswith('image')"/>
+                        <video t-attf-src="/web/image/#{image.id}" alt="Post Image" t-if="image.mimetype.startswith('video')"/>
                         <div class="o_social_stream_post_image_more_overlay d-flex align-items-center h-100 w-100 text-white justify-content-center position-absolute h1 m-0" style="user-select: none;">
                             +<t t-esc="len(images) - 2"/>
                         </div>
                     </a>
-                    <img t-elif="image_index &lt; 2" t-attf-src="data:image/png;base64, #{image}" alt="Post Image"  />
+                    <video t-if="image_index &lt; 2 and image.mimetype.startswith('video')"  width="100" height="100" t-attf-src="/web/image/#{image.id}" alt="Post Image" />
+                    <img t-if="image_index &lt; 2 and image.mimetype.startswith('image')" t-attf-src="/web/image/#{image.id}" alt="Post Image"  />
                 </t>
             </div>
         </div>
