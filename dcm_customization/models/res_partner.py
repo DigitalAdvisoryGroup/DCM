@@ -11,7 +11,7 @@ _logger = logging.getLogger(__name__)
 class ResPartner(models.Model):
     _inherit = 'res.partner'
 
-    otp_token = fields.Char("OTP Token", copy=False)
+    # otp_token = fields.Char("OTP Token", copy=False)
 
     def get_partner_from_email(self,email,token, lang):
         _logger.info("-------------------get partner method email -: %s \n token %s \n lang %s"%(email,token,lang))
