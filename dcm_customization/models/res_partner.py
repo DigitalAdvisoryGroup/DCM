@@ -17,13 +17,18 @@ class ResPartner(models.Model):
         _logger.info("-------------------get partner method email -: %s \n token %s \n lang %s"%(email,token,lang))
         if email:
             partner_id = self.search([('email','=',email)])
-            print("------partner_id----------",partner_id)
             if partner_id:
+                if lang:
+                    lang_id = self.env['res.lang']._lang_get(lang)
+                    if lang_id:
+                        partner_id.write({'lang':lang_id.code})
+                    else:
+                        partner_id.write({'lang':'en_US'})
                 website_visitor = self.env['website.visitor'].search([('partner_id','=',partner_id.id)])
                 if not website_visitor:
                     self.env['website.visitor'].create({'partner_id': partner_id.id,
                             "push_token":token ,
-                            "name": partner_id.name,
+                            "name": partner_id.name
                             }
                         )
                 else:
@@ -56,13 +61,16 @@ class ResPartner(models.Model):
         if template:
             template.sudo().with_context(lang=lang).send_mail(
                 self.id, force_send=True)
+            return True
+        return False
+
 
     def get_partner_otp_verify(self,email,otp):
         _logger.info("-------------------get_partner_otp_verify -: %s \n otp %s"%(email,otp))
         if otp:
             partner_id = self.search([('email','=',email),("otp_token","=",otp)])
             if partner_id:
-                return partner_id.id
+                return True
         return False
 
 

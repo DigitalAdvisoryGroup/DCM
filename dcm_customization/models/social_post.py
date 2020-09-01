@@ -13,6 +13,7 @@ from pyfcm import FCMNotification
 import pprint
 import logging
 _logger = logging.getLogger(__name__)
+from odoo.exceptions import UserError
 
 
 class SocialPostBIT(models.Model):

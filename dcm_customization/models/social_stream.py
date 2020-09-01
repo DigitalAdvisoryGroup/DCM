@@ -40,6 +40,7 @@ class SocialStreamBIT(models.Model):
             social_stream_post_id = self.env["social.stream.post"].search(
                 [('post_id', '=', post.id)])
             if social_stream_post_id:
+                social_stream_post_id.write({'stream_post_image_ids':False})
                 social_stream_post_id.write(values)
             else:
                 posts_to_create.append(values)
