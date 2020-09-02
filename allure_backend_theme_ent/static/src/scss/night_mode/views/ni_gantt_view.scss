@@ -1,0 +1,31 @@
+@mixin sync_gantt_view() {
+    .o_gantt_view {
+        .bg-white {
+            background-color: $night-light !important;
+            color: var(--font-color);
+        }
+        .o_gantt_row_sidebar {
+            color: var(--font-color);
+        }
+        .o_gantt_row_container .o_gantt_row {
+            background-color: $btn-secondary;
+        }
+        .o_gantt_row_nogroup .o_gantt_cell.o_gantt_unavailability {
+            background: linear-gradient(rgba($night, 0.5), rgba($night, 0.5)) no-repeat;
+        }
+        .o_gantt_header_container .o_gantt_header_cell {
+            color: var(--font-color);
+        }
+        .o_gantt_row_group, .o_gantt_row_group.open:hover {
+                .o_gantt_row_sidebar, .o_gantt_slots_container {
+                background: linear-gradient(rgba($night, 0.5), rgba($night, 0.5)) no-repeat;
+            }
+        }
+        .o_gantt_row_group, .o_gantt_total {
+            .o_gantt_consolidated_pill_title {
+                background-color: $btn-secondary;
+                color: var(--font-color);
+            }
+        }
+    }
+}

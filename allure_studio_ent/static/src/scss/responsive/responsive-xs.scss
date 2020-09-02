@@ -1,0 +1,23 @@
+@media screen and (max-width: $screen-xs-max) {
+    body.o_web_client{
+        &:not(.ad_mobile) {
+            header {
+                .o_main_navbar {
+                    @include left-menu-st();
+                }
+            }
+        }
+    }
+}
+
+@media screen and(min-width: $screen-sm-min) and (max-width: $screen-sm-max) {
+    body.o_web_client{
+        &:not(.ad_mobile) {
+            header {
+                .o_main_navbar {
+                    @include left-menu-st();
+                }
+            }
+        }
+    }
+}

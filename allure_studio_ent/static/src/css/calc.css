@@ -1,0 +1,3 @@
+body.o_web_client.o_in_studio:not(.oe_base_menu) .o_main_navbar > :not(.o_menu_sections):not(#av_full_view):not(.oe_full_button) {
+    max-height: calc(100vh - 160px);
+}

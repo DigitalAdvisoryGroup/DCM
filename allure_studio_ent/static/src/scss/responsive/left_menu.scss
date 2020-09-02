@@ -1,0 +1,11 @@
+@mixin left-menu-st() {
+    .o_toggle_menu {
+        & > li {
+            .o_menu_systray {
+                .o_web_studio_navbar_item {
+                    display: none !important;
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,18 @@
+@mixin syn_grid_view() {
+    .o_view_grid {
+        table {
+            color: var(--font-color);
+            & > tbody {
+                background-color: transparent;
+                & > tr:first-child {
+                    background-color: $night-light;
+                }
+            }
+            & > tfoot {
+                .text-muted {
+                    color: #696969 !important;
+                }
+            }
+        }
+    }
+}

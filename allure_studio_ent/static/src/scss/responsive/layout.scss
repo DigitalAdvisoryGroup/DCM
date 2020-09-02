@@ -1,0 +1,9 @@
+body.o_web_client{
+    &.ad_mobile {
+        header {
+            .o_main_navbar {
+                @include left-menu-st();
+            }
+        }
+    }
+}

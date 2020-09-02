@@ -1,0 +1,113 @@
+@mixin sync_list_view() {
+    .o_list_view {
+        .table-responsive .o_list_table {
+            background: $night;
+
+            thead, tfoot {
+                background: $night;
+
+                & > tr {
+                    & > th, & > td {
+                        border: 0;
+                        color: var(--font-color);
+                    }
+                }
+            }
+
+            tbody {
+                & > tr {
+                    background-color: $btn-secondary;
+                    color: var(--font-color) !important;
+
+                    & > td {
+                        border-color: var(--border);
+                        border-right: 0;
+
+                        &.o_list_record_remove {
+                            .fa {
+                                color: var(--font-color);
+                            }
+                        }
+
+                        .o_attachment {
+                            .o_attachment_download, .attech_link {
+                                color: var(--font-color);
+                                border: 0;
+                                background-color: $night;
+                            }
+                        }
+                    }
+                    &:hover {
+                        color: var(--font-color) !important;
+                    }
+                }
+
+                .o_group_header {
+                    background-color: $night-light !important;
+                    color: var(--font-color);
+                    background-image: none;
+                    border-top-color: var(--border);
+                    * {
+                        color: var(--font-color);
+                    }
+                    th {
+                        border-color: var(--border);
+                        & * {
+                            color: var(--font-color);
+                        }
+                    }
+                    & > td {
+                        color: var(--font-color);
+                    }
+                }
+            }
+
+            tfoot {
+                & > tr {
+                    box-shadow: none;
+                    border-bottom: 0;
+                }
+            }
+
+            &.o_list_view_grouped {
+                border-color: var(--border);
+            }
+
+            .o_data_row.o_selected_row {
+                & > .o_data_cell {
+                    &:not(.o_readonly_modifier) {
+                        .o_input {
+                            background-color: $night;
+                        }
+
+                        .o_required_modifier .o_input, .o_required_modifier.o_input {
+                            background-color: $night !important;
+                            border-bottom: 1px solid $btn-primary;
+                        }
+                    }
+                }
+            }
+
+            .fa-external-link {
+                &:hover {
+                    background-color: transparent !important;
+                }
+            }
+        }
+    }
+    &.o_barcode_client_action {
+        .bg-100 {
+            background-color: $night-light !important;
+        }
+        .o_barcode_lines {
+            box-shadow: none;
+            .o_barcode_line:last-child {
+                box-shadow: none;
+            }
+        }
+        .list-group-item {
+            background-color: $night;
+            color: var(--font-color);
+        }
+    }
+}

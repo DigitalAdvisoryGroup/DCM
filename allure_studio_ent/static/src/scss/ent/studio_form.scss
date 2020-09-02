@@ -1,0 +1,89 @@
+@mixin web-studio-form(){
+	.o_action_manager {
+		.o_action {
+			.o_content{
+				.o_web_studio_editor_manager{
+					.o_web_studio_view_renderer{
+						@include ent-form-view()
+						.o_form_view{
+							@include form_view();
+							.o_form_sheet_bg{
+
+								.o_web_studio_statusbar_hook{
+									background-color: $tr-hover;
+									color: var(--brand-secondary);
+									margin-bottom: 5px;
+								}
+
+								.o_form_sheet{
+									width: 100%;
+									.o_cu_panel{
+										.oe_button_box{
+											.o_dropdown_more{
+												.oe_stat_button{
+													width: 125px !important;
+												}
+											}
+										}
+									}
+
+									.o_notebook{
+										.panel-ul{
+											.oe_new_add{
+												margin-top: 5px;
+												.nav-link{
+													text-align: center;
+													margin: auto;
+													background-color: $tr-hover;
+													color: var(--brand-secondary);
+													&:before{
+														display: none;
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+							&.o_web_studio_form_view_editor{
+								.toggle_btn_chatter{
+									display: none;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	&.modal-open .modal{
+		.btn-secondary{
+			color: var(--brand-secondary);
+			&:hover{
+				color: $white;
+			}
+		}
+
+		.btn-primary{
+			background-color: var(--brand-secondary);
+			&:hover{
+				background-color: darken($brand-secondary, 7%);
+			}
+		}
+
+		.modal-dialog{
+			.modal-content{
+				.modal-header, .modal-footer{
+					background-color: $white;
+				}
+				.modal-footer{
+					border-top: 1px solid var(--border);
+				}
+				.modal-header{
+					border-bottom: 1px solid var(--border);
+				}
+			}
+		}
+	}
+}

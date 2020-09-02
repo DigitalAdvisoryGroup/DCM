@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="assets_backend" name="Allure theme studio assets"
+              inherit_id="web.assets_backend">
+        <xpath expr="." position="inside">
+            <!-- js -->
+            <script type="text/javascript"
+                    src="/allure_studio_ent/static/src/js/form_editor.js"/>
+            <!-- Layout File - Start css-->
+            <link rel="stylesheet" type="text/css"
+                  href="/allure_studio_ent/static/src/css/calc.css"/>
+            <!-- Layout File - Start-->
+            <link rel="stylesheet" type="text/scss"
+                  href="/allure_studio_ent/static/src/scss/ent/studio_layout.scss"/>
+            <link rel="stylesheet" type="text/scss"
+                  href="/allure_studio_ent/static/src/scss/ent/studio_form.scss"/>
+            <link rel="stylesheet" type="text/scss"
+                  href="/allure_studio_ent/static/src/scss/ent/studio_list.scss"/>
+            <link rel="stylesheet" type="text/scss"
+                  href="/allure_studio_ent/static/src/scss/ent/studio_kanban.scss"/>
+            <link rel="stylesheet" type="text/scss"
+                  href="/allure_studio_ent/static/src/scss/ent/studio_calendar.scss"/>
+            <link rel="stylesheet" type="text/scss"
+                  href="/allure_studio_ent/static/src/scss/ent/studio_pivot.scss"/>
+            <link rel="stylesheet" type="text/scss"
+                  href="/allure_studio_ent/static/src/scss/ent/studio_graph.scss"/>
+            <link rel="stylesheet" type="text/scss"
+                  href="/allure_studio_ent/static/src/scss/ent/studio_cohort.scss"/>
+            <link rel="stylesheet" type="text/scss"
+                  href="/allure_studio_ent/static/src/scss/ent/studio_gannt.scss"/>
+            <link rel="stylesheet" type="text/scss"
+                  href="/allure_studio_ent/static/src/scss/ent/studio_grid.scss"/>
+            <link rel="stylesheet" type="text/scss"
+                  href="/allure_studio_ent/static/src/scss/ent/layout_ent.scss"/>
+            <!-- Responsive -->
+            <link rel="stylesheet" type="text/scss"
+                  href="/allure_studio_ent/static/src/scss/responsive/left_menu.scss"/>
+            <link rel="stylesheet" type="text/scss"
+                  href="/allure_studio_ent/static/src/scss/responsive/responsive-xs.scss"/>
+            <link rel="stylesheet" type="text/scss"
+                  href="/allure_studio_ent/static/src/scss/responsive/layout.scss"/>
+        </xpath>
+    </template>
+</odoo>

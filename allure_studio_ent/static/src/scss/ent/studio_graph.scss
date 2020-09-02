@@ -1,0 +1,15 @@
+@mixin web-studio-graph(){
+    .o_action_manager {
+        .o_action {
+            .o_content{
+                .o_web_studio_editor_manager{
+                    .o_web_studio_view_renderer{
+                        .o_graph_controller {
+                            height: 100%;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

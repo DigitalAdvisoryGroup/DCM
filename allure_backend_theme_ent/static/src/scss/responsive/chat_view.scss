@@ -1,0 +1,51 @@
+@mixin chat-window() {
+    .o_thread_window{
+        left: 0;
+        right: 0;
+        width: 100%;
+        top: 0;
+        bottom: 0;
+        z-index: 1111;
+        height: 100% !important;
+        .o_thread_window_header{
+            & > span{
+                .o_thread_window_close{
+                    margin-top: 3px;
+                }
+            }
+            .o_thread_window_title {
+                padding-left: 10px;
+            }
+        }
+        .o_thread_composer{
+            .o_composer_container{
+                .o_composer {
+                    .o_composer_input{
+                        width: 100%;
+                        margin-left: 0;
+                        justify-content: center;
+                        align-items: center;
+                        display: flex;
+                        padding: 0 5px;
+                        textarea {
+                            padding: 5px;
+                        }
+                        .o_chatter_composer_tools{
+                            position: relative;
+                            .o_composer_button_send{
+                                display: inline-block !important;
+                                &:before{
+                                    content: "\f1d9";
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+.o_web_client.ad_mobile {
+    @include chat-window();
+}

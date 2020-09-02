@@ -1,0 +1,26 @@
+@mixin calendar-view-sm() {
+    .o_action_manager {
+        & > .o_action {
+            & > .o_content {
+                .o_calendar_container {
+                    & > .o_calendar_sidebar_container {
+                        .o_calendar_sidebar {
+                            .o_calendar_mini {
+                                .ui-datepicker-inline .ui-datepicker-calendar {
+                                    tbody > tr > td {
+                                        padding: 0px;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+body.o_web_client.ad_mobile {
+    @include calendar-view-sm();
+}

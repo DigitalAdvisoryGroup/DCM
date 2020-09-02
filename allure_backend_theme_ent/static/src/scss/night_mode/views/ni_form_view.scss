@@ -1,0 +1,610 @@
+@mixin ni_chatter_layout() {
+    border-color: var(--border);
+    background-color: transparent;
+    .o_mail_activity {
+        .o_border_dashed {
+            border-bottom-color: var(--border);
+
+            .o_thread_date.btn {
+                background-color: $night;
+            }
+        }
+        #o_chatter_planned_activities .o_thread_message .o_thread_message_core .o_mail_info .o_thread_message_collapse .dl-horizontal {
+            border-color: var(--border);
+            background-color: $night;
+            dt , b , span {
+                color: var(--font-color);
+            }
+        }
+    }
+
+    .o_thread_date_separator {
+        border-bottom-color: var(--border) !important;
+
+        .o_thread_date {
+            background-color: $night;
+            color: var(--font-color) !important;
+        }
+    }
+
+    .o_chatter_topbar {
+        border-bottom-color: var(--border);
+
+        .btn {
+            border-bottom: 0;
+
+            &.o_active {
+                background-color: $btn-primary;
+                color: var(--font-color);
+                border-color: var(--border);
+            }
+        }
+
+        .o_topbar_right_area {
+            border-bottom: 0;
+        }
+        & > button {
+            color: $btn-primary;
+        }
+    }
+
+    .o_thread_composer {
+        background-color: $night;
+        border: 0;
+        color: var(--font-color);
+
+        .o_composer_container {
+            .o_composer {
+                background-color: transparent;
+                border: 0;
+
+                textarea {
+                    border-bottom: 1px solid var(--border);
+                }
+
+                .o_mail_emoji_container {
+                    background-color: $night-light;
+                    border-color: var(--border);
+                    margin-top: 10px !important;
+
+                    & > .btn {
+                        color: var(--font-color);
+                    }
+                }
+
+                .o_chatter_composer_tools {
+                    button {
+                        color: var(--font-color) !important;
+                    }
+                }
+            }
+
+            .o_composer_attachments_list {
+                .o_attachments {
+                    .o_attachment {
+                        &:hover {
+                            .o_attachment_delete {
+                                &:hover {
+                                    background-color: $btn-primary;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .o_mail_chatter_attachments {
+        .o_border_dashed {
+            border-bottom-color: var(--border);
+        }
+
+        .o_attach_title {
+            background-color: $night;
+        }
+    }
+
+    .o_mail_thread , .o_mail_activity {
+        .o_mail_thread_content, #o_chatter_planned_activities {
+            .o_thread_message {
+                background-color: $night;
+                color: var(--font-color);
+                border: 0;
+                margin-top: 10px;
+
+                .o_mail_info .o_activity_info {
+                    background: transparent !important;
+                    border: 0;
+                }
+                .o_thread_message_core {
+                    .o_mail_info {
+                        strong {
+                            color: var(--font-color);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@mixin sync_form_view() {
+    .o_form_view {
+        background-color: $btn-secondary;
+        color: var(--font-color);
+        @include sync_kanban_view();
+        .oe_title , .oe_title h1 {
+            color: var(--font-color);
+        }
+        .o_form_sheet_bg {
+            background: $btn-secondary;
+            border-bottom-color: var(--border);
+            padding: 0;
+            .o_form_statusbar {
+                padding: 5px;
+                margin: 0;
+            }
+
+            .o_form_sheet {
+                background: $btn-secondary;
+                border-color: transparent;
+                color: var(--font-color);
+
+                .o_horizontal_separator {
+                    color: $btn-primary;
+                }
+
+                .oe_button_box {
+                    .btn {
+                        background-color: $night;
+                        color: var(--font-color);
+                        border-color: var(--border);
+
+                        & > i, .o_stat_value {
+                            color: $btn-primary;
+                        }
+                    }
+
+                    .o_dropdown_more {
+                        right: auto;
+
+                        & > .btn {
+                            border-bottom: 1px solid var(--border);
+                            margin: 0;
+                        }
+                    }
+                }
+                .o_cu_panel {
+                    padding: 10px;
+                    .o_field_image {
+                        img.img {
+                            background-color: var(--font-color);
+                        }
+                    }
+                }
+                .o_notebook {
+                    padding: 10px;
+                }
+                .note-editor {
+                    border: 0;
+                    .note-toolbar {
+                        border-bottom-color: var(--border);
+                        background-color: $night-light;
+                    }
+                }
+                .oe_title h1 {
+                    color: var(--font-color);
+                }
+                &.o_timesheet_plan_content {
+                    padding: 6px;
+                    .oe_button_box {
+                        .oe_stat_button {
+                            .o_button_icon {
+                                color: var(--font-color);
+                            }
+                        }
+                    }
+                    .o_profitability_section {
+                        table {
+                            tbody {
+                                tr {
+                                    .o_timesheet_plan_dashboard_cell {
+                                        color: var(--font-color);
+                                    }
+                                    td {
+                                        color: var(--font-color);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    .o_project_plan_project_timesheet_forecast {
+                        table {
+                            color: var(--font-color);
+                            tbody tr td {
+                                color: var(--font-color);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        .o_form_statusbar {
+            border-bottom: 0;
+            background-color: $night;
+            padding: 5px;
+            .o_statusbar_status button.o_arrow_button.o_arrow_button.btn-primary {
+                background-color: $btn-primary;
+            }
+
+            .o_statusbar_status, .o_statusbar_buttons {
+                .dropdown-toggle {
+                    &:after {
+                        border-color: $night transparent transparent transparent;
+                    }
+                }
+            }
+
+            .btn {
+                background-color: $btn-secondary;
+                color: var(--font-color);
+                border: 0;
+
+                &:before {
+                    border-color: $night transparent $night transparent;
+                }
+
+                &:after {
+                    border-color: transparent $night transparent $night;
+                }
+
+                &.btn-primary {
+                    background-color: $btn-primary;
+                }
+
+                &:not(.disabled) {
+                    &:hover, &:active, &:focus {
+                        background-color: $btn-primary;
+                        transition: initial;
+
+                        &:after {
+                            transition: initial;
+                        }
+
+                        &:before {
+                            transition: initial;
+                        }
+                    }
+                }
+            }
+        }
+
+        #o_employee_container, .o_form_sheet_bg .o_form_sheet #o_work_employee_container {
+            #o_employee_right {
+                .o_org_chart_title {
+                    color: var(--font-color);
+                }
+                .media-body {
+                    strong {
+                        color: var(--font-color) !important;
+                    }
+                }
+
+                .o_field_widget {
+                    .o_org_chart_group_up, .o_org_chart_group_down {
+                        .o_org_chart_entry {
+                            &:before {
+                                background-color: transparent;
+                            }
+
+                            &:hover {
+                                .o_media_left {
+                                    .o_media_object {
+                                        box-shadow: 0 0 0 2px $btn-primary;
+                                    }
+                                }
+
+                                .media-body {
+                                    .o_employee_redirect {
+                                        .o_media_heading {
+                                            color: $btn-primary;
+                                        }
+                                    }
+                                }
+                            }
+                            .o_media_heading {
+                                & > b {
+                                    color: $btn-primary;
+                                }
+                            }
+                        }
+                    }
+
+                    .o_org_chart_entry_self {
+                        .o_media_left {
+                            .o_media_object {
+                                border-color: $btn-primary;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        .o_group {
+            .o_td_label {
+                border-right: 0;
+            }
+
+            .o_horizontal_separator {
+                color: $btn-primary;
+            }
+        }
+
+        .o_notebook {
+            .nav-tabs {
+                border-bottom-color: var(--border);
+
+                .nav-item {
+                    border-radius: 0;
+                    a {
+                        color: var(--font-color);
+                        border-radius: 0;
+                        background-color: $night;
+                    }
+                    .nav-link {
+                        &.active {
+                            background-color: $btn-primary;
+                            color: var(--font-color);
+                            border-color: var(--border);
+                        }
+
+                        &:hover, &:active, &:focus {
+                            border-color: var(--border);
+                        }
+                    }
+                }
+            }
+            .panel-ul > li {
+                background-color: $btn-secondary;
+                & > a {
+                    background-color: $night !important;
+                    color: var(--font-color);
+                    &:before {
+                        color: var(--font-color) !important;
+                    }
+                }
+                &:not(.ad_close):before {
+                    border-bottom-color: $btn-secondary;
+                }
+            }
+        }
+
+        &.o_dashboard {
+            .oe_dashboard {
+                .oe_dashboard_column {
+                    .oe_action {
+                        background-color: $night;
+                    }
+                }
+            }
+        }
+
+        // common field
+        .o_input {
+            border-color: transparent;
+            color: var(--font-color);
+            background-color: $night !important;
+
+            &.o_required_modifier {
+                background-color: $night !important;
+                border-bottom: 2px solid $btn-primary !important;
+            }
+        }
+
+        .o_field_widget {
+            &.o_field_many2manytags .o_tag_color_0 {
+                background: transparent;
+            }
+
+            &.o_field_percent_pie > .o_pie {
+                background-color: $btn-primary;
+            }
+        }
+
+        .o_required_modifier {
+            .o_input {
+                background-color: $night !important;
+                border-bottom: 1px solid $btn-primary;
+            }
+        }
+
+        .fa-external-link {
+            background-color: transparent !important;
+            box-shadow: none;
+            color: $btn-primary;
+        }
+
+        .o_field_many2manytags {
+            a {
+                color: var(--font-color);
+            }
+
+            .o_tag_color_0 {
+                background-color: transparent;
+            }
+        }
+
+        .o_form_uri {
+            color: $btn-primary;
+        }
+
+        .o_form_uri > span {
+            color: var(--font-color);
+        }
+
+        .custom-control-label {
+            &:before {
+                outline: 1px solid var(--font-color);
+            }
+        }
+
+        .o_field_image {
+            .o_form_image_controls {
+                background-color: $btn-primary;
+
+                .fa {
+                    color: var(--font-color);
+                }
+            }
+        }
+
+        .oe_form_field_html_text {
+            .note-editor {
+                border-color: var(--border);
+
+                .note-editing-area {
+                    .note-editable {
+                        background-color: $night;
+                        color: var(--font-color) !important;
+
+                        p {
+                            color: var(--font-color);
+                        }
+                    }
+                }
+            }
+        }
+
+        .oe_form_box_info {
+            .btn-link {
+                color: var(--font-color);
+            }
+        }
+
+        .o_field_radio {
+            .custom-radio {
+                .custom-control-label {
+                    &:before {
+                        outline: none;
+                    }
+                }
+            }
+        }
+
+        .o_domain_node {
+            &.o_domain_leaf > .o_domain_leaf_info {
+                background-color: $night;
+                border: $night;
+
+                .o_field_selector {
+                    .o_field_selector_chain_part {
+                        background-color: transparent;
+                    }
+                }
+            }
+
+            .o_hover_btns {
+                background-color: transparent;
+            }
+
+            .btn {
+                color: var(--font-color);
+            }
+        }
+
+        .o_dropdown_button, .o_datepicker_button {
+            color: var(--font-color);
+        }
+
+        td.o_td_label .o_form_label {
+            color: var(--font-color);
+        }
+
+        label.o_form_label.o_label_help:after {
+            color: $btn-primary;
+        }
+
+        .o_field_selector > .o_field_selector_value > .o_field_selector_chain_part {
+            background-color: transparent;
+        }
+
+        .o_form_uri > span:first-child {
+            color: $btn-primary;
+        }
+
+        .toggle_btn_chatter {
+            background-color: $btn-primary;
+            border-color: $btn-primary;
+        }
+
+        // chat view
+        .o_chatter.oe_chatter {
+            @include ni_chatter_layout();
+        }
+
+        .o_ma_hierarchy {
+            .o_field_one2many.o_ma_hierarchy_container {
+                .o_kanban_view {
+                    .o_ma_timeline {
+                        background-color: $btn-secondary;
+                    }
+                    .o_ma_card {
+                        background-color: $night-light;
+                        .o_ma_title_bar {
+                            background-color: $btn-secondary;
+                            .o_ma_switch {
+                                & > span.active, & > span:hover {
+                                    background-color: $night;
+                                }
+                            }
+                        }
+                        &:before {
+                            background-color: $btn-secondary;
+                            border-bottom-color: $btn-secondary;
+                        }
+                    }
+                    &.o_kanban_ungrouped .o_kanban_record:before {
+                        border-left-color: $btn-primary;
+                    }
+                }
+            }
+        }
+    }
+
+    .o_account_reports_page {
+        background-color: $btn-secondary;
+        color: var(--font-color);
+        .o_foldable_total {
+            color: $btn-primary !important;
+        }
+        tr:hover {
+            color: var(--font-color);
+            font-weight: bold;
+        }
+        &.o_account_assets_report {
+            .o_account_reports_table {
+                tr:not(:hover) td:nth-child(2n+6), tr:not(:first-child) th:nth-child(2n+6) {
+                    background-color: $night;
+                }
+            }
+        }
+    }
+    .o_account_reports_no_print .o_account_reports_table tbody tr:not(.o_account_reports_level0):hover {
+        background-color: transparent;
+        color: var(--font-color);
+        font-weight: bold;
+    }
+    .o_mrp_bom_report_page {
+        background-color: $night;
+    }
+
+    &.o_referral_kanban , .o_hr_referral_wrapper {
+        z-index: 1;
+    }
+    .o_hr_referral_background {
+        z-index: 0;
+    }
+}

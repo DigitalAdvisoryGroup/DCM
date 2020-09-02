@@ -1,0 +1,13 @@
+@mixin web-studio-grid(){
+    .o_action_manager {
+        .o_action {
+            .o_content{
+                .o_web_studio_editor_manager{
+                    .o_web_studio_view_renderer{
+                        @include ent-grid-view();
+                    }
+                }
+            }
+        }
+    }
+}
