@@ -41,7 +41,7 @@ class ResPartner(models.Model):
                 partner_id.set_otp_partner()
                 partner_id.send_otp_partner()
                 return partner_id.id
-        return False
+        return 0
 
     def set_otp_partner(self):
         self.ensure_one()

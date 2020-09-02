@@ -77,7 +77,7 @@ class SocialPostBIT(models.Model):
             _logger.info("Get Post Records From mobile records:- \n%s"%pprint.pformat(data))
             return {'data':data}        
         else:
-            False
+            return {'data':[]}
 
     def getMedia(self):
         base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
