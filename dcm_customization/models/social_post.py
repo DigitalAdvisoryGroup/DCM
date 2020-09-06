@@ -25,6 +25,7 @@ class SocialPostBIT(models.Model):
     social_partner_ids = fields.Many2many("res.partner","social_partner_post",string="Social Partners")
     like_partner_ids = fields.Many2many("res.partner","social_partner_post_like",string="Likes")
     is_bit_post = fields.Boolean("Is Bit Post?")
+    message = fields.Text("Message", required=True, translate=True)
 
     @api.constrains('image_ids')
     def _check_image_ids_mimetype(self):
@@ -55,7 +56,8 @@ class SocialPostBIT(models.Model):
     def get_post_api(self,partner_id):
         _logger.info("Get Post Records From mobile partner_id:%s"%partner_id)
         if partner_id:
-            posts = self.search([('social_partner_ids','in',[int(partner_id)]),('state','=','posted')])
+            partner_browse = self.env["res.partner"].browse(int(partner_id))
+            posts = self.with_context(lang=partner_browse.lang).search([('social_partner_ids','in',[int(partner_id)]),('state','=','posted')])
             base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
             data = []
             for post in posts:
@@ -73,9 +75,9 @@ class SocialPostBIT(models.Model):
                     'media_ids':media_ids
                     })
             _logger.info("Get Post Records From mobile records:- \n%s"%pprint.pformat(data))
-            return {'data':data}        
+            return {'data':data}
         else:
-            False
+            return {'data':[]}
 
     def getMedia(self):
         base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
@@ -130,18 +132,16 @@ class SocialPostBIT(models.Model):
             self.send_fcm_push_notification()
 
     def send_fcm_push_notification(self):
-        subject = "New Post from BIT"
-        body = self.message
+        subject = "New Post from Midar"
         if self.env.user.company_id.fcm_api_key:
-            device_list = []
-            for device in self.social_partner_ids:
-                visitor_id = self.env['website.visitor'].search([('partner_id','=',device.id)],limit=1)
-                if visitor_id.push_token:
-                    device_list.append(visitor_id.push_token)
-            if device_list:
-                push_service = FCMNotification(api_key=self.env.user.company_id.fcm_api_key)
-                push_service.notify_multiple_devices(registration_ids=device_list,
-                                                              message_title=subject, message_body=body)
+            for lang in list(set(self.social_partner_ids.mapped("lang"))):
+                partners = self.social_partner_ids.filtered(lambda x: x.lang == lang)
+                body = self.with_context(lang=lang).message
+                device_list = self.env['website.visitor'].search([('partner_id','in',partners.ids)]).mapped("push_token")
+                if device_list:
+                    push_service = FCMNotification(api_key=self.env.user.company_id.fcm_api_key)
+                    push_service.notify_multiple_devices(registration_ids=device_list,
+                                                         message_title=subject, message_body=body)
 
     @api.depends('live_post_ids.is_bit_post')
     def _compute_stream_posts_count(self):

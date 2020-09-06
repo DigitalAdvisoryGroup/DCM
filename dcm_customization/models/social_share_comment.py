@@ -16,7 +16,7 @@ class SocialBitComments(models.Model):
 
     partner_id = fields.Many2one("res.partner",string="Partner")
     post_id  = fields.Many2one("social.post",string="Social Post")
-    comment = fields.Text("Comments")
+    comment = fields.Text("Comments", translate=True)
 
 class SocialPost(models.Model):
     _inherit = 'social.post'

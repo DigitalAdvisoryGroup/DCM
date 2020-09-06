@@ -1,0 +1,25 @@
+@mixin sync_map_view() {
+    .o_map_view {
+        .o_pin_list_container {
+            background-color: $btn-secondary;
+            .o_pin_list_header {
+                header {
+                    color: var(--font-color);
+                }
+                .fa-list {
+                    color: $night-hover;
+                }
+            }
+            .o_pin_list_details {
+                & > li {
+                    background-color: $night;
+                    color: var(--font-color);
+                    margin-bottom: 5px;
+                    &:hover {
+                        border-left-color: $night-hover;
+                    }
+                }
+            }
+        }
+    }
+}

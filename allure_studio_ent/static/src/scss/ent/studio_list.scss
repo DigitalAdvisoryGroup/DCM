@@ -1,0 +1,24 @@
+@mixin web-studio-list(){
+    .o_action_manager {
+        .o_action {
+            .o_content{
+                .o_web_studio_editor_manager{
+                    .o_web_studio_view_renderer{
+                        @include list-view();
+                        table.o_list_table {
+                            tbody {
+                                tr {
+                                    td {
+                                        &:nth-child(4){
+                                            @include attachment-layout();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

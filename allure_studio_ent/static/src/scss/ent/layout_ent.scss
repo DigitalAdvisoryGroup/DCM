@@ -1,0 +1,86 @@
+body.o_web_client{
+    &.o_in_studio{
+        @include web-studio();
+        @include web-studio-form();
+        @include web-studio-list();
+        @include web-studio-kanban();
+        @include web-studio-calendar();
+        @include web-studio-pivot();
+        @include web-studio-graph();
+        @include web-studio-grid();
+        @include web-studio-gannt();
+        @include web-studio-cohort();
+
+        .o_home_menu , .o_web_studio_app_creator {
+            background-image: radial-gradient(circle, darken($brand-secondary, 20%), $black);
+        }
+
+        &.ad-chat-window:not(.o_no_thread_window_window):not(.ad_mobile) .o_main .ad_rightbar .o_content{
+            margin-bottom: 42px;
+            border-bottom: 1px solid var(--border);
+        }
+
+    }
+
+    .o_main_navbar{
+        .o_menu_systray{
+            & > .o_web_studio_navbar_item{
+                & > a {
+                    & > img {
+                        width: 15px;
+                        height: 15px;
+                    }
+                }
+            }
+        }
+        @include systray-menu();
+        & > #o_menu_systray {
+            & > li > a {
+                line-height: unset;
+            }
+            &.o_menu_systray.show {
+                width: 350px !important;
+            }
+        }
+    }
+
+    &.oe_base_menu {
+        .o_main_navbar{
+            .oe_menu_layout{
+                .o_menu_systray{
+                    .o_web_studio_navbar_item{
+                        display: flex !important;
+                    }
+                }
+            }
+            & > .o_menu_systray {
+                display: flex;
+                height: 100%;
+                flex-flow: row;
+                align-items: center;
+            }
+        }
+    }
+    &:not(.oe_base_menu) {
+        .o_menu_systray{
+            & > .o_web_studio_navbar_item{
+                & > a {
+                    & > img {
+                        filter: invert(100%);
+                    }
+                }
+                &.o_disabled {
+                    opacity: 1;
+                    &  > a {
+                        & > img {
+                            filter: invert(30%);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    &.oe_night_mode .o_menu_systray > .o_web_studio_navbar_item > a > img {
+        filter: invert(0);
+    }
+}

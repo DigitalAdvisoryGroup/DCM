@@ -1,0 +1,40 @@
+@mixin ent-grid-view(){
+    .o_view_grid{
+        padding: 10px;
+        border-right: 10px solid transparent;
+        .table{
+            border: 1px solid var(--border);
+            & > thead{
+                background-color: $tr-hover;
+                color: var(--Label);
+                tr{
+                    th.o_grid_total{
+                        background-color: var(--brand-secondary);
+                    }
+                    .o_grid_current{
+                        background-color: $tr-hover;
+                    }
+                }
+            }
+            & > tbody{
+                &  > tr{
+                    .o_grid_total{
+                        background-color: var(--brand-secondary);
+                    }
+                    &:first-child{
+                        background-color: $tr-hover;
+                    }
+                    .o_grid_current{
+                        background-color: $tr-hover;
+                    }
+                }
+            }
+            tbody + tbody{
+                border-top: 2px solid var(--border);
+            }
+            & > tfoot{
+                background-color: var(--brand-secondary);
+            }
+        }
+    }
+}

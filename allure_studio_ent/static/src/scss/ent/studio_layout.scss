@@ -1,0 +1,207 @@
+@mixin web-studio(){
+    nav.o_main_navbar {
+        background-color: var(--brand-primary);
+        div#o_menu_sections.o_menu_sections {
+            & > li {
+                margin-bottom: 16px;
+                padding: 5px;
+                width: 100%;
+                display: block;
+                text-align: center;
+                & > a.o_web_edit_menu {
+                    padding: 12px;
+                    margin: 0;
+                    text-align: center;
+                    color: $white;
+                    display: inline-block;
+                    width: 100%;
+                    background-color: var(--brand-secondary);
+
+                    &:hover, &:active {
+                        border: 1px solid var(--brand-secondary);
+                        color: var(--brand-secondary);
+                        background-color: $white;
+                    }
+                }
+            }
+        }
+        .o_web_studio_leave , .o_web_studio_notes {
+            margin: 5px 0 0 0;
+            width: 100%;
+            & > a {
+                width: 100%;
+                display: inline-flex;
+                padding: 5px 0;
+                text-align: center;
+                justify-content: center;
+            }
+        }
+
+        .o_web_studio_home_studio_menu{
+            flex: 0;
+            & > li{
+                width: 100%;
+                & > .dropdown-toggle{
+                    font-size: 0;
+                    height: 35px;
+                    &:before{
+                        content: '\f013';
+                        display: inline-block;
+                        font: normal normal normal 14px/1 FontAwesome;
+                        font-size: 18px;
+                        text-rendering: auto;
+                        -webkit-font-smoothing: antialiased;
+                        -moz-osx-font-smoothing: grayscale;
+                    }
+                }
+
+                &.show{
+                    .dropdown-toggle{
+                        background-color: transparent;
+                    }
+                }
+            }
+        }
+    }
+
+    header {
+        div.o_web_studio_menu{
+            min-height: 40px;
+            height: auto;
+            background-color: $white;
+            margin-left: 50px;
+            @include slide-animation();
+            border-bottom: 1px solid var(--border);
+
+            .o_web_studio_breadcrumb {
+                .breadcrumb{
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    padding: 0 0 0 30px;
+                    min-height: 39px;
+                    margin: 0;
+                    font-size: $font-size-8;
+                    .breadcrumb-item{
+                        color: $black;
+                    }
+                }
+            }
+
+            ul.o_menu_sections {
+                padding: 0px 8px;
+
+                & > li {
+                    border-bottom: 0;
+                    font-size: $font-size-1;
+                    & > a {
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        padding: 0 8px;
+                        height: 39px;
+                        border-bottom: 0;
+                        font-size: 12px;
+                        color: var(--Label);
+                        border-bottom: 0;
+                        &:hover, &:active, &:focus , &.active {
+                            @include border-animation();
+                        }
+                    }
+                    &:hover, &:active, &:focus {
+                        background-color: transparent;
+                        a{
+                            background-color: transparent;
+                            color: var(--Label);
+                        }
+                    }
+                }
+
+                .o_web_studio_submenu_icons{
+                    .o_web_studio_views_icons{
+                        border-left: 0;
+                        height: 100%;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        min-height: 39px;
+                        & > a {
+                            height: auto;
+                            line-height: unset;
+                        }
+                    }
+                }
+            }
+
+            .o_web_studio_redo, .o_web_studio_undo{
+                margin: 0px 5px;
+                button{
+                    background-color: $white;
+                    color: var(--Label);
+                }
+                span{
+                    border-right: 0;
+                }
+            }
+            .o_web_studio_menu_item {
+                border-bottom: 0;
+            }
+            .o_web_studio_views_icons_separator {
+                border: 0;
+            }
+
+            .o_web_studio_views_icons_before_separator, .o_web_studio_views_icons_after_separator {
+                width: auto;
+            }
+        }
+
+    }
+
+
+    .o_action_manager{
+        .o_action {
+            .o_content{
+                margin-bottom: 0px;
+            }
+        }
+    }
+
+    &.oe_base_menu{
+        .o_main_navbar{
+            .o_web_studio_home_studio_menu{
+                &  > li{
+                    & > a.dropdown-toggle{
+                        height: 35px;
+                    }
+                }
+            }
+
+            .o_web_studio_leave, .o_web_studio_notes{
+                margin: 3px;
+                width: auto;
+                & > a{
+                    padding: 3px 8px;
+                }
+            }
+
+            ul.o_menu_sections{
+                & > li{
+                    margin-bottom: 0px;
+                    width: auto;
+                    padding: 0px;
+                    & > a.o_web_edit_menu{
+                        padding: 10px;
+                    }
+                }
+            }
+        }
+    }
+
+    &.ad_full_view{
+        header{
+            .o_web_studio_menu{
+                margin-left: 0;
+            }
+        }
+    }
+}

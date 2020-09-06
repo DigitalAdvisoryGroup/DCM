@@ -1,0 +1,13 @@
+@mixin deshbord-view-xs() {
+    .o_dashboard_view {
+        .o_group {
+            & > .o_group.o_group_col_2.o_has_widget {
+                flex-wrap: wrap;
+            }
+        }
+    }
+}
+
+body.o_web_client.ad_mobile {
+    @include deshbord-view-xs();
+}

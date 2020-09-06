@@ -1,0 +1,89 @@
+@mixin sync_window_chat_view() {
+    .o_thread_window {
+        background-color: transparent;
+
+        .o_thread_window_header {
+            background-color: $btn-primary;
+            border-bottom-color: var(--border);
+            a {
+                color: var(--font-color);
+            }
+        }
+
+        .o_thread_search_input {
+            background-color: $btn-secondary;
+            color: var(--font-color);
+        }
+
+        .o_mail_thread_content {
+            background-color: $btn-secondary;
+        }
+
+        .o_thread_composer {
+            margin-top: 0;
+
+            .o_composer_container {
+                border-color: var(--border);
+
+                .o_chatter_composer_tools {
+                    button {
+                        padding: 8px;
+                        color: var(--font-color) !important;
+                    }
+                }
+            }
+        }
+
+        .o_attachments.o_attachments_list {
+            margin-top:0 !important;
+            .o_attachment_wrap {
+                background-color: $night;
+                border: 0;
+            }
+        }
+
+        .o_attachment {
+            width: 50%;
+        }
+
+        .o_mail_thread {
+            background: $btn-secondary !important;
+        }
+        &.dropup {
+            background-color: $btn-primary;
+            border-radius: 0;
+            margin-right: 5px;
+        }
+
+        @include mail-common-layout();
+    }
+
+    .o_dial {
+        background-color: $night-light;
+        .o_dial_panel {
+            background-color: $night-light;
+            .o_notebook {
+                .o_dial_tabs {
+                    li {
+                        & > a.active , & > a:hover {
+                            background-color: $btn-primary;
+                            color: var(--font-color);
+                        }
+                    }
+                }
+            }
+        }
+        .o_dial_main_buttons .o_dial_call_button {
+            .fa {
+                color: var(--font-color);
+            }
+        }
+        .o_dial_fold {
+            border: 0;
+            background-color: $night;
+        }
+    }
+    &.ad-chat-window .o_action_manager .o_view_controller {
+        background-color: $btn-secondary;
+    }
+}

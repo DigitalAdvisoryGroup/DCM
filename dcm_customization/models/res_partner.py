@@ -26,17 +26,22 @@ class ResPartner(models.Model):
                         partner_id.write({'lang':'en_US'})
                 website_visitor = self.env['website.visitor'].search([('partner_id','=',partner_id.id)])
                 if not website_visitor:
-                    self.env['website.visitor'].create({'partner_id': partner_id.id,
-                            "push_token":token ,
-                            "name": partner_id.name
-                            }
-                        )
+                    website_visitor = self.env['website.visitor'].search(
+                        [('partner_id', '=', partner_id.id),('active','=',False)])
+                    if not website_visitor:
+                        self.env['website.visitor'].create({'partner_id': partner_id.id,
+                                "push_token":token ,
+                                "name": partner_id.name
+                                }
+                            )
+                    else:
+                        website_visitor.write({'push_token': token, "active": True})
                 else:
-                    website_visitor.write({'push_token':token})       
+                    website_visitor.write({'push_token':token,"active": True})
                 partner_id.set_otp_partner()
                 partner_id.send_otp_partner()
                 return partner_id.id
-        return False
+        return 0
 
     def set_otp_partner(self):
         self.ensure_one()

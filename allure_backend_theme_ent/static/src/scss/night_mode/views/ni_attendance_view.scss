@@ -1,0 +1,23 @@
+@mixin sync_attendance_view() {
+    .o_hr_attendance_kiosk_mode_container {
+        .o_hr_attendance_kiosk_mode {
+            background-color: $night-light;
+            color: var(--font-color);
+
+            .o_hr_attendance_user_badge {
+                background: $night;
+            }
+
+            .o_hr_attendance_back_button {
+                .btn-secondary {
+                    .fa-chevron-left {
+                        color: var(--font-color);
+                    }
+                }
+            }
+            .alert.alert-info {
+                background-color: $btn-primary !important;
+            }
+        }
+    }
+}
