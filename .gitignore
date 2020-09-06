@@ -55,5 +55,3 @@ connector/doc/_build/
 *~
 *.swp
 \.DS_Store
-
-dtr_invoice_report/

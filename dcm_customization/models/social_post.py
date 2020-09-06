@@ -75,7 +75,7 @@ class SocialPostBIT(models.Model):
                     'media_ids':media_ids
                     })
             _logger.info("Get Post Records From mobile records:- \n%s"%pprint.pformat(data))
-            return {'data':data}        
+            return {'data':data}
         else:
             return {'data':[]}
 
@@ -134,7 +134,6 @@ class SocialPostBIT(models.Model):
     def send_fcm_push_notification(self):
         subject = "New Post from Midar"
         if self.env.user.company_id.fcm_api_key:
-            device_list = []
             for lang in list(set(self.social_partner_ids.mapped("lang"))):
                 partners = self.social_partner_ids.filtered(lambda x: x.lang == lang)
                 body = self.with_context(lang=lang).message
