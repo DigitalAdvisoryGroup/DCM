@@ -66,7 +66,7 @@ body {
             }
         }
         &.o_home_menu_background, .o_home_menu_background {
-            background-image: radial-gradient(circle, $night, $btn-secondary);
+            // background-image: radial-gradient(circle, $night, $btn-secondary);
         }
         @include sync_model_view();
         @include dropdown_view();

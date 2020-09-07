@@ -13,35 +13,42 @@ class ResPartner(models.Model):
 
     otp_token = fields.Char("OTP Token", copy=False)
 
-    def get_partner_from_email(self,email,token, lang):
-        _logger.info("-------------------get partner method email -: %s \n token %s \n lang %s"%(email,token,lang))
+    def get_partner_from_email(self, email, token, lang):
+        _logger.info("-------------------get partner method email -: %s \n token %s \n lang %s" % (
+            email, token, lang))
+        data = []
         if email:
-            partner_id = self.search([('email','=',email)])
+            partner_id = self.search([('email', '=', email)])
             if partner_id:
                 if lang:
                     lang_id = self.env['res.lang']._lang_get(lang)
                     if lang_id:
-                        partner_id.write({'lang':lang_id.code})
+                        partner_id.write({'lang': lang_id.code})
                     else:
-                        partner_id.write({'lang':'en_US'})
-                website_visitor = self.env['website.visitor'].search([('partner_id','=',partner_id.id)])
-                if not website_visitor:
-                    website_visitor = self.env['website.visitor'].search(
-                        [('partner_id', '=', partner_id.id),('active','=',False)])
-                    if not website_visitor:
-                        self.env['website.visitor'].create({'partner_id': partner_id.id,
-                                "push_token":token ,
-                                "name": partner_id.name
-                                }
-                            )
-                    else:
-                        website_visitor.write({'push_token': token, "active": True})
-                else:
-                    website_visitor.write({'push_token':token,"active": True})
+                        partner_id.write({'lang': 'en_US'})
+                partner_token_id = self.env['res.partner.token'].search([('partner_id', '=', partner_id.id),
+                                                                            ('push_token','=',token)])
+                if not partner_token_id:
+                    self.env['res.partner.token'].create(
+                        {'partner_id': partner_id.id,"push_token": token})
                 partner_id.set_otp_partner()
                 partner_id.send_otp_partner()
-                return partner_id.id
-        return 0
+                # return partner_id.id
+                data.append({
+                    'id': partner_id.id,
+                    'name': partner_id.name,
+                    'email': partner_id.email,
+                    'street': partner_id.street,
+                    'street2': partner_id.street2,
+                    'mobile': partner_id.mobile,
+                    'city': partner_id.city,
+                    'state_id': partner_id.state_id and partner_id.state_id.name or '',
+                    'country_id': partner_id.country_id and partner_id.country_id.name or '',
+                    'zip': partner_id.zip,
+                    'image_1920': partner_id.image_1920,
+                })
+                return {'data': data}
+        return {'data': data}
 
     def set_otp_partner(self):
         self.ensure_one()
@@ -79,6 +86,11 @@ class ResPartner(models.Model):
         return False
 
 
+class ResPartnerToken(models.Model):
+    _name = 'res.partner.token'
+    
+    partner_id = fields.Many2one("res.partner","Partner")
+    push_token = fields.Char("Firebase Token")
 
 
 

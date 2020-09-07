@@ -83,14 +83,14 @@ class SocialPostBIT(models.Model):
         base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
         media_ids = []
         for media in self.image_ids:
-            image_url = url_join(base_url,'/web/image/%s'%media.id)
+            image_url = url_join(base_url,'/web/content/%s/%s' % (media.id, media.name))
             mimetype = 'image'
             if not media.mimetype.startswith('image'):
                 mimetype = 'video'
             media_ids.append({
-                            'url':image_url,
-                            'mimetype':mimetype
-                            })
+                'url': image_url,
+                'mimetype': mimetype
+            })
         return media_ids
     
     def getComments(self):
@@ -134,10 +134,11 @@ class SocialPostBIT(models.Model):
     def send_fcm_push_notification(self):
         subject = "New Post from Midar"
         if self.env.user.company_id.fcm_api_key:
+            device_list = []
             for lang in list(set(self.social_partner_ids.mapped("lang"))):
                 partners = self.social_partner_ids.filtered(lambda x: x.lang == lang)
                 body = self.with_context(lang=lang).message
-                device_list = self.env['website.visitor'].search([('partner_id','in',partners.ids)]).mapped("push_token")
+                device_list = self.env['res.partner.token'].search([('partner_id','in',partners.ids)]).mapped("push_token")
                 if device_list:
                     push_service = FCMNotification(api_key=self.env.user.company_id.fcm_api_key)
                     push_service.notify_multiple_devices(registration_ids=device_list,
