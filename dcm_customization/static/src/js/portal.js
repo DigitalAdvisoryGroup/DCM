@@ -27,7 +27,6 @@ odoo.define('dcm_customization.portal', function (require) {
         },
 
         _onAvatarUploadChange: function (ev) {
-            debugger;
             if (!ev.currentTarget.files.length) {
                 return;
             }

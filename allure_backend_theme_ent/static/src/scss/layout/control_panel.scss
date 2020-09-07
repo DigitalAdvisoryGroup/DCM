@@ -231,6 +231,7 @@
 }
 @mixin control-panel() {
     z-index: 2;
+    border-bottom:unset;
     padding: 0px;
     display: flex;
     & > ol.breadcrumb {
@@ -360,17 +361,18 @@
         display: block;
         width: 100%;
         position: absolute;
-        bottom: 0;
+        // bottom: 0;
+        top:40px;
         left: 0;
-        padding-left: 95px;
+        padding-left: 0px;
         height: 40px;
         z-index: 150;
-        border-top: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
         background-color: $white;
         @include slide-animation();
         & > .o_cp_left {
             float: right;
-            min-width: 50%;
+            min-width: 60%;
             min-height: 35px;
             padding: 5px 15px 5px 7px;
             margin-top: 0px;
@@ -455,7 +457,7 @@
         }
         & > .o_cp_right {
             float: left;
-            width: 50%;
+            width: 40%;
             min-height: 35px;
             margin-top: 0px;
             padding: 5px 7px 5px 15px;

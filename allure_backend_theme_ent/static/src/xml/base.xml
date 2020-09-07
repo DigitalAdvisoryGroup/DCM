@@ -177,11 +177,11 @@
                 <aside class="o_cp_sidebar"/>
                 <div class="ad_bottom_panel">
                     <div class="o_cp_left">
-                        <div class="o_cp_buttons" role="toolbar" aria-label="Control panel toolbar"/>
+                        <nav class="o_cp_pager" role="search" aria-label="Pager"/>
                         <button class="o_main_cp_buttons btn btn-primary fa fa-bars">Cancel</button>
                     </div>
                     <div class="o_cp_right">
-                        <nav class="o_cp_pager" role="search" aria-label="Pager"/>
+                        <div class="o_cp_buttons" role="toolbar" aria-label="Control panel toolbar"/>
                     </div>
                 </div>
             </div>

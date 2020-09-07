@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record model="ir.ui.view" id="res_lang_flag_image">
+        <field name="name">res.lang.flag.image</field>
+        <field name="model">res.lang</field>
+        <field name="inherit_id" ref="base.res_lang_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='iso_code']" position="after">
+                <newline />
+                <field name="lang_flag" widget='image'></field>
+            </xpath>
+        </field>
+    </record>
+</odoo>

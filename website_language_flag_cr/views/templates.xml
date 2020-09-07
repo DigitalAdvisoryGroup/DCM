@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+	<!-- Language Selector Inherit & Added Language Direction -->
+	<template id="language_selector_inherit" inherit_id="website.language_selector">
+		<xpath expr="//ul[hasclass('js_language_selector')]" position="replace">
+
+		</xpath>
+		
+	</template>
+
+	<!-- Language Flag Template -->
+	<template id="language_flags" name="Language Flags">
+		<li t-if="(request and request.is_frontend_multilang and len(languages) &gt; 1) or (website and (editable or translatable))"
+			class="list-unstyled dropdown language_dropdown mr-2">
+			<a href="#" class="dropdown-toggle language_flag nav-link" data-toggle="dropdown">
+				<t t-foreach="website.language_ids" t-as="lg">
+					<t t-if="request.context.get('lang') == lg.code">
+						<img class="img img-fluid" t-att-src="website.image_url(lg, 'lang_flag')" height="25"
+							width="25" t-att-title="lg.name" />
+					</t>
+				</t>
+			</a>
+			<ul class="dropdown-menu" role="menu" style="min-width: 80px;">
+				<li class="nav-item" t-foreach="website.language_ids" t-as="lg">
+					<a
+						t-att-href="url_for(request.httprequest.path + '?' + keep_query(), lang_code=lg.code)"
+						t-att-data-default-lang="(editable or translatable) and 'true' if website and lg.code == website.default_lang_id.code else None"
+						t-att-data-lang="lg[0]" t-att-data-lang_dir="lg.direction" class="js_change_lang nav-link">
+					<img t-att-src="website.image_url(lg, 'lang_flag')" height="30" width="30" t-att-title="lg.code" />
+						<t t-esc="lg.name.split('/').pop()"/>
+					</a>
+				</li>
+			</ul>
+		</li>
+	</template>
+
+	<!-- Customize Options for Language Flag -->
+	<template id="top_menu_flags" inherit_id="website.layout"
+		name="Show Language Flag" active="True" customize_show="True">
+		<xpath expr="//header//ul[@id='top_menu']/li[last()]" position="after">
+			<li class="divider" />
+			<t t-call="website_language_flag_cr.language_flags" />
+		</xpath>
+	</template>
+
+</odoo>

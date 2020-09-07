@@ -26,6 +26,7 @@ body.o_web_client {
             }
             & > .o_content {
                 margin-right: 0px;
+                margin-top: 30px;
                 @include slide-animation();
                 @include pivot_view();
                 @include graph_view();

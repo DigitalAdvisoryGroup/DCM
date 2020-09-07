@@ -54,6 +54,7 @@
     .o_list_view {
         border-bottom: none;
         margin-bottom: 0;
+        margin-top:15px;
         table {
             border-collapse: initial;
             color: var(--Label-value);
@@ -286,4 +287,12 @@
             }
         }
     }
+}
+.o_cp_left{
+    .o_cp_pager{
+        float: right;
+    }
+}
+.uc_menu_image{
+    background-color: white;
 }

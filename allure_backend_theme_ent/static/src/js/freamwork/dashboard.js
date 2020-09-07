@@ -272,7 +272,7 @@ odoo.define('allure_backend_theme_ent.DashboardCustomizeTheme', function (requir
                 var data = _.findWhere(form_fields, {'name': $activetab});
                 self.$el.find('.uc_menu_image').attr('src', imagePath + data["value"] + '.png');
             } else {
-                self.$el.find('.uc_menu_image').attr('src', '/allure_backend_theme_ent/static/src/img/theme_help.png');
+                self.$el.find('.uc_menu_image').attr('src', '/allure_backend_theme_ent/static/src/img/icon_pic.png');
             }
             self.$el.find('.tab_configration_data').toggle($tab_data["value"] == 'vertical_tabs');
             self.$el.toggleClass('night_mode_on', $night_mode["value"] == 'night_mode_on');
