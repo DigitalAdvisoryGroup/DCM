@@ -5,6 +5,7 @@
 from odoo import models, fields, api
 from odoo.tools.misc import formatLang, format_date, get_lang
 import math, random
+from werkzeug.urls import url_join
 import logging
 _logger = logging.getLogger(__name__)
 
@@ -34,6 +35,9 @@ class ResPartner(models.Model):
                 partner_id.set_otp_partner()
                 partner_id.send_otp_partner()
                 # return partner_id.id
+                base_url = self.env['ir.config_parameter'].sudo().get_param(
+                    'web.base.url')
+                image_url = url_join(base_url,'/web/myimage/res.partner/%s/image_1920'%partner_id.id)
                 data.append({
                     'id': partner_id.id,
                     'name': partner_id.name,
@@ -45,7 +49,7 @@ class ResPartner(models.Model):
                     'state_id': partner_id.state_id and partner_id.state_id.name or '',
                     'country_id': partner_id.country_id and partner_id.country_id.name or '',
                     'zip': partner_id.zip,
-                    'image_1920': partner_id.image_1920,
+                    'image_1920': image_url,
                 })
                 return {'data': data}
         return {'data': data}
