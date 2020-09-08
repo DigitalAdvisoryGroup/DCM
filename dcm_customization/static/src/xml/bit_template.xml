@@ -94,6 +94,44 @@
         </t>
     </t>
 
+    <div t-name="social.PostKanbanImagesCarousel">
+        <t t-set="multi_images" t-value="widget.images.length > 1"/>
+        <div id="o_stream_post_images_carousel"
+            t-attf-class="o_stream_post_images_carousel carousel slide #{multi_images? 'o_stream_post_images_carousel_multi' : ''} "
+            data-interval="false">
+            <ol t-if="multi_images" class="carousel-indicators">
+                <t t-foreach="widget.images" t-as="image_url">
+                    <li t-attf-data-target="#o_stream_post_images_carousel"
+                        t-att-data-slide-to="image_url_index"
+                        t-attf-class="#{image_url_index === widget.activeIndex ? 'active' : ''}"/>
+                </t>
+            </ol>
+            <div t-if="!widget.is_array" class="carousel-inner h-100 d-flex align-items-center justify-content-center">
+                <t t-foreach="widget.images" t-as="image_url">
+                    <div t-attf-class="carousel-item m-0 w-auto #{image_url_index === widget.activeIndex ? 'active' : ''}">
+                        <img  t-att-src="image_url" class="shadow" alt="Image Url" />
+                    </div>
+                </t>
+            </div>
+            <div t-if="widget.is_array" class="carousel-inner h-100 d-flex align-items-center justify-content-center">
+                <t t-foreach="widget.images" t-as="image_url">
+                    <div t-attf-class="carousel-item m-0 w-auto #{image_url_index === widget.activeIndex ? 'active' : ''}">
+                        <img  t-if="image_url.mimetype" t-att-src="image_url.url" class="shadow" alt="Image Url" />
+                        <video  t-if="!image_url.mimetype" width="100%" t-att-src="image_url.url" class="shadow" alt="Image Url" controls="controls"/>
+                    </div>
+                </t>
+            </div>
+            <a t-if="multi_images" class="carousel-control-prev" href="#o_stream_post_images_carousel" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a t-if="multi_images" class="carousel-control-next" href="#o_stream_post_images_carousel" role="button" data-slide="next">
+                <span class="carousel-control-next-icon"></span>
+                <span class="sr-only">Next</span>
+            </a>
+        </div>
+    </div>
+
 
     
 

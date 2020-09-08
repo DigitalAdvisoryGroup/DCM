@@ -58,3 +58,29 @@ class WebController(Binary):
             
         request.uid = SUPERUSER_ID
         return self.content_image(xmlid=xmlid,model=model,id=id,field=field,unique=unique,access_token=access_token)
+
+
+    @http.route(type='http', auth="public")
+    def content_common(self, xmlid=None, model='ir.attachment', id=None, field='datas',
+                       filename=None, filename_field='name', unique=None, mimetype=None,
+                       download=None, data=None, token=None, access_token=None, **kw):
+        if kw.get('social_newid') and kw.get('datas'):
+            datsss = base64.b64encode(open(kw.get('datas'), 'rb').read())
+            content_base64 = base64.b64decode(datsss)
+            headers = [('Content-Type',mimetype), ('X-Content-Type-Options', 'nosniff'), ('ETag', '8a20c82cf84a0d0603d7298b28d184e48b235364'), ('Cache-Control', 'max-age=0')]
+            headers.append(('Content-Length', len(content_base64)))
+            response = request.make_response(content_base64, headers)
+            return response
+        else:
+            status, headers, content = request.env['ir.http'].binary_content(
+            xmlid=xmlid, model=model, id=id, field=field, unique=unique, filename=filename,
+            filename_field=filename_field, download=download, mimetype=mimetype, access_token=access_token)
+            if status != 200:
+                return request.env['ir.http']._response_by_status(status, headers, content)
+            else:
+                content_base64 = base64.b64decode(content)
+                headers.append(('Content-Length', len(content_base64)))
+                response = request.make_response(content_base64, headers)
+            if token:
+                response.set_cookie('fileToken', token)
+            return response
