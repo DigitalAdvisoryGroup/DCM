@@ -72,7 +72,9 @@ class SocialPostBIT(models.Model):
                     'image':image_url,
                     'message':post.message,
                     'comments':comments,
-                    'media_ids':media_ids
+                    'media_ids':media_ids,
+                    'campaign_name':post.utm_campaign_id.name if post.utm_campaign_id else "",
+                    'campaign_owner':post.utm_campaign_id.user_id.name if post.utm_campaign_id else ""
                     })
             _logger.info("Get Post Records From mobile records:- \n%s"%pprint.pformat(data))
             return {'data':data}
@@ -102,6 +104,7 @@ class SocialPostBIT(models.Model):
                              'id':msg.id,
                              'author_name':msg.partner_id.name,
                              'author_image':image_url,
+                             'partner_id':msg.partner_id.id,
                              'date':msg.create_date.strftime(DEFAULT_SERVER_DATETIME_FORMAT)
                             })
         return comments
@@ -162,14 +165,18 @@ class SocialPostBIT(models.Model):
     @api.depends('message', 'scheduled_date', 'image_ids')
     def _compute_bit_preview(self):
         for post in self:
+            image_data = []
+            for i in post.image_ids:
+                image_data.append({'mimetype':i.mimetype,'datas':base64.b64encode(open(i._full_path(i.store_fname), 'rb').read())})
             post.bit_preview = self.env.ref('dcm_customization.bit_preview').render({
                 'message': post.message,
                 'published_date': post.scheduled_date if post.scheduled_date else fields.Datetime.now(),
                 'image_ids':post.image_ids,
-                'images': [
-                    image.datas if not image.id
-                    else base64.b64encode(open(image._full_path(image.store_fname), 'rb').read()) for image in post.image_ids
-                ]
+                'image_data':image_data,
+                # 'images': [
+                #     image.datas if not image.id
+                #     else base64.b64encode(open(image._full_path(image.store_fname), 'rb').read()) for image in post.image_ids
+                # ]
             })
 
     def unlink(self):
@@ -181,12 +188,13 @@ class SocialPostBIT(models.Model):
         return super(SocialPostBIT, self).unlink()    
 
 
-    # @api.depends('image_ids')
-    # def _compute_image_urls(self):
-    #     """ See field 'help' for more information. """
-    #     base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
-    #     for post in self:
-    #         if post.is_bit_post:
-    #             post.image_urls = json.dumps([{'url':url_join(base_url,'web/image/%s' % image_id.id), 'mimetype':image_id.mimetype} for image_id in post.image_ids])
-    #         else:
-    #             super(SocialPostBIT,self)._compute_image_urls()
+    @api.depends('image_ids')
+    def _compute_image_urls(self):
+        """ See field 'help' for more information. """
+        base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+        for post in self:
+            if post.is_bit_post:
+                post.image_urls = json.dumps([{'url':url_join(base_url,'web/image/%s' % image_id.id), 'mimetype':True if image_id.mimetype.startswith('image') else False,'fullpath':image_id._full_path(image_id.store_fname)} for image_id in post.image_ids])
+            else:
+                super(SocialPostBIT,self)._compute_image_urls()
+    

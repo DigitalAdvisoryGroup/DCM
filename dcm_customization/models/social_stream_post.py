@@ -8,7 +8,7 @@ import urllib.parse
 
 from odoo import api, models, fields
 from werkzeug.urls import url_join
-
+import json
 
 class SocialStreamPostBIT(models.Model):
     _inherit = 'social.stream.post'
@@ -70,3 +70,11 @@ class SocialStreamPostBIT(models.Model):
             'comments': list(reversed(comments))
         }
 
+    def _compute_stream_post_image_urls(self):
+        """ See field 'help' for more information. """
+        base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+        for stream_post in self:
+            if stream_post.media_type == 'bit':
+                stream_post.stream_post_image_urls = json.dumps([{'url':url_join(base_url,'web/image/%s' % image_id.id), 'mimetype':True if image_id.mimetype.startswith('image') else False,'fullpath':image_id._full_path(image_id.store_fname)} for image_id in stream_post.post_id.image_ids])
+            else:
+                super(SocialStreamPostBIT,self)._compute_stream_post_image_urls()

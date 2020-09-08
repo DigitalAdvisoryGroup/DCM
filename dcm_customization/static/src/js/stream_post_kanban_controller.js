@@ -3,6 +3,7 @@ odoo.define('social_bit.social_stream_post_kanban_controller', function (require
 
 var StreamPostKanbanController = require('social.social_stream_post_kanban_controller');
 var StreamPostBitComments = require('social.StreamPostBitComments');
+var social_post_kanban_images_carousel = require('social.social_post_kanban_images_carousel');
 
 StreamPostKanbanController.include({
     events: _.extend({}, StreamPostKanbanController.prototype.events, {
@@ -51,6 +52,30 @@ StreamPostKanbanController.include({
 
         // this._updateLikesCount($target);
         // $target.toggleClass('o_social_twitter_user_likes');
+    }
+});
+var core = require('web.core');
+var Dialog = require('web.Dialog');
+var _t = core._t;
+
+
+social_post_kanban_images_carousel.include({
+    init: function (parent, options) {
+        options = _.defaults(options || {}, {
+            title: _t('Post Images'),
+            renderFooter: false,
+            dialogClass: 'p-0 bg-900'
+        });
+        var is_array = false;
+        if(typeof options.images == 'object'){
+            is_array=true
+        }
+
+        this.images = options.images;
+        this.activeIndex = options.activeIndex || 0;
+        this.is_array = is_array;
+
+        this._super.apply(this, arguments);
     }
 });
 
