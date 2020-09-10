@@ -1,0 +1,49 @@
+<odoo>
+    <!-- social.bit.comments form view -->
+    <record id="social_bit_comments_view_form" model="ir.ui.view">
+        <field name="name">social.bit.comments.view.form</field>
+        <field name="model">social.bit.comments</field>
+        <field name="arch" type="xml">
+            <form string="">
+                <sheet>
+                    <group>
+                        <field name="partner_id"/>
+                        <field name="post_id"/>
+                        <field name="comment"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- social.bit.comments tree view -->
+    <record id="social_bit_comments_view_tree" model="ir.ui.view">
+        <field name="name">social.bit.comments.view.tree</field>
+        <field name="model">social.bit.comments</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="partner_id"/>
+                <field name="post_id"/>
+                <field name="comment"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- social.bit.comments action window -->
+    <record id="comments_model_name_action" model="ir.actions.act_window">
+        <field name="name">Social Comments</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">social.bit.comments</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                <!-- Add Text Here -->
+            </p><p>
+                <!-- More details about what a user can do with this object will be OK --> 
+            </p>
+        </field>
+    </record>
+     
+    <!-- This Menu Item must have a parent and an action -->
+    <!-- <menuitem id="comments_bit_menu_act" name="Social Comments" parent="" action="comments_model_name_action" sequence=""/> -->
+</odoo>

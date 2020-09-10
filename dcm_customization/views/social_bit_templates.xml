@@ -22,15 +22,32 @@
             </div>
             <div class="o_social_stream_post_image d-flex mx-n3 overflow-hidden">
                 <t t-foreach="image_ids" t-as="image">
+                    <t t-if="image.id">
+                        <t t-set="image_data" t-value="'/web/image/%s'%image.id" />
+                    </t>
+                    <t t-if="not image.id">
+                        <t t-set="image_data" t-attf-value="'data:image/png;base64,%s'%image.datas" />
+                    </t>
                     <a t-if="image_index == 1 and len(image_ids) > 2" class="o_social_stream_post_image_more position-relative d-flex ml-1" t-att-data-current-index="1">
-                        <img t-attf-src="data:image/png;base64, #{image.datas}" alt="Post Image" t-if="image.mimetype.startswith('image')"/>
+                        <t t-if="image.id">
+                            <img t-att-src="'/web/image/%s'%image.id"  alt="Post Image" t-if="image.mimetype.startswith('image')"/>
+                        </t>
+                        <t t-if="not image.id">
+                            <img t-attf-src="data:image/png;base64, #{image.datas}"  alt="Post Image" t-if="image.mimetype.startswith('image')"/>
+                        </t>
+                        <img t-attf-src="#{image_data}"  alt="Post Image" t-if="image.mimetype.startswith('image')"/>
                         <video width="200"  t-attf-src="/web/content/?social_newid=true&amp;datas=#{image._full_path(image.store_fname)}&amp;mimetype=#{image.mimetype}" alt="Post Image" controls="controls" />
                         <div class="o_social_stream_post_image_more_overlay d-flex align-items-center h-100 w-100 text-white justify-content-center position-absolute h1 m-0" style="user-select: none;">
                             +<t t-esc="len(image_ids) - 2"/>
                         </div>
                     </a>
                     <video t-if="image_index &lt; 2 and image.mimetype.startswith('video')"  width="200"  t-attf-src="/web/content/?social_newid=true&amp;datas=#{image._full_path(image.store_fname)}&amp;mimetype=#{image.mimetype}" alt="Post Image" controls="controls"  t-att-type="image.mimetype"/>
-                    <img t-if="image_index &lt; 2 and image.mimetype.startswith('image')" t-attf-src="data:image/png;base64, #{image.datas}" alt="Post Image"  />
+                    <t t-if="image.id">
+                        <img t-att-src="'/web/image/%s'%image.id"  alt="Post Image" t-if="image_index &lt; 2 and image.mimetype.startswith('image')"/>
+                    </t>
+                    <t t-if="not image.id">
+                        <img t-attf-src="data:image/png;base64, #{image.datas}"  alt="Post Image" t-if="image_index &lt; 2 and image.mimetype.startswith('image')"/>
+                    </t>
                 </t>
             </div>
         </div>
