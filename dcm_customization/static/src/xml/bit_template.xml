@@ -9,6 +9,42 @@
                 t-if="originalPost.mediaType === 'bit'">
             </div>
         </t>
+        <t t-jquery="div.o_social_stream_post_image" t-operation="replace">
+            <div t-if="originalPost.postImages.length > 0 and originalPost.mediaType != 'bit'"
+                class="o_social_stream_post_image mt-3 d-flex overflow-hidde">
+                <t t-foreach="originalPost.postImages.length > 2 ? originalPost.postImages.slice(0, 2) : originalPost.postImages" t-as="image_url">
+                    <t t-if="image_url_index == 1 &amp;&amp; originalPost.postImages.length > 2">
+                        <a class="o_social_original_post_image_more position-relative d-flex ml-1" data-current-index="1">
+                            
+                            <img class="o_social_original_post_image_click" t-att-src="originalPost.postImages[1]" alt="Post Image" />
+                            <div class="o_social_stream_post_image_more_overlay d-flex align-items-center h-100 w-100 text-white justify-content-center position-absolute h1 m-0" style="user-select: none;">
+                                +<t t-esc="originalPost.postImages.length - 2"/>
+                            </div>
+                        </a>
+                    </t>
+                    <img t-else="" class="o_social_original_post_image_click o_social_original_post_single" t-att-src="image_url" alt="Post Image" t-att-data-current-index="image_url_index" />
+                </t>
+            </div>
+            <div t-if="originalPost.postImages.length > 0 and originalPost.mediaType == 'bit'"
+                class="o_social_stream_post_image mt-3 d-flex overflow-hidde">
+                <t t-foreach="originalPost.postImages.length > 2 ? originalPost.postImages.slice(0, 2) : originalPost.postImages" t-as="image_url">
+                    <t t-if="image_url_index == 1 &amp;&amp; originalPost.postImages.length > 2">
+                        <a class="o_social_original_post_image_more position-relative d-flex ml-1" data-current-index="1">
+                            <img style="max-height: 50px !important;" t-if="originalPost.postImages[1].mimetype" class="o_social_original_post_image_click" t-att-src="originalPost.postImages[1].url" alt="Post Image" />
+                            <video width="200"  t-att-src="originalPost.postImages[1].url" t-if="!originalPost.postImages[1].mimetype" alt="Post Image" controls="controls" />
+                            <div class="o_social_stream_post_image_more_overlay d-flex align-items-center h-100 w-100 text-white justify-content-center position-absolute h1 m-0" style="user-select: none;">
+                                +<t t-esc="originalPost.postImages.length - 2"/>
+                            </div>
+                        </a>
+                    </t>
+                    <t t-else="">
+                        <img t-if="image_url.mimetype" class="o_social_original_post_image_click o_social_original_post_single" style="max-height: 50px !important;" t-att-src="image_url.url" alt="Post Image" t-att-data-current-index="image_url_index" />
+                        <video width="200"  t-att-src="image_url.url" t-if="!image_url.mimetype" alt="Post Image" controls="controls" t-att-data-current-index="image_url_index"/>
+                    </t>
+                </t>
+            </div>
+        </t>
+
     </t>
     <t t-name="social.StreamPostReply" t-extend="social.StreamPostReply">
         <t t-jquery="div.o_social_write_reply" t-operation="attributes">

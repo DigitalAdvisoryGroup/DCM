@@ -19,7 +19,6 @@ odoo.define('social.StreamPostBitComments', function (require) {
                 commentName: _t('Comment'),
                 comments: this.comments
             });
-
             this._super.apply(this, arguments);
         },
 

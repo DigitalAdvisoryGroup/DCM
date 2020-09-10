@@ -22,7 +22,7 @@ Description
     'author': "Digital Advisory Group GmbH, Candidroot Solutions Pvt. Ltd.",
     'website': "https://www.digitaladvisorygroup.io/",
     'category': 'Social',
-    'depends': ['social','website','portal'],
+    'depends': ['social','website','portal','mass_mailing'],
     'data': [
         'security/security.xml',
         "security/ir.model.access.csv",
@@ -34,6 +34,8 @@ Description
         "views/social_groups_view.xml",
         "views/res_config_settings_view.xml",
         "views/portal_views.xml",
+        "views/social_comments.xml",
+        "views/mass_mailing.xml",
         "views/assets.xml",
     ],
     'demo': [

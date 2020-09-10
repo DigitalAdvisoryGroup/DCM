@@ -11,3 +11,4 @@ from . import social_post
 from . import social_stream_post
 from . import social_share_comment
 from . import res_users
+from . import mass_mailing
