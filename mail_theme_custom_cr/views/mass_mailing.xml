@@ -1,0 +1,29 @@
+<odoo>
+  <data>
+    <record id="view_mail_masss_mailing_form" model="ir.ui.view">
+        <field name="name">mailing.mailing.view.form.inherit.bit</field>
+        <field name="model">mailing.mailing</field>
+        <field name="inherit_id" ref="mass_mailing.view_mail_mass_mailing_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="before">
+                <group>
+                  <group>
+                  </group>
+                  <group >
+                    <div class="oe_edit_only" style="float:right;">
+                      <button name="action_view_open_theme"  string="Select Theme" type="object"></button>
+                      <button name="save_current_open_theme"  string="Save Current Theme" type="object"></button>
+                    </div>
+                  </group>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <template id="assets_backend" name="mail_theme_backend_assets" inherit_id="web.assets_backend">
+        <xpath expr="." position="inside">
+            <script type="text/javascript" src="/mail_theme_custom_cr/static/src/js/kanbancontroller.js"/>
+        </xpath>
+    </template>
+  </data>
+</odoo>

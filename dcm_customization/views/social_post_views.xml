@@ -39,7 +39,6 @@
             <xpath expr="//field[@name='engagement']" position="after">
                 <field name="like_partner_ids" />
                 <field name="is_bit_post" />
-                <field name="image_ids" />
             </xpath>
             <!-- <xpath expr="//span[@t-esc='record.engagement.raw_value']" position="replace">
                 <span t-esc="record.like_partner_ids.length" t-if="record.is_bit_post.raw_value"/>

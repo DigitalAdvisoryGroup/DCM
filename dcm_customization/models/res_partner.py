@@ -34,6 +34,7 @@ class ResPartner(models.Model):
                         {'partner_id': partner_id.id,"push_token": token})
                 partner_id.set_otp_partner()
                 partner_id.send_otp_partner()
+                # return partner_id.id
                 base_url = self.env['ir.config_parameter'].sudo().get_param(
                     'web.base.url')
                 image_url = url_join(base_url,'/web/myimage/res.partner/%s/image_128'%partner_id.id)
@@ -54,10 +55,10 @@ class ResPartner(models.Model):
         return {'data': data}
 
     def set_otp_partner(self):
-        self.ensure_one()
         if self.email == "hello@digitaladvisorygroup.io":
             self.otp_token = "966718"
             return True
+        self.ensure_one()
         digits = "0123456789"
         OTP = ""
         for i in range(6):

@@ -61,20 +61,28 @@ class SocialPostBIT(models.Model):
             base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
             data = []
             for post in posts:
-                image_url = url_join(base_url,'/web/myimage/res.partner/%s/image_1920'%post.create_uid.partner_id.id)
+                if post.utm_campaign_id:
+                    image_url = url_join(base_url,'/web/myimage/utm.campaign/%s/image_128'%post.utm_campaign_id.id)
+                    post_date = post.utm_campaign_id.create_date.strftime(DEFAULT_SERVER_DATETIME_FORMAT)
+                    post_owner = post.utm_campaign_id.user_id.name
+                    post_name = post.utm_campaign_id.name
+                else:
+                    image_url = url_join(base_url,'/web/myimage/res.partner/%s/image_128'%post.create_uid.partner_id.id)
+                    post_date = post.create_date.strftime(DEFAULT_SERVER_DATETIME_FORMAT)
+                    post_owner = post.create_uid.partner_id.name
+                    post_name = post.create_uid.name
                 comments = post.getComments()
                 media_ids = post.getMedia()
                 data.append({
                     'id':post.id,
-                    'name':post.create_uid.partner_id.name,
-                    'date':post.create_date.strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                    'name':post_name,
+                    'date':post_date,
                     'like':True if int(partner_id) in post.like_partner_ids.ids else False,
                     'image':image_url,
                     'message':post.message,
                     'comments':comments,
                     'media_ids':media_ids,
-                    'campaign_name':post.utm_campaign_id.name if post.utm_campaign_id else "",
-                    'campaign_owner':post.utm_campaign_id.user_id.name if post.utm_campaign_id else ""
+                    'post_owner':post_owner
                     })
             _logger.info("Get Post Records From mobile records:- \n%s"%pprint.pformat(data))
             return {'data':data}

@@ -2,6 +2,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 from . import res_company
 from . import res_partner
+from . import campaign
 from . import social_groups
 from . import social_media
 from . import social_account
