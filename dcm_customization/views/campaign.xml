@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data >
+        <!-- utm.campaign inherit form view -->
+        <record id="utm_campaign_view_id" model="ir.ui.view">
+            <field name="name">utm.campaign.inherit.view.form</field>
+            <field name="model">utm.campaign</field>
+            <field name="inherit_id" ref="utm.utm_campaign_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='name']" position="replace">
+                </xpath>
+                <xpath expr="//group[@id='top-group']" position="before">
+                    <field name="image_1920" widget='image' class="oe_avatar" options='{"preview_image": "image_128"}'/>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" default_focus="1" placeholder="Name" />
+                        </h1>
+                    </div>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

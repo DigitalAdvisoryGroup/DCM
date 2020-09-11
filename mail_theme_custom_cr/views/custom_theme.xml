@@ -1,0 +1,62 @@
+<odoo>
+  <data>
+      <!-- mail.themes tree view -->
+      <record id="mail_themes_view_tree" model="ir.ui.view">
+        <field name="name">mail.themes.view.tree</field>
+        <field name="model">mail.themes</field>
+        <field name="arch" type="xml">
+          <tree>
+              <field name="image"  widget="image" width="50" height="50"/>
+              <field name="name"/>
+          </tree>
+        </field>
+      </record>  
+
+      <!-- mail.themes form view -->
+      <record id="mail_themes_view_form" model="ir.ui.view">
+        <field name="name">mail.themes.view.form</field>
+        <field name="model">mail.themes</field>
+        <field name="arch" type="xml">
+          <form string="">
+            <sheet>
+              <group>
+                <field name="name" required="1"/>
+                <field name="image" widget="image"/>
+              </group>
+              <notebook>
+                  <page string="Body" name="mail_body">
+                      <field name="body_html" class="oe_read_only" widget="html"
+                    options="{'cssReadonly': 'mass_mailing.iframe_css_assets_readonly'}"/>
+                    <field name="body_arch" class="o_mail_body oe_edit_only" widget="mass_mailing_html"
+                        options="{
+                            'snippets': 'mass_mailing.email_designer_snippets',
+                            'cssEdit': 'mass_mailing.iframe_css_assets_edit',
+                            'inline-field': 'body_html'
+                    }"/>
+                  </page>
+              </notebook>
+            </sheet>
+          </form>
+        </field>
+      </record>
+
+      <!-- mail.themes action window -->
+      <record id="mail_themes_action" model="ir.actions.act_window">
+        <field name="name">Mail Themes</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">mail.themes</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+          <p class="oe_view_nocontent_create">
+            <!-- Add Text Here -->
+          </p><p>
+            <!-- More details about what a user can do with this object will be OK --> 
+          </p>
+        </field>
+      </record>
+
+      <!-- This Menu Item must have a parent and an action -->
+      <menuitem id="mail_themes_menu_act" name="Mass Mailing Template" parent="mass_mailing.mass_mailing_configuration" action="mail_themes_action" sequence="100"/>
+
+  </data>
+</odoo>

@@ -36,6 +36,7 @@ Description
         "views/portal_views.xml",
         "views/social_comments.xml",
         "views/mass_mailing.xml",
+        "views/campaign.xml",
         "views/assets.xml",
     ],
     'demo': [
