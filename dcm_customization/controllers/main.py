@@ -80,6 +80,7 @@ class WebController(Binary):
             else:
                 content_base64 = base64.b64decode(content)
                 headers.append(('Content-Length', len(content_base64)))
+                headers.append(('Accept-Ranges', "bytes"))
                 response = request.make_response(content_base64, headers)
             if token:
                 response.set_cookie('fileToken', token)

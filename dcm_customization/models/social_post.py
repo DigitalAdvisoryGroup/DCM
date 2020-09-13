@@ -145,15 +145,27 @@ class SocialPostBIT(models.Model):
     def send_fcm_push_notification(self):
         subject = "New Post from Midar"
         if self.env.user.company_id.fcm_api_key:
-            device_list = []
             for lang in list(set(self.social_partner_ids.mapped("lang"))):
                 partners = self.social_partner_ids.filtered(lambda x: x.lang == lang)
                 body = self.with_context(lang=lang).message
                 device_list = self.env['res.partner.token'].search([('partner_id','in',partners.ids)]).mapped("push_token")
                 if device_list:
+                    extra_kwargs = {}
+                    data_message = {}
+                    if self.image_ids:
+                        for media in self.image_ids:
+                            if media.mimetype.startswith('image'):
+                                base_url = self.env[
+                                    'ir.config_parameter'].sudo().get_param('web.base.url')
+                                image_url = url_join(base_url, '/web/content/%s/%s' % (media.id, media.name))
+                                data_message = {"image": image_url}
+                                extra_kwargs = {"mutable_content": True}
+                                break
                     push_service = FCMNotification(api_key=self.env.user.company_id.fcm_api_key)
                     push_service.notify_multiple_devices(registration_ids=device_list,
-                                                         message_title=subject, message_body=body)
+                                                         message_title=subject,
+                                                         message_body=body,data_message=data_message,extra_kwargs=extra_kwargs,
+                                                         )
 
     @api.depends('live_post_ids.is_bit_post')
     def _compute_stream_posts_count(self):
