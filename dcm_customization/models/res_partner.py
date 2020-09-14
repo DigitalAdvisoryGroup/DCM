@@ -14,9 +14,9 @@ class ResPartner(models.Model):
 
     otp_token = fields.Char("OTP Token", copy=False)
 
-    def get_partner_from_email(self, email, token, lang):
-        _logger.info("-------------------get partner method email -: %s \n token %s \n lang %s" % (
-            email, token, lang))
+    def get_partner_from_email(self, email, token, lang, device_type=""):
+        _logger.info("-------------------get partner method email -: %s \n token %s \n lang %s \n device type %s" % (
+            email, token, lang,device_type))
         data = []
         if email:
             partner_id = self.search([('email', '=', email)])
@@ -28,10 +28,10 @@ class ResPartner(models.Model):
                     else:
                         partner_id.write({'lang': 'en_US'})
                 partner_token_id = self.env['res.partner.token'].search([('partner_id', '=', partner_id.id),
-                                                                            ('push_token','=',token)])
+                                                                         ('push_token','=',token)])
                 if not partner_token_id:
                     self.env['res.partner.token'].create(
-                        {'partner_id': partner_id.id,"push_token": token})
+                        {'partner_id': partner_id.id,"push_token": token,"device_type": device_type})
                 partner_id.set_otp_partner()
                 partner_id.send_otp_partner()
                 # return partner_id.id
@@ -92,6 +92,14 @@ class ResPartner(models.Model):
                 return True
         return False
 
+    def set_logout_app(self,token):
+        if token:
+            partner_device_id = self.env["res.partner.token"].search([("partner_id","=",self.id),("push_token","=",token)])
+            if partner_device_id:
+                partner_device_id.unlink()
+            return True
+        return False
+
 
 class ResPartnerToken(models.Model):
     _name = 'res.partner.token'
@@ -99,6 +107,8 @@ class ResPartnerToken(models.Model):
     
     partner_id = fields.Many2one("res.partner","Partner")
     push_token = fields.Char("Firebase Token")
+    device_type = fields.Selection([("ios","Apple"),("android","Android")],string="Device Type", default="android")
+
 
 
 
