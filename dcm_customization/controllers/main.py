@@ -25,6 +25,7 @@ import uuid
 from odoo.addons.mail.controllers.main import MailController
 from odoo.addons.portal.controllers.portal import CustomerPortal
 import base64
+from odoo.http import Response
 
 class PortalAccount(CustomerPortal):
     @http.route()
@@ -59,29 +60,57 @@ class WebController(Binary):
         request.uid = SUPERUSER_ID
         return self.content_image(xmlid=xmlid,model=model,id=id,field=field,unique=unique,access_token=access_token)
 
-
     @http.route(type='http', auth="public")
-    def content_common(self, xmlid=None, model='ir.attachment', id=None, field='datas',
-                       filename=None, filename_field='name', unique=None, mimetype=None,
-                       download=None, data=None, token=None, access_token=None, **kw):
+    def content_common(self, xmlid=None, model='ir.attachment', id=None,
+                       field='datas',
+                       filename=None, filename_field='name', unique=None,
+                       mimetype=None,
+                       download=None, data=None, token=None, access_token=None,
+                       **kw):
         if kw.get('social_newid') and kw.get('datas'):
             datsss = base64.b64encode(open(kw.get('datas'), 'rb').read())
             content_base64 = base64.b64decode(datsss)
-            headers = [('Content-Type',mimetype), ('X-Content-Type-Options', 'nosniff'), ('ETag', '8a20c82cf84a0d0603d7298b28d184e48b235364'), ('Cache-Control', 'max-age=0')]
+            headers = [('Content-Type', mimetype),
+                       ('X-Content-Type-Options', 'nosniff'),
+                       ('ETag', '8a20c82cf84a0d0603d7298b28d184e48b235364'),
+                       ('Cache-Control', 'max-age=0')]
             headers.append(('Content-Length', len(content_base64)))
             response = request.make_response(content_base64, headers)
             return response
         else:
             status, headers, content = request.env['ir.http'].binary_content(
-            xmlid=xmlid, model=model, id=id, field=field, unique=unique, filename=filename,
-            filename_field=filename_field, download=download, mimetype=mimetype, access_token=access_token)
+                xmlid=xmlid, model=model, id=id, field=field, unique=unique,
+                filename=filename,
+                filename_field=filename_field, download=download,
+                mimetype=mimetype, access_token=access_token)
             if status != 200:
-                return request.env['ir.http']._response_by_status(status, headers, content)
+                return request.env['ir.http']._response_by_status(status,
+                                                                  headers,
+                                                                  content)
             else:
                 content_base64 = base64.b64decode(content)
-                headers.append(('Content-Length', len(content_base64)))
+                mainvideo = content_base64
+                if request.httprequest.range:
+                    contentrange = request.httprequest.range.make_content_range(
+                        len(content_base64))
+                    if contentrange.stop < len(content_base64):
+                        status = 206
+                        headers.append(('Content-Range', 'bytes %s-%s/%s' % (
+                            str(contentrange.start), str(1),
+                            str(len(content_base64)))))
+                    elif contentrange.stop > len(content_base64):
+                        status = 416
+                        mainvideo = ""
+
+                    if status != 416:
+                        mainvideo = mainvideo[
+                                    contentrange.start:contentrange.stop]
+                        headers.append(('Content-Length', len(mainvideo)))
+
                 headers.append(('Accept-Ranges', "bytes"))
-                response = request.make_response(content_base64, headers)
+                headers.append(('access-control-allow-origin', "*"))
+                response = Response(mainvideo, status=status, headers=headers,
+                                    content_type=mimetype)
             if token:
                 response.set_cookie('fileToken', token)
             return response
