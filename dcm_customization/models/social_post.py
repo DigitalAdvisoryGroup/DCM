@@ -196,7 +196,7 @@ class SocialPostBIT(models.Model):
                         push_service.notify_multiple_devices(
                             registration_ids=device_list,
                             message_title=subject, sound="default",
-                            message_body=body, data_message=data_message,
+                            message_body=body,
                             extra_kwargs=extra_kwargs,
                             extra_notification_kwargs=extra_notification_kwargs
                             )
