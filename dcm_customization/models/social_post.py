@@ -53,13 +53,16 @@ class SocialPostBIT(models.Model):
         else:
             self.is_bit_post = False
 
-    def get_post_api(self,partner_id):
+    def get_post_api(self,partner_id=False):
         _logger.info("Get Post Records From mobile partner_id:%s"%partner_id)
         if partner_id:
-            partner_browse = self.env["res.partner"].browse(int(partner_id))
-            posts = self.with_context(lang=partner_browse.lang).search([('social_partner_ids','in',[int(partner_id)]),('state','=','posted')])
-            base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
             data = []
+            base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+            if not self:
+                partner_browse = self.env["res.partner"].browse(int(partner_id))
+                posts = self.with_context(lang=partner_browse.lang).search([('social_partner_ids','in',[int(partner_id)]),('state','=','posted')])
+            else:
+                posts = self
             for post in posts:
                 if post.utm_campaign_id:
                     image_url = url_join(base_url,'/web/myimage/utm.campaign/%s/image_128'%post.utm_campaign_id.id)
@@ -148,24 +151,56 @@ class SocialPostBIT(models.Model):
             for lang in list(set(self.social_partner_ids.mapped("lang"))):
                 partners = self.social_partner_ids.filtered(lambda x: x.lang == lang)
                 body = self.with_context(lang=lang).message
-                device_list = self.env['res.partner.token'].search([('partner_id','in',partners.ids)]).mapped("push_token")
-                if device_list:
-                    extra_kwargs = {}
-                    data_message = {}
-                    if self.image_ids:
-                        for media in self.image_ids:
-                            if media.mimetype.startswith('image'):
-                                base_url = self.env[
-                                    'ir.config_parameter'].sudo().get_param('web.base.url')
-                                image_url = url_join(base_url, '/web/content/%s/%s' % (media.id, media.name))
-                                data_message = {"image": image_url}
-                                extra_kwargs = {"mutable_content": True}
-                                break
-                    push_service = FCMNotification(api_key=self.env.user.company_id.fcm_api_key)
-                    push_service.notify_multiple_devices(registration_ids=device_list,
-                                                         message_title=subject,
-                                                         message_body=body,data_message=data_message,extra_kwargs=extra_kwargs,
-                                                         )
+
+                ios_partner_device_ids = self.env['res.partner.token'].search([('partner_id','in',partners.ids)]).filtered(lambda x: x.device_type == "ios")
+                android_partner_device_ids = self.env['res.partner.token'].search([('partner_id','in',partners.ids)]).filtered(lambda x: x.device_type == "android")
+                if ios_partner_device_ids:
+                    device_list = ios_partner_device_ids.mapped("push_token")
+                    if device_list:
+                        extra_kwargs = {}
+                        data_message = {}
+                        if self.image_ids:
+                            for media in self.image_ids:
+                                if media.mimetype.startswith('image'):
+                                    base_url = self.env[
+                                        'ir.config_parameter'].sudo().get_param('web.base.url')
+                                    image_url = url_join(base_url, '/web/content/%s/%s' % (media.id, media.name))
+                                    data_message = {"image": image_url}
+                                    extra_kwargs = {"mutable_content": True}
+                                    break
+                        push_service = FCMNotification(api_key=self.env.user.company_id.fcm_api_key)
+                        push_service.notify_multiple_devices(registration_ids=device_list,
+                                                             message_title=subject,sound="default",
+                                                             message_body=body,data_message=data_message,extra_kwargs=extra_kwargs
+                                                             )
+                if android_partner_device_ids:
+                    device_list = android_partner_device_ids.mapped("push_token")
+                    if device_list:
+                        extra_kwargs = {}
+                        extra_notification_kwargs = {}
+                        if self.image_ids:
+                            for media in self.image_ids:
+                                if media.mimetype.startswith('image'):
+                                    base_url = self.env[
+                                        'ir.config_parameter'].sudo().get_param(
+                                        'web.base.url')
+                                    image_url = url_join(base_url,
+                                                         '/web/content/%s/%s' % (
+                                                         media.id, media.name))
+                                    extra_kwargs = {"mutable_content": True}
+                                    extra_notification_kwargs = {
+                                        "image": image_url}
+                                    break
+                        push_service = FCMNotification(
+                            api_key=self.env.user.company_id.fcm_api_key)
+                        push_service.notify_multiple_devices(
+                            registration_ids=device_list,
+                            message_title=subject, sound="default",
+                            message_body=body, data_message=data_message,
+                            extra_kwargs=extra_kwargs,
+                            extra_notification_kwargs=extra_notification_kwargs
+                            )
+
 
     @api.depends('live_post_ids.is_bit_post')
     def _compute_stream_posts_count(self):
