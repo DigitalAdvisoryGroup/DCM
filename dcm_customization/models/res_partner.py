@@ -32,9 +32,9 @@ class ResPartner(models.Model):
                 if not partner_token_id:
                     self.env['res.partner.token'].create(
                         {'partner_id': partner_id.id,"push_token": token,"device_type": device_type})
+                partner_token_id.device_type = device_type
                 partner_id.set_otp_partner()
                 partner_id.send_otp_partner()
-                # return partner_id.id
                 base_url = self.env['ir.config_parameter'].sudo().get_param(
                     'web.base.url')
                 image_url = url_join(base_url,'/web/myimage/res.partner/%s/image_128'%partner_id.id)
