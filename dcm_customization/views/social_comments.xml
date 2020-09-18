@@ -8,8 +8,11 @@
                 <sheet>
                     <group>
                         <field name="partner_id"/>
+                        <field name="utm_campaign_id"/>
                         <field name="post_id"/>
+                        <field name="record_type"/>
                         <field name="comment"/>
+                        <field name="rating" />
                     </group>
                 </sheet>
             </form>
@@ -23,8 +26,11 @@
         <field name="arch" type="xml">
             <tree>
                 <field name="partner_id"/>
+                <field name="utm_campaign_id"/>
                 <field name="post_id"/>
+                <field name="record_type"/>
                 <field name="comment"/>
+                <field name="rating" />
             </tree>
         </field>
     </record>
@@ -45,5 +51,5 @@
     </record>
      
     <!-- This Menu Item must have a parent and an action -->
-    <!-- <menuitem id="comments_bit_menu_act" name="Social Comments" parent="" action="comments_model_name_action" sequence=""/> -->
+     <menuitem id="comments_bit_menu_act" name="Social Comments" parent="social.menu_social_configuration" action="comments_model_name_action" sequence="100"/>
 </odoo>

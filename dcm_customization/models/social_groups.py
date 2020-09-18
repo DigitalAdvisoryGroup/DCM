@@ -10,6 +10,6 @@ class SocialPartnerGroups(models.Model):
     _rec_name = "name"
 
     name = fields.Char("Name",required=True)
-    partner_ids = fields.Many2many('res.partner','social_groups_partners',string="Partner",required=True)
+    partner_ids = fields.One2many('res.partner','social_group_id',string="Partner")
 
     

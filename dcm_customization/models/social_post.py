@@ -5,7 +5,7 @@
 import requests
 import base64
 import json
-from odoo import models, api, fields
+from odoo import models, api, fields, _
 from odoo.osv import expression
 from werkzeug.urls import url_join
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
@@ -23,9 +23,14 @@ class SocialPostBIT(models.Model):
     bit_preview = fields.Html('BIT Preview', compute='_compute_bit_preview')
     social_groups_ids = fields.Many2many("social.partner.group","social_groups_post",string="Social Groups")
     social_partner_ids = fields.Many2many("res.partner","social_partner_post",string="Social Partners")
-    like_partner_ids = fields.Many2many("res.partner","social_partner_post_like",string="Likes")
     is_bit_post = fields.Boolean("Is Bit Post?")
     message = fields.Text("Message", required=True, translate=True)
+    share_ids = fields.One2many('social.bit.comments', 'post_id',
+                                string="Shares",
+                                domain=[('record_type','=','share')])
+    comments_ids = fields.One2many('social.bit.comments', 'post_id',
+                                   string="Comments",
+                                   domain=[('record_type','=','comment')])
 
     @api.constrains('image_ids')
     def _check_image_ids_mimetype(self):
@@ -35,12 +40,14 @@ class SocialPostBIT(models.Model):
                     raise UserError(_('Uploaded file does not seem to be a valid image.'))
     
 
-    @api.onchange('social_groups_ids')
+    @api.onchange('social_groups_ids','utm_campaign_id')
     def social_groups(self):
         if self.social_groups_ids:
             partners = []
+            opt_out_users = self.utm_campaign_id.opt_out_partner_ids.ids
             for record in self.social_groups_ids:
                 partners.extend(record.partner_ids.ids) 
+            partners = [p for p in partners if p not in opt_out_users]
             self.social_partner_ids = [(6,0,partners)] 
         else:
             self.social_partner_ids = False
@@ -64,28 +71,20 @@ class SocialPostBIT(models.Model):
             else:
                 posts = self
             for post in posts:
-                if post.utm_campaign_id:
-                    image_url = url_join(base_url,'/web/myimage/utm.campaign/%s/image_128'%post.utm_campaign_id.id)
-                    post_date = post.utm_campaign_id.create_date.strftime(DEFAULT_SERVER_DATETIME_FORMAT)
-                    post_owner = post.utm_campaign_id.user_id.name
-                    post_name = post.utm_campaign_id.name
-                else:
-                    image_url = url_join(base_url,'/web/myimage/res.partner/%s/image_128'%post.create_uid.partner_id.id)
-                    post_date = post.create_date.strftime(DEFAULT_SERVER_DATETIME_FORMAT)
-                    post_owner = post.create_uid.partner_id.name
-                    post_name = post.create_uid.name
-                comments = post.getComments()
-                media_ids = post.getMedia()
+                like = self.env['social.bit.comments'].search_count([('post_id','=',post.id),('record_type','=','like'),('partner_id','=',int(partner_id))])
                 data.append({
                     'id':post.id,
-                    'name':post_name,
-                    'date':post_date,
-                    'like':True if int(partner_id) in post.like_partner_ids.ids else False,
-                    'image':image_url,
+                    'name':post.utm_campaign_id.name,
+                    'date':post.utm_campaign_id and post.utm_campaign_id.create_date.strftime(DEFAULT_SERVER_DATETIME_FORMAT) or post.create_date.strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                    'like':True if like else False,
+                    'image':url_join(base_url,'/web/myimage/utm.campaign/%s/image_128'%post.utm_campaign_id.id),
                     'message':post.message,
-                    'comments':comments,
-                    'media_ids':media_ids,
-                    'post_owner':post_owner
+                    'comments':post.getComments(),
+                    'media_ids':post.getMedia(),
+                    'post_owner':post.utm_campaign_id.user_id.name,
+                    'utm_campaign_id': post.utm_campaign_id.id,
+                    'utm_campaign_required': post.utm_campaign_id.is_mandatory_campaign,
+                    'rating':round(post.utm_campaign_id.avg_rating,2)
                     })
             _logger.info("Get Post Records From mobile records:- \n%s"%pprint.pformat(data))
             return {'data':data}
@@ -96,12 +95,17 @@ class SocialPostBIT(models.Model):
         base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
         media_ids = []
         for media in self.image_ids:
-            image_url = url_join(base_url,'/web/content/%s/%s' % (media.id, media.name))
-            mimetype = 'image'
-            if not media.mimetype.startswith('image'):
-                mimetype = 'video'
+            mimetype = media.mimetype
+            if media.mimetype:
+                mimetype = media.mimetype.split('/')[0]
+                if media.mimetype in ['application/pdf']:
+                    mimetype = "pdf"
+                if media.mimetype in ['vnd.openxmlformats-officedocument.presentationml.presentation']:
+                    mimetype = "ppt"
+                if media.mimetype in ['application/vnd.ms-excel']:
+                    mimetype = "doc"
             media_ids.append({
-                'url': image_url,
+                'url': url_join(base_url,'/web/content/%s/%s' % (media.id, media.name)),
                 'mimetype': mimetype
             })
         return media_ids
@@ -110,7 +114,7 @@ class SocialPostBIT(models.Model):
         base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
         comments = []
         for msg in self.comments_ids:
-            image_url = url_join(base_url,'/web/myimage/res.partner/%s/image_1920'%msg.partner_id.id)
+            image_url = url_join(base_url,'/web/myimage/res.partner/%s/image_128'%msg.partner_id.id)
             comments.append({'comment':msg.comment,
                              'id':msg.id,
                              'author_name':msg.partner_id.name,
@@ -123,18 +127,22 @@ class SocialPostBIT(models.Model):
     def set_post_like(self,partner_id,method):
         _logger.info("set like Post record %s partner_id:%s , method %s"%(self,partner_id,method))
         if partner_id and self:
-            if method == 'like':
-                self.write({'like_partner_ids':[(4,int(partner_id))]})
-            if method == 'dislike':
-                self.write({'like_partner_ids':[(3,int(partner_id))]})
+            existing_record = self.env['social.bit.comments'].search([('post_id','=',self.id),('partner_id','=',int(partner_id)),('record_type','in',['like','dislike'])])
+            if existing_record:
+                existing_record.write({'record_type':method})
+            else:
+                self.env['social.bit.comments'].create({'post_id':self.id,'partner_id':int(partner_id),'record_type':method})
             return True
         else:
             False
     
-    def set_post_delete(self,partner_id):
+    def set_post_delete(self,partner_id, delete_flag="post"):
         _logger.info("set delete Post record %s partner_id:%s "%(self,partner_id))
         if partner_id and self:
-            self.write({'social_partner_ids':[(3,int(partner_id))]})
+            if delete_flag == "post":
+                self.write({'social_partner_ids': [(3, int(partner_id))]})
+            else:
+                self.utm_campaign_id.write({'opt_out_partner_ids':[(4,int(partner_id))]})
             return True    
         else:
             False
@@ -144,62 +152,60 @@ class SocialPostBIT(models.Model):
         self.image_ids.write({'public':True})
         if self.is_bit_post:
             self.send_fcm_push_notification()
+        return res
 
     def send_fcm_push_notification(self):
-        subject = "New Post from Midar"
-        if self.env.user.company_id.fcm_api_key:
-            for lang in list(set(self.social_partner_ids.mapped("lang"))):
-                partners = self.social_partner_ids.filtered(lambda x: x.lang == lang)
-                body = self.with_context(lang=lang).message
-
-                ios_partner_device_ids = self.env['res.partner.token'].search([('partner_id','in',partners.ids)]).filtered(lambda x: x.device_type == "ios")
-                android_partner_device_ids = self.env['res.partner.token'].search([('partner_id','in',partners.ids)]).filtered(lambda x: x.device_type == "android")
-                if ios_partner_device_ids:
-                    device_list = ios_partner_device_ids.mapped("push_token")
-                    if device_list:
-                        extra_kwargs = {}
-                        data_message = {}
-                        if self.image_ids:
-                            for media in self.image_ids:
-                                if media.mimetype.startswith('image'):
-                                    base_url = self.env[
-                                        'ir.config_parameter'].sudo().get_param('web.base.url')
-                                    image_url = url_join(base_url, '/web/content/%s/%s' % (media.id, media.name))
-                                    data_message = {"image": image_url}
-                                    extra_kwargs = {"mutable_content": True}
-                                    break
-                        push_service = FCMNotification(api_key=self.env.user.company_id.fcm_api_key)
-                        push_service.notify_multiple_devices(registration_ids=device_list,
-                                                             message_title=subject,sound="default",
-                                                             message_body=body,data_message=data_message,extra_kwargs=extra_kwargs
-                                                             )
-                if android_partner_device_ids:
-                    device_list = android_partner_device_ids.mapped("push_token")
-                    if device_list:
-                        extra_kwargs = {}
-                        extra_notification_kwargs = {}
-                        if self.image_ids:
-                            for media in self.image_ids:
-                                if media.mimetype.startswith('image'):
-                                    base_url = self.env[
-                                        'ir.config_parameter'].sudo().get_param(
-                                        'web.base.url')
-                                    image_url = url_join(base_url,
-                                                         '/web/content/%s/%s' % (
-                                                         media.id, media.name))
-                                    extra_kwargs = {"mutable_content": True}
-                                    extra_notification_kwargs = {
-                                        "image": image_url}
-                                    break
-                        push_service = FCMNotification(
-                            api_key=self.env.user.company_id.fcm_api_key)
-                        push_service.notify_multiple_devices(
-                            registration_ids=device_list,
-                            message_title=subject, sound="default",
-                            message_body=body,
-                            extra_kwargs=extra_kwargs,
-                            extra_notification_kwargs=extra_notification_kwargs
-                            )
+        if not (self.env.user.company_id.fcm_api_key and self.env.user.company_id.fcm_title_message):
+            raise UserError(_('Please add FCM Server key and Notificaiton Title Message.'))
+        for lang in list(set(self.social_partner_ids.mapped("lang"))):
+            partners = self.social_partner_ids.filtered(lambda x: x.lang == lang)
+            body = self.with_context(lang=lang).message
+            subject = self.env.user.company_id.with_context(lang=lang).fcm_title_message
+            ios_partner_device_ids = self.env['res.partner.token'].search([('partner_id','in',partners.ids)]).filtered(lambda x: x.device_type == "ios")
+            android_partner_device_ids = self.env['res.partner.token'].search([('partner_id','in',partners.ids)]).filtered(lambda x: x.device_type == "android")
+            if ios_partner_device_ids:
+                device_list = ios_partner_device_ids.mapped("push_token")
+                if device_list:
+                    extra_kwargs = {}
+                    data_message = {}
+                    if self.image_ids:
+                        for media in self.image_ids:
+                            if media.mimetype.startswith('image'):
+                                base_url = self.env[
+                                    'ir.config_parameter'].sudo().get_param('web.base.url')
+                                image_url = url_join(base_url, '/web/content/%s/%s' % (media.id, media.name))
+                                data_message = {"image": image_url}
+                                extra_kwargs = {"mutable_content": True}
+                                break
+                    push_service = FCMNotification(api_key=self.env.user.company_id.fcm_api_key)
+                    push_service.notify_multiple_devices(registration_ids=device_list,
+                                                         message_title=subject,sound="default",
+                                                         message_body=body,data_message=data_message,extra_kwargs=extra_kwargs
+                                                         )
+            if android_partner_device_ids:
+                device_list = android_partner_device_ids.mapped("push_token")
+                if device_list:
+                    extra_notification_kwargs = {}
+                    if self.image_ids:
+                        for media in self.image_ids:
+                            if media.mimetype.startswith('image'):
+                                base_url = self.env[
+                                    'ir.config_parameter'].sudo().get_param(
+                                    'web.base.url')
+                                image_url = url_join(base_url,
+                                                     '/web/content/%s/%s' % (
+                                                     media.id, media.name))
+                                extra_notification_kwargs = {
+                                    "image": image_url}
+                                break
+                    push_service = FCMNotification(
+                        api_key=self.env.user.company_id.fcm_api_key)
+                    push_service.notify_multiple_devices(
+                        registration_ids=device_list,
+                        message_title=subject, sound="default",
+                        message_body=body,
+                        extra_notification_kwargs=extra_notification_kwargs
+                        )
 
 
     @api.depends('live_post_ids.is_bit_post')
