@@ -13,8 +13,9 @@ class ResPartner(models.Model):
     _inherit = 'res.partner'
 
     otp_token = fields.Char("OTP Token", copy=False)
+    social_group_id = fields.Many2one('social.partner.group',string="Social Group")
 
-    def get_partner_from_email(self, email, token, lang, device_type=""):
+    def get_partner_from_email(self, email, token, lang, device_type="android"):
         _logger.info("-------------------get partner method email -: %s \n token %s \n lang %s \n device type %s" % (
             email, token, lang,device_type))
         data = []
@@ -104,6 +105,7 @@ class ResPartner(models.Model):
 class ResPartnerToken(models.Model):
     _name = 'res.partner.token'
     _description = "Res Partner Token"
+    _rec_name = "partner_id"
     
     partner_id = fields.Many2one("res.partner","Partner")
     push_token = fields.Char("Firebase Token")

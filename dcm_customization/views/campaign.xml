@@ -1,21 +1,62 @@
 <?xml version='1.0' encoding='utf-8'?>
 <odoo>
-    <data >
+    <data>
         <!-- utm.campaign inherit form view -->
         <record id="utm_campaign_view_id" model="ir.ui.view">
             <field name="name">utm.campaign.inherit.view.form</field>
             <field name="model">utm.campaign</field>
             <field name="inherit_id" ref="utm.utm_campaign_view_form"/>
             <field name="arch" type="xml">
+                <xpath expr="//button[@icon='fa-thumbs-up']" position="replace">
+                    <button name="action_redirect_to_engagement"
+                            type="object" class="oe_stat_button order-5"
+                            icon="fa-thumbs-up"
+                    >
+                        <field name="social_engagement" widget="statinfo"
+                               string="Engagement"/>
+                    </button>
+                </xpath>
                 <xpath expr="//field[@name='name']" position="replace">
                 </xpath>
                 <xpath expr="//group[@id='top-group']" position="before">
-                    <field name="image_1920" widget='image' class="oe_avatar" options='{"preview_image": "image_128"}'/>
+                    <field name="image_1920" widget='image' class="oe_avatar"
+                           options='{"preview_image": "image_128"}'/>
                     <div class="oe_title">
                         <h1>
-                            <field name="name" default_focus="1" placeholder="Name" />
+                            <field name="name" default_focus="1"
+                                   placeholder="Name"/>
                         </h1>
                     </div>
+                </xpath>
+                <xpath expr="//field[@name='tag_ids']" position="after">
+                    <field name="is_mandatory_campaign"/>
+                    <field name="avg_rating" readonly="1"/>
+                </xpath>
+
+                <xpath expr="//notebook" position="inside">
+                    <page string="Opt-out Users" class="order-3">
+                        <field name="opt_out_partner_ids" readonly="1"
+                               mode="kanban" widget="one2many" nolabel="1"
+                               options="{'no_open':1}">
+                        </field>
+                    </page>
+                </xpath>
+
+
+            </field>
+        </record>
+
+        <!-- utm.campaign inherit form view -->
+        <record id="view_id" model="ir.ui.view">
+            <field name="name">utm.campaign.inherit.view.form</field>
+            <field name="model">utm.campaign</field>
+            <field name="inherit_id"
+                   ref="mass_mailing.utm_campaign_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//button[@name='action_duplicate']"
+                       position="after">
+                    <button name="action_statistics" type="object"
+                            string="Statistics"/>
                 </xpath>
             </field>
         </record>

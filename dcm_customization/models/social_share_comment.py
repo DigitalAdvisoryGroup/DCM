@@ -1,13 +1,5 @@
 from odoo import models, api, fields
 
-class SocialShare(models.Model):
-    _name = "social.bit.share"
-    _description = "Social Bit Share"
-    _rec_name = "partner_id"
-
-    partner_id = fields.Many2one("res.partner",string="Partner")
-    post_id  = fields.Many2one("social.post",string="Social Post")
-
 class SocialBitComments(models.Model):
     _name = 'social.bit.comments'
     _description = "Social Bit Comments"
@@ -16,11 +8,7 @@ class SocialBitComments(models.Model):
 
     partner_id = fields.Many2one("res.partner",string="Partner")
     post_id  = fields.Many2one("social.post",string="Social Post")
+    utm_campaign_id = fields.Many2one(related="post_id.utm_campaign_id", string="Campaign", store=True)
     comment = fields.Text("Comments", translate=True)
-
-class SocialPost(models.Model):
-    _inherit = 'social.post'
-
-    share_ids = fields.One2many('social.bit.share','post_id',string="Shares")
-    comments_ids = fields.One2many('social.bit.comments','post_id',string="Comments")
-    
+    record_type = fields.Selection([('like','Like'),('dislike','Dislike'),('comment','Comment'),('share','Share'),('rating','Rating')],string="Type", default="comment")
+    rating = fields.Integer("Rating")

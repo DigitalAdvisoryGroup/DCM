@@ -1,6 +1,5 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_social_partner_group,access_social_partner_group,model_social_partner_group,base.group_user,1,1,1,1
-access_social_bit_share,access_social_bit_share,model_social_bit_share,base.group_user,1,1,1,1
 access_social_bit_comments,access_social_bit_comments,model_social_bit_comments,base.group_user,1,1,1,1
 access_social_visitor_designer,access_website_visitor_social,website.model_website_visitor,dcm_customization.group_social_visitor_access,1,1,1,0
 access_res_partner_token,access_res_partner_token,model_res_partner_token,base.group_user,1,1,1,1

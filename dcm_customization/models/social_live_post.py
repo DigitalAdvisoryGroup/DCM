@@ -20,7 +20,7 @@ class SocialLivePostBIT(models.Model):
         for account in accounts:
             existing_live_posts = self.sudo().search([('is_bit_post','=',True)])
             for post in existing_live_posts:
-                likes_count = len(post.post_id.like_partner_ids)
+                likes_count = self.env['social.bit.comments'].search_count([('post_id','=',post.post_id.id),('record_type','=','like')])
                 shares_count = len(post.post_id.share_ids)
                 comments_count = len(post.post_id.comments_ids)
                 post.write({

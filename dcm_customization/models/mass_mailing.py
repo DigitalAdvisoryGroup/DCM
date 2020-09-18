@@ -30,3 +30,9 @@ class MassMailings(models.Model):
             if record.social_groups_id:
                 record.is_social_group = True
 
+    
+    def action_statistics(self):
+        action = self.env['ir.actions.act_window'].for_xml_id('mass_mailing', 'mailing_trace_action')
+        action['domain'] = [('mass_mailing_id','=',self.id)]
+        return action
+

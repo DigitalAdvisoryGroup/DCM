@@ -31,6 +31,8 @@ Description
         "views/social_bit_templates.xml",
         "views/social_post_views.xml",
         "views/social_stream_post_views.xml",
+        "views/res_partner.xml",
+        "views/res_partner_token.xml",
         "views/social_groups_view.xml",
         "views/res_config_settings_view.xml",
         "views/portal_views.xml",

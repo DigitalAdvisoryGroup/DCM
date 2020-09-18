@@ -24,10 +24,10 @@ class SocialStreamPostBIT(models.Model):
         for record in self:
             record.image_ids = record.post_id.image_ids
 
-    @api.depends('post_id.like_partner_ids','post_id.comments_ids','post_id.share_ids')
+    @api.depends('post_id.comments_ids','post_id.share_ids')
     def compute_bit_post_like(self):
         for record in self:
-            record.bit_post_likes = len(record.post_id.like_partner_ids)
+            record.bit_post_likes = self.env['social.bit.comments'].search_count([('post_id','=',record.post_id.id),('record_type','=','like')])
             record.bit_post_comments = len(record.post_id.comments_ids)
             record.bit_post_share = len(record.post_id.share_ids)
             

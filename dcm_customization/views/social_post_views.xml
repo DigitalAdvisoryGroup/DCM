@@ -18,16 +18,13 @@
             <xpath expr="//field[@name='scheduled_date']" position="after">
                 <field name="social_groups_ids" widget="many2many_tags"  attrs="{'invisible':[('is_bit_post','=',False)],'required':[('is_bit_post','=',True)],'readonly':[('state','!=','draft')]}"/>
                 <field name="social_partner_ids" widget="many2many_tags" invisible="1" />
-                <field name="like_partner_ids" widget="many2many_tags" invisible="1" />
-                <field name="share_ids" widget="many2many_tags" invisible="1" />
-                <field name="comments_ids" invisible="1" >
-                    <tree>
-                        <field name="partner_id" />
-                        <field name="comment" />
-                    </tree>
-                </field>
                 <field name="is_bit_post" invisible="1"/>
             </xpath>
+             <xpath expr="//field[@name='utm_campaign_id']" position="attributes">
+                <attribute name="required">1</attribute>
+            </xpath>
+
+            
         </field>
     </record>
 
@@ -37,13 +34,8 @@
         <field name="inherit_id" ref="social.social_post_view_kanban"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='engagement']" position="after">
-                <field name="like_partner_ids" />
                 <field name="is_bit_post" />
             </xpath>
-            <!-- <xpath expr="//span[@t-esc='record.engagement.raw_value']" position="replace">
-                <span t-esc="record.like_partner_ids.length" t-if="record.is_bit_post.raw_value"/>
-                <span t-esc="engagement" t-if="!record.is_bit_post.raw_value"/>
-            </xpath> -->
             <xpath expr="//div[@t-if='has_attachments']" position="replace">
                 <div t-if="has_attachments and !record.is_bit_post"
                     class="o_social_stream_post_image d-flex mx-n3 overflow-hidden"
