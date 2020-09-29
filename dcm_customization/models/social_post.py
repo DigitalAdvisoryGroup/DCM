@@ -47,7 +47,7 @@ class SocialPostBIT(models.Model):
         if self.social_groups_ids or self.recipients_ids:
             partners = []
             # opt_out_users = self.utm_campaign_id.opt_out_partner_ids.ids
-            partners = list(set(self.social_groups_ids.mapped('child_ids').mapped('partner_ids').ids + self.recipients_ids.ids))
+            partners = list(set(self.social_groups_ids.mapped('partner_ids').ids +self.social_groups_ids.mapped('child_ids').mapped('partner_ids').ids + self.recipients_ids.ids))
 
             # partners = [p for p in partners if p not in opt_out_users]
             self.social_partner_ids = [(6,0,partners)] 
@@ -122,7 +122,7 @@ class SocialPostBIT(models.Model):
     def getComments(self,partner_id):
         base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
         comments = []
-        for msg in self.comments_ids:
+        for msg in self.comments_ids.filtered(lambda a:not a.parent_id):
             image_url = url_join(base_url,'/web/myimage/res.partner/%s/image_128'%msg.partner_id.id)
             child_comments = []
             for c_comment in msg.child_ids:
@@ -150,8 +150,8 @@ class SocialPostBIT(models.Model):
                             })
         return comments
     
-    def set_post_like(self,partner_id,method):
-        _logger.info("set like Post record %s partner_id:%s , method %s"%(self,partner_id,method))
+    def set_post_like(self,partner_id):
+        _logger.info("set like Post record %s partner_id:%s"%(self,partner_id))
         if partner_id and self:
             existing_record = self.env['social.bit.comments'].search(
                 [('post_id', '=', self.id),
@@ -167,7 +167,7 @@ class SocialPostBIT(models.Model):
         return False
 
     def set_post_dislike(self,partner_id):
-        _logger.info("set Dislike Post record %s partner_id:%s , method %s"%(self,partner_id))
+        _logger.info("set Dislike Post record %s partner_id:%s"%(self,partner_id))
         if partner_id and self:
             existing_record = self.env['social.bit.comments'].search([('post_id','=',self.id),('partner_id','=',int(partner_id)),('record_type','=','dislike')])
             if existing_record:
