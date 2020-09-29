@@ -16,8 +16,9 @@
                 <attribute name="class">o_social_post_message_wrapper o_social_post_message_wrapper_custome</attribute>
             </xpath>
             <xpath expr="//field[@name='scheduled_date']" position="after">
-                <field name="social_groups_ids" widget="many2many_tags"  attrs="{'invisible':[('is_bit_post','=',False)],'required':[('is_bit_post','=',True)],'readonly':[('state','!=','draft')]}"/>
-                <field name="social_partner_ids" widget="many2many_tags" invisible="1" />
+                <field name="social_groups_ids" widget="many2many_tags_open"  attrs="{'invisible':[('is_bit_post','=',False)],'required':[('is_bit_post','=',True)],'readonly':[('state','!=','draft')]}"/>
+                <field name="recipients_ids" widget="many2many_tags" attrs="{'readonly':[('state','!=','draft')]}"/>
+                <field name="social_partner_ids"  invisible="1" />
                 <field name="is_bit_post" invisible="1"/>
             </xpath>
              <xpath expr="//field[@name='utm_campaign_id']" position="attributes">

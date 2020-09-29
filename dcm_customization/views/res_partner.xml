@@ -9,7 +9,8 @@
             <field name="arch" type="xml">
                 <!-- Add your xpath here -->
                 <xpath expr="//field[@name='category_id']" position="after">
-                    <field name="social_group_id" />
+                    <field name="social_group_id" widget="many2many_tags"/>
+                    <field name="change_connection" />
                 </xpath>
             </field>
         </record>

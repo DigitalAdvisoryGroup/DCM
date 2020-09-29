@@ -22,7 +22,7 @@ Description
     'author': "Digital Advisory Group GmbH, Candidroot Solutions Pvt. Ltd.",
     'website': "https://www.digitaladvisorygroup.io/",
     'category': 'Social',
-    'depends': ['social','website','portal','mass_mailing'],
+    'depends': ['social','website','portal','mass_mailing','many2many_tags_click'],
     'data': [
         'security/security.xml',
         "security/ir.model.access.csv",

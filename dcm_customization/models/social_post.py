@@ -18,6 +18,7 @@ from odoo.exceptions import UserError
 
 class SocialPostBIT(models.Model):
     _inherit = 'social.post'
+    _rec_name = ""
 
     display_bit_preview = fields.Boolean('Display BIT Preview', compute='_compute_display_bit_preview')
     bit_preview = fields.Html('BIT Preview', compute='_compute_bit_preview')
@@ -31,6 +32,7 @@ class SocialPostBIT(models.Model):
     comments_ids = fields.One2many('social.bit.comments', 'post_id',
                                    string="Comments",
                                    domain=[('record_type','=','comment')])
+    recipients_ids = fields.Many2many('res.partner',string="Recipients")
 
     @api.constrains('image_ids')
     def _check_image_ids_mimetype(self):
@@ -40,17 +42,19 @@ class SocialPostBIT(models.Model):
                     raise UserError(_('Uploaded file does not seem to be a valid image.'))
     
 
-    @api.onchange('social_groups_ids','utm_campaign_id')
+    @api.onchange('social_groups_ids','utm_campaign_id','recipients_ids')
     def social_groups(self):
-        if self.social_groups_ids:
+        if self.social_groups_ids or self.recipients_ids:
             partners = []
-            opt_out_users = self.utm_campaign_id.opt_out_partner_ids.ids
-            for record in self.social_groups_ids:
-                partners.extend(record.partner_ids.ids) 
-            partners = [p for p in partners if p not in opt_out_users]
+            # opt_out_users = self.utm_campaign_id.opt_out_partner_ids.ids
+            partners = list(set(self.social_groups_ids.mapped('child_ids').mapped('partner_ids').ids + self.recipients_ids.ids))
+
+            # partners = [p for p in partners if p not in opt_out_users]
             self.social_partner_ids = [(6,0,partners)] 
+            return {'domain':{'recipients_ids':[('id','not in',self.social_groups_ids.mapped('child_ids').mapped('partner_ids').ids)]}}
         else:
             self.social_partner_ids = False
+            return {}
 
     @api.onchange('account_ids')
     def social_account(self):
@@ -60,31 +64,36 @@ class SocialPostBIT(models.Model):
         else:
             self.is_bit_post = False
 
-    def get_post_api(self,partner_id=False):
+    def get_post_api(self,partner_id=False, limit=None,offset=0):
         _logger.info("Get Post Records From mobile partner_id:%s"%partner_id)
+        _logger.info("post limit:%s"%limit)
+        _logger.info("post offset:%s"%offset)
         if partner_id:
             data = []
             base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
             if not self:
                 partner_browse = self.env["res.partner"].browse(int(partner_id))
-                posts = self.with_context(lang=partner_browse.lang).search([('social_partner_ids','in',[int(partner_id)]),('state','=','posted')])
+                posts = self.with_context(lang=partner_browse.lang).search([('social_partner_ids','in',[int(partner_id)]),('state','=','posted'),('utm_campaign_id.stage_id.is_active','=',True)], limit=limit,offset=offset)
+                _logger.info("------post---------%s",posts)
             else:
                 posts = self
             for post in posts:
                 like = self.env['social.bit.comments'].search_count([('post_id','=',post.id),('record_type','=','like'),('partner_id','=',int(partner_id))])
+                dislike = self.env['social.bit.comments'].search_count([('post_id','=',post.id),('record_type','=','dislike'),('partner_id','=',int(partner_id))])
                 data.append({
                     'id':post.id,
                     'name':post.utm_campaign_id.name,
                     'date':post.utm_campaign_id and post.utm_campaign_id.create_date.strftime(DEFAULT_SERVER_DATETIME_FORMAT) or post.create_date.strftime(DEFAULT_SERVER_DATETIME_FORMAT),
                     'like':True if like else False,
+                    'dislike':True if dislike else False,
                     'image':url_join(base_url,'/web/myimage/utm.campaign/%s/image_128'%post.utm_campaign_id.id),
                     'message':post.message,
-                    'comments':post.getComments(),
+                    'comments':post.getComments(partner_id),
                     'media_ids':post.getMedia(),
                     'post_owner':post.utm_campaign_id.user_id.name,
                     'utm_campaign_id': post.utm_campaign_id.id,
                     'utm_campaign_required': post.utm_campaign_id.is_mandatory_campaign,
-                    'rating':round(post.utm_campaign_id.avg_rating,2)
+                    'rating':round(post.utm_campaign_id.avg_rating,1)
                     })
             _logger.info("Get Post Records From mobile records:- \n%s"%pprint.pformat(data))
             return {'data':data}
@@ -110,31 +119,63 @@ class SocialPostBIT(models.Model):
             })
         return media_ids
     
-    def getComments(self):
+    def getComments(self,partner_id):
         base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
         comments = []
         for msg in self.comments_ids:
             image_url = url_join(base_url,'/web/myimage/res.partner/%s/image_128'%msg.partner_id.id)
+            child_comments = []
+            for c_comment in msg.child_ids:
+                c_image_url = url_join(base_url,'/web/myimage/res.partner/%s/image_128'%msg.partner_id.id)
+                child_comments.append({'comment':c_comment.comment,
+                             'id':c_comment.id,
+                             'author_name':c_comment.partner_id.name,
+                             'author_image':c_image_url,
+                             'partner_id':c_comment.partner_id.id,
+                             'date':c_comment.create_date.strftime(DEFAULT_SERVER_DATETIME_FORMAT)
+                            })
+
             comments.append({'comment':msg.comment,
                              'id':msg.id,
                              'author_name':msg.partner_id.name,
                              'author_image':image_url,
                              'partner_id':msg.partner_id.id,
-                             'date':msg.create_date.strftime(DEFAULT_SERVER_DATETIME_FORMAT)
+                             'date':msg.create_date.strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                             'child_comments':child_comments,
+                             'replay_counter':len(child_comments),
+                             'like_counter':len(msg.child_comlike_ids),
+                             'dislike_counter':len(msg.child_comdislike_ids),
+                             'comment_like':True if msg.child_comlike_ids.filtered(lambda a:a.partner_id.id == int(partner_id)) else False,
+                             'comment_dislike':True if msg.child_comdislike_ids.filtered(lambda a:a.partner_id.id == int(partner_id)) else False
                             })
         return comments
     
     def set_post_like(self,partner_id,method):
         _logger.info("set like Post record %s partner_id:%s , method %s"%(self,partner_id,method))
         if partner_id and self:
-            existing_record = self.env['social.bit.comments'].search([('post_id','=',self.id),('partner_id','=',int(partner_id)),('record_type','in',['like','dislike'])])
+            existing_record = self.env['social.bit.comments'].search(
+                [('post_id', '=', self.id),
+                 ('partner_id', '=', int(partner_id)),
+                 ('record_type', '=', 'like')])
             if existing_record:
-                existing_record.write({'record_type':method})
+                existing_record.unlink()
             else:
-                self.env['social.bit.comments'].create({'post_id':self.id,'partner_id':int(partner_id),'record_type':method})
+                self.env['social.bit.comments'].create(
+                    {'post_id': self.id, 'partner_id': int(partner_id),
+                     'record_type': "like"})
             return True
-        else:
-            False
+        return False
+
+    def set_post_dislike(self,partner_id):
+        _logger.info("set Dislike Post record %s partner_id:%s , method %s"%(self,partner_id))
+        if partner_id and self:
+            existing_record = self.env['social.bit.comments'].search([('post_id','=',self.id),('partner_id','=',int(partner_id)),('record_type','=','dislike')])
+            if existing_record:
+                existing_record.unlink()
+            else:
+                self.env['social.bit.comments'].create({'post_id':self.id,'partner_id':int(partner_id),'record_type':"dislike"})
+            return True
+        return False
     
     def set_post_delete(self,partner_id, delete_flag="post"):
         _logger.info("set delete Post record %s partner_id:%s "%(self,partner_id))
