@@ -33,14 +33,14 @@
                     <field name="avg_rating" readonly="1"/>
                 </xpath>
 
-                <xpath expr="//notebook" position="inside">
+                <!-- <xpath expr="//notebook" position="inside">
                     <page string="Opt-out Users" class="order-3">
                         <field name="opt_out_partner_ids" readonly="1"
                                mode="kanban" widget="one2many" nolabel="1"
                                options="{'no_open':1}">
                         </field>
                     </page>
-                </xpath>
+                </xpath> -->
 
 
             </field>
@@ -57,6 +57,20 @@
                        position="after">
                     <button name="action_statistics" type="object"
                             string="Statistics"/>
+                </xpath>
+            </field>
+        </record>
+
+
+        <!-- model.name inherit tree view -->
+        <record id="utm_stage_tree_inherit" model="ir.ui.view">
+            <field name="name">utm.stage.inherit.view.tree</field>
+            <field name="model">utm.stage</field>
+            <field name="inherit_id" ref="utm.utm_stage_view_tree"/>
+            <field name="arch" type="xml">
+                <!-- Add your xpath here -->
+                <xpath expr="//field[@name='name']" position="after">
+                    <field name="is_active"/>
                 </xpath>
             </field>
         </record>

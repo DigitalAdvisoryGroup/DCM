@@ -13,14 +13,15 @@ class ResPartner(models.Model):
     _inherit = 'res.partner'
 
     otp_token = fields.Char("OTP Token", copy=False)
-    social_group_id = fields.Many2one('social.partner.group',string="Social Group")
+    social_group_id = fields.Many2many('social.partner.group','social_group_partner_rel','partner_id','social_group_id',string="Social Group")
+    change_connection = fields.Boolean("Change Connection")
 
     def get_partner_from_email(self, email, token, lang, device_type="android"):
         _logger.info("-------------------get partner method email -: %s \n token %s \n lang %s \n device type %s" % (
             email, token, lang,device_type))
         data = []
         if email:
-            partner_id = self.search([('email', '=', email)])
+            partner_id = self.search([('email', '=', email.lower())])
             if partner_id:
                 if lang:
                     lang_id = self.env['res.lang']._lang_get(lang)
@@ -51,6 +52,7 @@ class ResPartner(models.Model):
                     'country_id': partner_id.country_id and partner_id.country_id.name or '',
                     'zip': partner_id.zip,
                     'image_1920': image_url,
+                    'change_connection':partner_id.change_connection
                 })
                 return {'data': data}
         return {'data': data}
@@ -88,7 +90,7 @@ class ResPartner(models.Model):
     def get_partner_otp_verify(self,email,otp):
         _logger.info("-------------------get_partner_otp_verify -: %s \n otp %s"%(email,otp))
         if otp:
-            partner_id = self.search([('email','=',email),("otp_token","=",otp)])
+            partner_id = self.search([('email','=',email.lower()),("otp_token","=",otp)])
             if partner_id:
                 return True
         return False
@@ -100,7 +102,7 @@ class ResPartner(models.Model):
                 partner_device_id.unlink()
             return True
         return False
-
+    
 
 class ResPartnerToken(models.Model):
     _name = 'res.partner.token'
@@ -112,6 +114,12 @@ class ResPartnerToken(models.Model):
     device_type = fields.Selection([("ios","Apple"),("android","Android")],string="Device Type", default="android")
 
 
+class Resusers(models.Model):
+    _inherit = 'res.users'
+
+    def get_privacy_policy_url(self):
+        print("self.company_id",self.company_id)
+        return {'privacy_policy_url':self.company_id.privacy_policy_url or ""}
 
 
 

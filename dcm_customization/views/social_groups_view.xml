@@ -7,7 +7,7 @@
         <field name="arch" type="xml">
             <tree>
                 <field name="name" />
-                <field name="partner_ids" widget="many2many_tags"/>
+                <field name="partner_ids" />
             </tree>
         </field>
     </record>
@@ -19,9 +19,21 @@
         <field name="arch" type="xml">
             <form string="">
                 <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button order-4" name="action_subscriber_list" type="object" icon="fa-user" attrs="{'invisible':[('child_ids','=',False)]}">
+                            <field name="child_total_count" string="Child Subscriber" widget="statinfo"/>
+                        </button>
+                        <button class="oe_stat_button order-4" name="action_subscriber_list_total" type="object" icon="fa-user">
+                            <field name="total_count" string="Total Subscriber" widget="statinfo"/>
+                        </button>
+                    </div>
                     <group>
                         <field name="name" />
-                        <field name="partner_ids" widget="many2many_tags"/>
+                        <field name="id" invisible="1"/>
+                        <field name="parent_id" domain="[('parent_id','=',False),('id','!=',id)]"/>
+                        <field name="partner_ids" />
+                        <field name="child_ids" invisible="1"/>
+                        <field name="parent_id" invisible="1"/>
                     </group>
                 </sheet>
             </form>

@@ -11,6 +11,10 @@ class Campaign(models.Model):
     is_mandatory_campaign = fields.Boolean("Is Mandatory Campaign?")
     opt_out_partner_ids = fields.Many2many('res.partner','res_partner_opt_out',string="Opt Out Users")
     rating_ids = fields.One2many("social.bit.comments",'utm_campaign_id',string="Rating",domain=[('record_type','=','rating')])
+    comments_ids = fields.One2many("social.bit.comments",'utm_campaign_id',string="Comments",domain=[('record_type','=','comment')])
+    like_ids = fields.One2many("social.bit.comments",'utm_campaign_id',string="Likes",domain=[('record_type','=','like')])
+    dislikes_ids = fields.One2many("social.bit.comments",'utm_campaign_id',string="Dislikes",domain=[('record_type','=','dislike')])
+    share_ids = fields.One2many("social.bit.comments",'utm_campaign_id',string="Shares",domain=[('record_type','=','share')])
     avg_rating = fields.Float("Avg Rating",compute="compute_rating",store=True)
 
     @api.depends('rating_ids')
@@ -39,6 +43,7 @@ class Campaign(models.Model):
                 return {'data': data}
         else:
             return {'data': []}
+    
 
     def do_subscribe_campaign(self, partner_id):
         if self:
@@ -53,3 +58,35 @@ class Campaign(models.Model):
         }
         return action
 
+    def campaign_rating(self,partner_id,rating,comment):
+        if self and partner_id:
+            partner_rating = self.env['social.bit.comments'].search([('partner_id','=',int(partner_id)),('utm_campaign_id','=',self.id),('record_type','=','rating')],limit=1)
+            if partner_rating:
+                partner_rating.write({'rating':rating,'comment':comment})
+            else:
+                self.env['social.bit.comments'].create({'utm_campaign_id':self.id,'rating':rating,'comment':comment})
+            return True
+        return False
+
+    def get_campaign_details(self,partner_id):
+        if self:
+            partner_rating = self.env['social.bit.comments'].search([('partner_id','=',int(partner_id)),('utm_campaign_id','=',self.id),('record_type','=','rating')],limit=1)
+            return {'data':[{
+                    'create_date':self.create_date,
+                    'responsible':self.user_id.name,
+                    'like_count':len(self.like_ids),
+                    'dislike_count':len(self.dislikes_ids),
+                    'comments_count':len(self.comments_ids),
+                    'shares_count':len(self.share_ids),
+                    'mailing_count':len(self.mailing_mail_ids),
+                    'post_count':len(self.social_post_ids),
+                    'rating_count':len(self.rating_ids),
+                    'avg_rating':round(self.avg_rating,1),
+                    'my_rating':round(partner_rating.rating,1) if partner_rating else 0.0,
+                 }]}
+        return {'data':[]}
+
+class UTMStage(models.Model):
+    _inherit = 'utm.stage'
+
+    is_active = fields.Boolean("Is Active State?")
