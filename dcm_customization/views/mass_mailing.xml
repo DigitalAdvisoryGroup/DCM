@@ -11,7 +11,7 @@
                 <label for="mailing_model_id" string="Recipients" attrs="{'invisible':[('is_social_group','=',True)]}"/>
             </xpath>
             <xpath expr="//field[@name='subject']" position="after">
-                <field name="social_groups_id" widget="many2many_tags" attrs="{'readonly': [('state', 'in', ('sending', 'done'))]}"/>
+                <field name="social_groups_id" widget="many2many_tags_open" attrs="{'readonly': [('state', 'in', ('sending', 'done'))]}"/>
                 <field name="is_social_group" invisible="1"/>
             </xpath>
             <xpath expr="//div[@name='mailing_model_id_container']" position="replace" >

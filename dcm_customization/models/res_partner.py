@@ -102,6 +102,30 @@ class ResPartner(models.Model):
                 partner_device_id.unlink()
             return True
         return False
+
+
+    def get_partner_profile_data(self):
+        data = []
+        if self:
+            base_url = self.env['ir.config_parameter'].sudo().get_param(
+                'web.base.url')
+            image_url = url_join(base_url,
+                                 '/web/myimage/res.partner/%s/image_128' % self.id)
+            data.append({
+                'id': self.id,
+                'name': self.name,
+                'email': self.email,
+                'street': self.street,
+                'street2': self.street2,
+                'mobile': self.mobile,
+                'city': self.city,
+                'state_id': self.state_id and self.state_id.name or '',
+                'country_id': self.country_id and self.country_id.name or '',
+                'zip': self.zip,
+                'image_1920': image_url,
+                'change_connection': self.change_connection
+            })
+        return {'data': data}
     
 
 class ResPartnerToken(models.Model):
