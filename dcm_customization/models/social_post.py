@@ -126,7 +126,7 @@ class SocialPostBIT(models.Model):
             image_url = url_join(base_url,'/web/myimage/res.partner/%s/image_128'%msg.partner_id.id)
             child_comments = []
             for c_comment in msg.child_ids:
-                c_image_url = url_join(base_url,'/web/myimage/res.partner/%s/image_128'%msg.partner_id.id)
+                c_image_url = url_join(base_url,'/web/myimage/res.partner/%s/image_128'%c_comment.partner_id.id)
                 child_comments.append({'comment':c_comment.comment,
                              'id':c_comment.id,
                              'author_name':c_comment.partner_id.name,
@@ -182,6 +182,10 @@ class SocialPostBIT(models.Model):
         if partner_id and self:
             if delete_flag == "post":
                 self.write({'social_partner_ids': [(3, int(partner_id))]})
+                vals = {"partner_id": int(partner_id),
+                        "post_id": self.id,
+                        "record_type": "post_delete"}
+                self.env["social.bit.comments"].create(vals)
             else:
                 self.utm_campaign_id.write({'opt_out_partner_ids':[(4,int(partner_id))]})
             return True    

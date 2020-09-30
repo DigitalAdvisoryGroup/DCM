@@ -13,7 +13,7 @@ class SocialBitComments(models.Model):
     post_id  = fields.Many2one("social.post",string="Social Post")
     utm_campaign_id = fields.Many2one('utm.campaign',related=False, string="Campaign", store=True)
     comment = fields.Text("Comments")
-    record_type = fields.Selection([('com_like','Comment Like'),('com_dislike','Comment Dislike'),('like','Like'),('dislike','Dislike'),('comment','Comment'),('share','Share'),('rating','Rating')],string="Type", default="comment")
+    record_type = fields.Selection([('com_like','Comment Like'),('com_dislike','Comment Dislike'),('like','Like'),('dislike','Dislike'),('comment','Comment'),('share','Share'),('rating','Rating'),("post_delete","Post Delete")],string="Type", default="comment")
     rating = fields.Integer("Rating")
     parent_id = fields.Many2one('social.bit.comments',string="Parent")
     child_ids = fields.One2many('social.bit.comments','parent_id',string="Childs",domain=[('record_type','=','comment')])
