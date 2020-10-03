@@ -118,7 +118,7 @@ class SocialPostBIT(models.Model):
                 'mimetype': mimetype
             })
         return media_ids
-    
+
     def getComments(self,partner_id):
         base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
         comments = []
@@ -132,6 +132,7 @@ class SocialPostBIT(models.Model):
                              'author_name':c_comment.partner_id.name,
                              'author_image':c_image_url,
                              'partner_id':c_comment.partner_id.id,
+                             'media_ids': c_comment.getCommentMedia(),
                              'date':c_comment.create_date.strftime(DEFAULT_SERVER_DATETIME_FORMAT)
                             })
 
@@ -143,6 +144,7 @@ class SocialPostBIT(models.Model):
                              'date':msg.create_date.strftime(DEFAULT_SERVER_DATETIME_FORMAT),
                              'child_comments':child_comments,
                              'replay_counter':len(child_comments),
+                             'media_ids': msg.getCommentMedia(),
                              'like_counter':len(msg.child_comlike_ids),
                              'dislike_counter':len(msg.child_comdislike_ids),
                              'comment_like':True if msg.child_comlike_ids.filtered(lambda a:a.partner_id.id == int(partner_id)) else False,

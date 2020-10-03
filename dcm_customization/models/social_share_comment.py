@@ -1,5 +1,7 @@
+
 from odoo import models, api, fields
 from pyfcm import FCMNotification
+from werkzeug.urls import url_join
 import logging
 _logger = logging.getLogger(__name__)
 
@@ -19,7 +21,7 @@ class SocialBitComments(models.Model):
     child_ids = fields.One2many('social.bit.comments','parent_id',string="Childs",domain=[('record_type','=','comment')])
     child_comlike_ids = fields.One2many('social.bit.comments','parent_id',string="Comment Like",domain=[('record_type','=','com_like')])
     child_comdislike_ids = fields.One2many('social.bit.comments','parent_id',string="Comment DisLike",domain=[('record_type','=','com_dislike')])
-
+    image_ids = fields.Many2many('ir.attachment', string='Attach Images')
 
     @api.model
     def create(self, vals):
@@ -27,7 +29,21 @@ class SocialBitComments(models.Model):
             post_id = self.env['social.post'].browse(vals.get('post_id'))
             if post_id:
                 vals['utm_campaign_id'] = post_id.utm_campaign_id.id
+        filename = vals.pop("filename")
+        file_content = vals.pop("content")
+        _logger.info("-----comment-------filename------%s-",filename)
         res = super(SocialBitComments,self).create(vals)
+        if filename and file_content:
+            attachment_id = self.env['ir.attachment'].create({
+                'name': filename,
+                'res_id': res.id,
+                'res_model': res._name,
+                'datas': file_content,
+                'type': 'binary',
+                'public': True
+            })
+            if attachment_id:
+                res.image_ids = attachment_id.ids
         if res.parent_id and res.parent_id.record_type == 'comment' and res.record_type == 'comment':
             if (self.env.user.company_id.fcm_api_key and self.env.user.company_id.fcm_title_message):
                 body = res.comment
@@ -41,3 +57,22 @@ class SocialBitComments(models.Model):
                                                          message_body=body
                                                          )
         return res
+
+    def getCommentMedia(self):
+        base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+        media_ids = []
+        for media in self.image_ids:
+            mimetype = media.mimetype
+            if media.mimetype:
+                mimetype = media.mimetype.split('/')[0]
+                if media.mimetype in ['application/pdf']:
+                    mimetype = "pdf"
+                if media.mimetype in ['vnd.openxmlformats-officedocument.presentationml.presentation']:
+                    mimetype = "ppt"
+                if media.mimetype in ['application/vnd.ms-excel']:
+                    mimetype = "doc"
+            media_ids.append({
+                'url': url_join(base_url,'/web/content/%s/%s' % (media.id, media.name)),
+                'mimetype': mimetype
+            })
+        return media_ids
