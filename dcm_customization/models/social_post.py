@@ -93,7 +93,8 @@ class SocialPostBIT(models.Model):
                     'post_owner':post.utm_campaign_id.user_id.name,
                     'utm_campaign_id': post.utm_campaign_id.id,
                     'utm_campaign_required': post.utm_campaign_id.is_mandatory_campaign,
-                    'rating':round(post.utm_campaign_id.avg_rating,1)
+                    'rating':round(post.utm_campaign_id.avg_rating,1),
+                    'upload_limit': self.env.user.company_id.upload_limit
                     })
             _logger.info("Get Post Records From mobile records:- \n%s"%pprint.pformat(data))
             return {'data':data}

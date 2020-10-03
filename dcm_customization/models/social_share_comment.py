@@ -47,7 +47,7 @@ class SocialBitComments(models.Model):
         if res.parent_id and res.parent_id.record_type == 'comment' and res.record_type == 'comment':
             if (self.env.user.company_id.fcm_api_key and self.env.user.company_id.fcm_title_message):
                 body = res.comment
-                # subject = self.env.user.company_id.with_context(lang=res.parent_id.partner_id.lang).fcm_title_message
+                # subject = self.env.user.company_id.with_context(lang=res.parent_id.partner_id.lang).fcm_reply_title_message
                 subject = "New Reply From %s"%(res.partner_id.name)
                 device_list = self.env['res.partner.token'].search([('partner_id','=',res.parent_id.partner_id.id)]).mapped("push_token")
                 if device_list:
