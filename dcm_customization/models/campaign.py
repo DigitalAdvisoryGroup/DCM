@@ -74,6 +74,7 @@ class Campaign(models.Model):
             return {'data':[{
                     'create_date':self.create_date,
                     'responsible':self.user_id.name,
+                    'responsible_partner_id':self.user_id.partner_id.id,
                     'like_count':len(self.like_ids),
                     'dislike_count':len(self.dislikes_ids),
                     'comments_count':len(self.comments_ids),
