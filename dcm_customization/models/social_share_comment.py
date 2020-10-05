@@ -29,8 +29,8 @@ class SocialBitComments(models.Model):
             post_id = self.env['social.post'].browse(vals.get('post_id'))
             if post_id:
                 vals['utm_campaign_id'] = post_id.utm_campaign_id.id
-        filename = vals.pop("filename")
-        file_content = vals.pop("content")
+        filename = vals.get("filename") and vals.pop("filename") or False
+        file_content = vals.get("content") and vals.pop("content") or False
         _logger.info("-----comment-------filename------%s-",filename)
         res = super(SocialBitComments,self).create(vals)
         if filename and file_content:
