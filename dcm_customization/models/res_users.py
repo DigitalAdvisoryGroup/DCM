@@ -14,3 +14,6 @@ class ResUsers(models.Model):
             return super(ResUsers, cls)._login(db, login, password)
         except Exception as e:
             return 0
+
+    def get_privacy_policy_url(self):
+        return {'privacy_policy_url':self.company_id.privacy_policy_url or ""}

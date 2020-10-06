@@ -32,6 +32,12 @@ class SocialPostBIT(models.Model):
     comments_ids = fields.One2many('social.bit.comments', 'post_id',
                                    string="Comments",
                                    domain=[('record_type','=','comment')])
+    like_ids = fields.One2many('social.bit.comments', 'post_id',
+                                   string="Likes",
+                                   domain=[('record_type', '=', 'like')])
+    dislike_ids = fields.One2many('social.bit.comments', 'post_id',
+                                   string="Dislike",
+                                   domain=[('record_type', '=', 'dislike')])
     recipients_ids = fields.Many2many('res.partner',string="Recipients")
 
     @api.constrains('image_ids')
@@ -71,12 +77,12 @@ class SocialPostBIT(models.Model):
         if partner_id:
             data = []
             base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+            partner_browse = self.env["res.partner"].browse(int(partner_id))
             if not self:
-                partner_browse = self.env["res.partner"].browse(int(partner_id))
                 posts = self.with_context(lang=partner_browse.lang).search([('social_partner_ids','in',[int(partner_id)]),('state','=','posted'),('utm_campaign_id.stage_id.is_active','=',True)], limit=limit,offset=offset)
                 _logger.info("------post---------%s",posts)
             else:
-                posts = self
+                posts = self.with_context(lang=partner_browse.lang)
             for post in posts:
                 like = self.env['social.bit.comments'].search_count([('post_id','=',post.id),('record_type','=','like'),('partner_id','=',int(partner_id))])
                 dislike = self.env['social.bit.comments'].search_count([('post_id','=',post.id),('record_type','=','dislike'),('partner_id','=',int(partner_id))])
@@ -94,8 +100,12 @@ class SocialPostBIT(models.Model):
                     'utm_campaign_id': post.utm_campaign_id.id,
                     'utm_campaign_required': post.utm_campaign_id.is_mandatory_campaign,
                     'rating':round(post.utm_campaign_id.avg_rating,1),
-                    'upload_limit': self.env.user.company_id.upload_limit
-                    })
+                    'upload_limit': self.env.user.company_id.upload_limit,
+                    'total_like_count': len(post.like_ids),
+                    'total_dislike_count': len(post.dislike_ids),
+                    'total_comment_count': len(post.comments_ids),
+                    'total_share_count': len(post.share_ids),
+                })
             _logger.info("Get Post Records From mobile records:- \n%s"%pprint.pformat(data))
             return {'data':data}
         else:
