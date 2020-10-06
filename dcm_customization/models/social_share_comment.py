@@ -2,6 +2,7 @@
 from odoo import models, api, fields
 from pyfcm import FCMNotification
 from werkzeug.urls import url_join
+from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
 import logging
 _logger = logging.getLogger(__name__)
 
@@ -29,8 +30,12 @@ class SocialBitComments(models.Model):
             post_id = self.env['social.post'].browse(vals.get('post_id'))
             if post_id:
                 vals['utm_campaign_id'] = post_id.utm_campaign_id.id
-        filename = vals.get("filename") and vals.pop("filename") or False
-        file_content = vals.get("content") and vals.pop("content") or False
+        filename = False
+        file_content = False
+        if "filename" in vals:
+            filename = vals.pop("filename")
+        if "content" in vals:
+            file_content = vals.pop("content")
         _logger.info("-----comment-------filename------%s-",filename)
         res = super(SocialBitComments,self).create(vals)
         if filename and file_content:
@@ -47,14 +52,15 @@ class SocialBitComments(models.Model):
         if res.parent_id and res.parent_id.record_type == 'comment' and res.record_type == 'comment':
             if (self.env.user.company_id.fcm_api_key and self.env.user.company_id.fcm_title_message):
                 body = res.comment
-                # subject = self.env.user.company_id.with_context(lang=res.parent_id.partner_id.lang).fcm_reply_title_message
-                subject = "New Reply From %s"%(res.partner_id.name)
+                subject = self.env.user.company_id.with_context(lang=res.parent_id.partner_id.lang).fcm_reply_title_message+" %s"%(res.partner_id.name)
+                # subject = "New Reply From %s"%(res.partner_id.name)
                 device_list = self.env['res.partner.token'].search([('partner_id','=',res.parent_id.partner_id.id)]).mapped("push_token")
                 if device_list:
+                    _logger.info("------reply------------%s","%s,%s"%(res.post_id.id,res.parent_id.id))
                     push_service = FCMNotification(api_key=self.env.user.company_id.fcm_api_key)
                     push_service.notify_multiple_devices(registration_ids=device_list,
                                                          message_title=subject,sound="default",
-                                                         message_body=body
+                                                         message_body=body,click_action="%s,%s"%(res.post_id.id,res.parent_id.id)
                                                          )
         return res
 
@@ -76,3 +82,45 @@ class SocialBitComments(models.Model):
                 'mimetype': mimetype
             })
         return media_ids
+
+
+    def get_reply_for_comment(self):
+        comments = []
+        base_url = self.env['ir.config_parameter'].sudo().get_param(
+            'web.base.url')
+        if self:
+            image_url = url_join(base_url,
+                                 '/web/myimage/res.partner/%s/image_128' % self.partner_id.id)
+            child_comments = []
+            for c_comment in self.child_ids:
+                c_image_url = url_join(base_url,
+                                       '/web/myimage/res.partner/%s/image_128' % c_comment.partner_id.id)
+                child_comments.append({'comment': c_comment.comment,
+                                       'id': c_comment.id,
+                                       'author_name': c_comment.partner_id.name,
+                                       'author_image': c_image_url,
+                                       'partner_id': c_comment.partner_id.id,
+                                       'media_ids': c_comment.getCommentMedia(),
+                                       'date': c_comment.create_date.strftime(
+                                           DEFAULT_SERVER_DATETIME_FORMAT)
+                                       })
+            comments.append({'comment': self.comment,
+                             'id': self.id,
+                             'author_name': self.partner_id.name,
+                             'author_image': image_url,
+                             'partner_id': self.partner_id.id,
+                             'date': self.create_date.strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                             'child_comments': child_comments,
+                             'replay_counter': len(child_comments),
+                             'media_ids': self.getCommentMedia(),
+                             'like_counter': len(self.child_comlike_ids),
+                             'dislike_counter': len(self.child_comdislike_ids),
+                             'comment_like': True if self.child_comlike_ids.filtered(
+                                 lambda a: a.partner_id.id == int(self.partner_id.id)) else False,
+                             'comment_dislike': True if self.child_comdislike_ids.filtered(
+                                 lambda a: a.partner_id.id == int(
+                                     self.partner_id.id)) else False
+                             })
+        return {"data": comments}
+
+
