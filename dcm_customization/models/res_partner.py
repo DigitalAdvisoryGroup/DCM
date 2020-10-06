@@ -138,12 +138,6 @@ class ResPartnerToken(models.Model):
     device_type = fields.Selection([("ios","Apple"),("android","Android")],string="Device Type", default="android")
 
 
-class Resusers(models.Model):
-    _inherit = 'res.users'
-
-    def get_privacy_policy_url(self):
-        print("self.company_id",self.company_id)
-        return {'privacy_policy_url':self.company_id.privacy_policy_url or ""}
 
 
 
