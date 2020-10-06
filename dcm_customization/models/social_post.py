@@ -156,13 +156,17 @@ class SocialPostBIT(models.Model):
     def set_post_like(self,partner_id):
         _logger.info("set like Post record %s partner_id:%s"%(self,partner_id))
         if partner_id and self:
-            existing_record = self.env['social.bit.comments'].search(
+            like_existing_record = self.env['social.bit.comments'].search(
                 [('post_id', '=', self.id),
                  ('partner_id', '=', int(partner_id)),
                  ('record_type', '=', 'like')])
-            if existing_record:
-                existing_record.unlink()
-            else:
+            dislike_existing_record = self.env['social.bit.comments'].search(
+                [('post_id', '=', self.id),
+                 ('partner_id', '=', int(partner_id)),
+                 ('record_type', '=', 'dislike')])
+            if dislike_existing_record:
+                dislike_existing_record.unlink()
+            if not like_existing_record:
                 self.env['social.bit.comments'].create(
                     {'post_id': self.id, 'partner_id': int(partner_id),
                      'record_type': "like"})
@@ -172,10 +176,17 @@ class SocialPostBIT(models.Model):
     def set_post_dislike(self,partner_id):
         _logger.info("set Dislike Post record %s partner_id:%s"%(self,partner_id))
         if partner_id and self:
-            existing_record = self.env['social.bit.comments'].search([('post_id','=',self.id),('partner_id','=',int(partner_id)),('record_type','=','dislike')])
-            if existing_record:
-                existing_record.unlink()
-            else:
+            dislike_existing_record = self.env['social.bit.comments'].search(
+                [('post_id','=',self.id),
+                 ('partner_id','=',int(partner_id)),
+                 ('record_type','=','dislike')])
+            like_existing_record = self.env['social.bit.comments'].search(
+                [('post_id', '=', self.id),
+                 ('partner_id', '=', int(partner_id)),
+                 ('record_type', '=', 'like')])
+            if like_existing_record:
+                like_existing_record.unlink()
+            if not dislike_existing_record:
                 self.env['social.bit.comments'].create({'post_id':self.id,'partner_id':int(partner_id),'record_type':"dislike"})
             return True
         return False
