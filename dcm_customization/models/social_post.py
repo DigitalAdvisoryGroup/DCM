@@ -248,7 +248,7 @@ class SocialPostBIT(models.Model):
                                 break
                     push_service = FCMNotification(api_key=self.env.user.company_id.fcm_api_key)
                     resp = push_service.notify_multiple_devices(registration_ids=device_list,
-                                                         message_title=subject,sound="default",
+                                                         message_title=subject,sound="default",click_action="0",
                                                          message_body=body,data_message=data_message,extra_kwargs=extra_kwargs
                                                          )
                     _logger.info("--------FCM-----ios------------%s",resp)
