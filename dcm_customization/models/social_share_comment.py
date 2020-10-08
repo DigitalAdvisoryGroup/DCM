@@ -17,7 +17,7 @@ class SocialBitComments(models.Model):
     utm_campaign_id = fields.Many2one('utm.campaign',related=False, string="Campaign", store=True)
     comment = fields.Text("Comments")
     record_type = fields.Selection([('com_like','Comment Like'),('com_dislike','Comment Dislike'),('like','Like'),('dislike','Dislike'),('comment','Comment'),('share','Share'),('rating','Rating'),("post_delete","Post Delete")],string="Type", default="comment")
-    rating = fields.Integer("Rating")
+    rating = fields.Integer("Rating",group_operator="avg")
     parent_id = fields.Many2one('social.bit.comments',string="Parent")
     child_ids = fields.One2many('social.bit.comments','parent_id',string="Childs",domain=[('record_type','=','comment')])
     child_comlike_ids = fields.One2many('social.bit.comments','parent_id',string="Comment Like",domain=[('record_type','=','com_like')])
@@ -119,7 +119,8 @@ class SocialBitComments(models.Model):
                                  lambda a: a.partner_id.id == int(self.partner_id.id)) else False,
                              'comment_dislike': True if self.child_comdislike_ids.filtered(
                                  lambda a: a.partner_id.id == int(
-                                     self.partner_id.id)) else False
+                                     self.partner_id.id)) else False,
+                             'upload_limit': self.env.user.company_id.upload_limit
                              })
         return {"data": comments}
 

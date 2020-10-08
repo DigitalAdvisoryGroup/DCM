@@ -8,6 +8,20 @@ import math, random
 from werkzeug.urls import url_join
 import logging
 _logger = logging.getLogger(__name__)
+LANG_CODE_ODOO = {
+            "it-IT":"it_IT",
+            "rm-CH":"de_CH",
+            "fr-CH":"fr_CH",
+            "de-CH":"de_CH",
+            "en":"en_US"
+}
+
+LANG_CODE_APP = {
+            "it_IT":"it-IT",
+            "fr_CH":"fr-CH",
+            "de_CH":"de-CH",
+            "en_US":"en"
+}
 
 class ResPartner(models.Model):
     _inherit = 'res.partner'
@@ -29,6 +43,7 @@ class ResPartner(models.Model):
                         partner_id.write({'lang': lang_id.code})
                     else:
                         partner_id.write({'lang': 'en_US'})
+                # partner_id.lang = "de_CH"
                 partner_token_id = self.env['res.partner.token'].search([('partner_id', '=', partner_id.id),
                                                                          ('push_token','=',token)])
                 if not partner_token_id:
@@ -123,9 +138,18 @@ class ResPartner(models.Model):
                 'country_id': self.country_id and self.country_id.name or '',
                 'zip': self.zip,
                 'image_1920': image_url,
-                'change_connection': self.change_connection
+                'change_connection': self.change_connection,
+                'lang': LANG_CODE_APP.get(self.lang)
             })
         return {'data': data}
+
+    def set_partner_language(self,lang_code):
+        _logger.info("---------self----lang-----%s",self)
+        _logger.info("---------lang_code---------%s",lang_code)
+        if self and LANG_CODE_ODOO.get(lang_code,False):
+            self.lang = LANG_CODE_ODOO.get(lang_code,"en_US")
+        return True
+
     
 
 class ResPartnerToken(models.Model):
