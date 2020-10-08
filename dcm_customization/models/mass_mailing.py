@@ -15,7 +15,7 @@ class MassMailings(models.Model):
         if self.social_groups_id:
             contact = self.env['ir.model'].search([('model','=','res.partner')])
             self.mailing_model_id = contact.id
-            partner_ids = self.social_groups_id.mapped('partner_ids').ids
+            partner_ids = self.social_groups_id.mapped('partner_ids').filtered(lambda x: not x.is_token_available).ids
             self.mailing_domain = repr([('id','in',partner_ids)])
         else:
             # mailing = self.env['ir.model'].search([('model','=','mailing.list')])

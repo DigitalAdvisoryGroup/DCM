@@ -26,6 +26,7 @@ class SocialBitComments(models.Model):
 
     @api.model
     def create(self, vals):
+        _logger.info("--------comments---vals--------%s",vals)
         if not vals.get('utm_campaign_id'):
             post_id = self.env['social.post'].browse(vals.get('post_id'))
             if post_id:
