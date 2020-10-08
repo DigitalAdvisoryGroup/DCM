@@ -29,6 +29,17 @@ class ResPartner(models.Model):
     otp_token = fields.Char("OTP Token", copy=False)
     social_group_id = fields.Many2many('social.partner.group','social_group_partner_rel','partner_id','social_group_id',string="Social Group")
     change_connection = fields.Boolean("Change Connection")
+    partner_token_lines = fields.One2many("res.partner.token","partner_id", string="Token Lines")
+    is_token_available = fields.Boolean("Is Token Available?", compute="_get_token_available", store=True)
+
+
+    @api.depends("partner_token_lines")
+    def _get_token_available(self):
+        for part in self:
+            if len(part.partner_token_lines) > 0:
+                part.is_token_available = True
+            else:
+                part.is_token_available = False
 
     def get_partner_from_email(self, email, token, lang, device_type="android"):
         _logger.info("-------------------get partner method email -: %s \n token %s \n lang %s \n device type %s" % (
