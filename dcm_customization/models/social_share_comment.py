@@ -126,3 +126,47 @@ class SocialBitComments(models.Model):
         return {"data": comments}
 
 
+    def set_comment_like(self, partner_id):
+        _logger.info("set like comment record :%s-----partner_id---%s"%(self,partner_id))
+        if self:
+            child_comdislike_ids = self.env['social.bit.comments'].search(
+                [('parent_id','=',self.id),
+                 ('partner_id','=',int(partner_id)),
+                 ('record_type','=','com_dislike')])
+            child_comlike_ids = self.env['social.bit.comments'].search(
+                [('parent_id', '=', self.id),
+                 ('partner_id', '=', int(partner_id)),
+                 ('record_type', '=', 'com_like')])
+            if child_comdislike_ids:
+                child_comdislike_ids.unlink()
+            if not child_comlike_ids:
+                self.env['social.bit.comments'].create(
+                    {'post_id': self.post_id.id, 'partner_id': int(partner_id),"parent_id": self.id,
+                     'record_type': "com_like"})
+            return True
+        return False
+
+    def set_comment_dislike(self,partner_id):
+        _logger.info("set Dislike Comment record %s partner_id:%s"%(self,partner_id))
+        if self:
+            child_comdislike_ids = self.env['social.bit.comments'].search(
+                [('parent_id', '=', self.id),
+                 ('partner_id', '=', int(partner_id)),
+                 ('record_type', '=', 'com_dislike')])
+            child_comlike_ids = self.env['social.bit.comments'].search(
+                [('parent_id', '=', self.id),
+                 ('partner_id', '=', int(partner_id)),
+                 ('record_type', '=', 'com_like')])
+            if child_comlike_ids:
+                child_comlike_ids.unlink()
+            if not child_comdislike_ids:
+                self.env['social.bit.comments'].create(
+                    {'post_id': self.post_id.id, 'partner_id': int(partner_id),
+                     "parent_id": self.id,
+                     'record_type': "com_dislike"})
+            return True
+
+            return True
+        return False
+
+
