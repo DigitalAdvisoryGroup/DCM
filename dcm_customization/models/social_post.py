@@ -247,10 +247,11 @@ class SocialPostBIT(models.Model):
                                 extra_kwargs = {"mutable_content": True}
                                 break
                     push_service = FCMNotification(api_key=self.env.user.company_id.fcm_api_key)
-                    push_service.notify_multiple_devices(registration_ids=device_list,
+                    resp = push_service.notify_multiple_devices(registration_ids=device_list,
                                                          message_title=subject,sound="default",
                                                          message_body=body,data_message=data_message,extra_kwargs=extra_kwargs
                                                          )
+                    _logger.info("--------FCM-----ios------------%s",resp)
             if android_partner_device_ids:
                 device_list = android_partner_device_ids.mapped("push_token")
                 if device_list:
@@ -269,12 +270,13 @@ class SocialPostBIT(models.Model):
                                 break
                     push_service = FCMNotification(
                         api_key=self.env.user.company_id.fcm_api_key)
-                    push_service.notify_multiple_devices(
+                    resp = push_service.notify_multiple_devices(
                         registration_ids=device_list,
                         message_title=subject, sound="default",
                         message_body=body,
                         extra_notification_kwargs=extra_notification_kwargs
                         )
+                    _logger.info("--------FCM-----android------------%s", resp)
 
 
     @api.depends('live_post_ids.is_bit_post')
