@@ -136,7 +136,7 @@ class ResPartner(models.Model):
             base_url = self.env['ir.config_parameter'].sudo().get_param(
                 'web.base.url')
             image_url = url_join(base_url,
-                                 '/web/myimage/res.partner/%s/image_128' % self.id)
+                                 '/web/myimage/res.partner/%s/image_512' % self.id)
             data.append({
                 'id': self.id,
                 'name': self.name,
