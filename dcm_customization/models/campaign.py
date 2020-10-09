@@ -17,6 +17,7 @@ class Campaign(models.Model):
     share_ids = fields.One2many("social.bit.comments",'utm_campaign_id',string="Shares",domain=[('record_type','=','share')])
     avg_rating = fields.Float("Avg Rating",compute="compute_rating",store=True)
 
+
     @api.depends('rating_ids')
     def compute_rating(self):
         for record in self:
