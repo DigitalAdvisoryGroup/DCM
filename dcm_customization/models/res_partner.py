@@ -33,11 +33,6 @@ class ResPartner(models.Model):
     is_token_available = fields.Boolean("Is Token Available?", compute="_get_token_available", store=True)
 
 
-    def write(self, vals):
-        _logger.info("---------partner---vals------%s",vals)
-        return super(ResPartner, self).write(vals)
-
-
     @api.depends("partner_token_lines")
     def _get_token_available(self):
         for part in self:

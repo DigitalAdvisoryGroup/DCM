@@ -10,17 +10,37 @@ class MassMailings(models.Model):
     is_social_group = fields.Boolean("Social Group",compute="compute_is_social")
     is_include_all = fields.Boolean("Is Include All Recipients ?")
 
+    @api.onchange('is_include_all')
+    def onchange_is_include_all(self):
+        if self.social_groups_id:
+            if self.is_include_all:
+                partner_ids = self.social_groups_id.mapped('partner_ids').ids
+                if self.social_groups_id.mapped("child_ids"):
+                    partner_ids += self.social_groups_id.mapped(
+                        "child_ids").mapped('partner_ids').ids
+            else:
+                partner_ids = self.social_groups_id.mapped(
+                    'partner_ids').filtered(
+                    lambda x: not x.is_token_available).ids
+                if self.social_groups_id.mapped("child_ids"):
+                    partner_ids += self.social_groups_id.mapped(
+                        "child_ids").mapped('partner_ids').filtered(
+                        lambda x: not x.is_token_available).ids
+            self.mailing_domain = repr([('id', 'in', list(set(partner_ids)))])
 
     @api.onchange('social_groups_id')
     def groups_id_onchange_(self):
         if self.social_groups_id:
             contact = self.env['ir.model'].search([('model','=','res.partner')])
             self.mailing_model_id = contact.id
-            partner_ids = self.social_groups_id.mapped('partner_ids').filtered(
-                lambda x: not x.is_token_available).ids
-            if self.social_groups_id.mapped("child_ids"):
-                partner_ids += self.social_groups_id.mapped("child_ids").mapped('partner_ids').filtered(
-                lambda x: not x.is_token_available).ids
+            if self.is_include_all:
+                partner_ids = self.social_groups_id.mapped('partner_ids').ids
+                if self.social_groups_id.mapped("child_ids"):
+                    partner_ids += self.social_groups_id.mapped("child_ids").mapped('partner_ids').ids
+            else:
+                partner_ids = self.social_groups_id.mapped('partner_ids').filtered(lambda x: not x.is_token_available).ids
+                if self.social_groups_id.mapped("child_ids"):
+                    partner_ids += self.social_groups_id.mapped("child_ids").mapped('partner_ids').filtered(lambda x: not x.is_token_available).ids
             self.mailing_domain = repr([('id','in',list(set(partner_ids)))])
         else:
             # mailing = self.env['ir.model'].search([('model','=','mailing.list')])
