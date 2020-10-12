@@ -89,7 +89,7 @@ class SocialPostBIT(models.Model):
                 data.append({
                     'id':post.id,
                     'name':post.utm_campaign_id.name,
-                    'date':post.utm_campaign_id and post.utm_campaign_id.create_date.strftime(DEFAULT_SERVER_DATETIME_FORMAT) or post.create_date.strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                    'date':post.create_date.strftime(DEFAULT_SERVER_DATETIME_FORMAT),
                     'like':True if like else False,
                     'dislike':True if dislike else False,
                     'image':url_join(base_url,'/web/myimage/utm.campaign/%s/image_128'%post.utm_campaign_id.id),
@@ -126,7 +126,9 @@ class SocialPostBIT(models.Model):
                     mimetype = "doc"
             media_ids.append({
                 'url': url_join(base_url,'/web/content/%s/%s' % (media.id, media.name)),
-                'mimetype': mimetype
+                'mimetype': mimetype,
+                'width': media.img_width,
+                'height': media.img_height,
             })
         return media_ids
 
@@ -272,7 +274,7 @@ class SocialPostBIT(models.Model):
                         api_key=self.env.user.company_id.fcm_api_key)
                     resp = push_service.notify_multiple_devices(
                         registration_ids=device_list,
-                        message_title=subject, sound="default",
+                        message_title=subject, sound="default",click_action="0",
                         message_body=body,
                         extra_notification_kwargs=extra_notification_kwargs
                         )
@@ -300,6 +302,7 @@ class SocialPostBIT(models.Model):
             image_data = []
             for i in post.image_ids:
                 image_data.append({'mimetype':i.mimetype,'datas':base64.b64encode(open(i._full_path(i.store_fname), 'rb').read())})
+
             post.bit_preview = self.env.ref('dcm_customization.bit_preview').render({
                 'message': post.message,
                 'published_date': post.scheduled_date if post.scheduled_date else fields.Datetime.now(),

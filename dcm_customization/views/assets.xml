@@ -17,4 +17,13 @@
             <script type="text/javascript" src="/dcm_customization/static/src/js/portal.js"/>
         </xpath>
     </template>
+
+     <template id="assets_backend" name="allure theme assets"
+              inherit_id="web.assets_backend">
+        <xpath expr="." position="inside">
+            <link rel="stylesheet" type="text/scss"
+                  href="/dcm_customization/static/src/scss/social.scss"/>
+        </xpath>
+
+    </template>
 </odoo>
