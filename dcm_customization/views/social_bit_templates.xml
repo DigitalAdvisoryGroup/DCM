@@ -20,7 +20,7 @@
             <div class="o_social_preview_message pb-3">
                 <t t-esc="message" />
             </div>
-            <div class="o_social_stream_post_image d-flex mx-n3 overflow-hidden">
+            <div t-attf-class="#{'o_social_stream_post_images_custom' if len(image_ids)==1 else 'o_social_stream_post_image'} d-flex mx-n3 overflow-hidden">
                 <t t-foreach="image_ids" t-as="image">
                     <t t-if="image.id">
                         <t t-set="image_data" t-value="'/web/image/%s'%image.id" />

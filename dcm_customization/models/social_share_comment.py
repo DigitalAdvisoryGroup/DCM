@@ -51,7 +51,7 @@ class SocialBitComments(models.Model):
             if attachment_id:
                 res.image_ids = attachment_id.ids
         if res.parent_id and res.parent_id.record_type == 'comment' and res.record_type == 'comment':
-            if (self.env.user.company_id.fcm_api_key and self.env.user.company_id.fcm_title_message):
+            if (self.env.user.company_id.fcm_api_key and self.env.user.company_id.fcm_reply_title_message):
                 body = res.comment
                 subject = self.env.user.company_id.with_context(lang=res.parent_id.partner_id.lang).fcm_reply_title_message+" %s"%(res.partner_id.name)
                 # subject = "New Reply From %s"%(res.partner_id.name)
