@@ -3,6 +3,7 @@ from werkzeug.urls import url_join
 import urllib.request
 from PIL import Image
 import logging
+import urllib.parse
 _logger = logging.getLogger(__name__)
 
 class IrAttachment(models.Model):
@@ -18,8 +19,7 @@ class IrAttachment(models.Model):
                 'web.base.url')
         for att in self:
             if "image" in att.mimetype:
-                url = url_join(base_url,
-                               '/web/content/%s/%s' % (att.id, att.name))
+                url = url_join(base_url,urllib.parse.quote('/web/content/%s/%s' % (att.id, att.name)))
                 _logger.info("-----url----------------%s", url)
                 image = Image.open(urllib.request.urlopen(url))
                 width, height = image.size
