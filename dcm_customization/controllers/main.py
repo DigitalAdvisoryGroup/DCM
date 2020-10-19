@@ -50,8 +50,6 @@ class WebController(Binary):
 
     @http.route(['/web/myimage/<string:model>/<int:id>/<string:field>'], type='http', auth="public")
     def content_image_my(self, xmlid=None, model='ir.attachment', id=None, field='datas',  unique=None, access_token=None):
-#         _logger.info("here requrest forr image..")
-
         if model == "ir.attachment":
             attachment_id = request.env['ir.attachment'].sudo().search([('id','=',id),('access_token','=',access_token)])
             if not attachment_id:

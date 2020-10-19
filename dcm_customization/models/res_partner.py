@@ -13,7 +13,8 @@ LANG_CODE_ODOO = {
             "rm-CH":"de_CH",
             "fr-CH":"fr_CH",
             "de-CH":"de_CH",
-            "en":"en_US"
+            "en":"en_US",
+            "de": "de_CH"
 }
 
 LANG_CODE_APP = {
@@ -42,8 +43,6 @@ class ResPartner(models.Model):
                 part.is_token_available = False
 
     def get_partner_from_email(self, email, token, lang, device_type="android"):
-        _logger.info("-------------------get partner method email -: %s \n token %s \n lang %s \n device type %s" % (
-            email, token, lang,device_type))
         data = []
         if email:
             partner_id = self.search([('email', '=', email.lower())])
@@ -114,7 +113,6 @@ class ResPartner(models.Model):
 
 
     def get_partner_otp_verify(self,email,otp):
-        _logger.info("-------------------get_partner_otp_verify -: %s \n otp %s"%(email,otp))
         if otp:
             partner_id = self.search([('email','=',email.lower()),("otp_token","=",otp)])
             if partner_id:
@@ -155,8 +153,6 @@ class ResPartner(models.Model):
         return {'data': data}
 
     def set_partner_language(self,lang_code):
-        _logger.info("---------self----lang-----%s",self)
-        _logger.info("---------lang_code---------%s",lang_code)
         if self and LANG_CODE_ODOO.get(lang_code,False):
             self.lang = LANG_CODE_ODOO.get(lang_code,"en_US")
         return True
