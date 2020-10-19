@@ -20,11 +20,8 @@ class IrAttachment(models.Model):
         for att in self:
             if "image" in att.mimetype:
                 url = url_join(base_url,urllib.parse.quote('/web/content/%s/%s' % (att.id, att.name)))
-                _logger.info("-----url----------------%s", url)
                 image = Image.open(urllib.request.urlopen(url))
                 width, height = image.size
-                _logger.info("----width--------%s",width)
-                _logger.info("----height-----%s", height)
                 att.img_width = width
                 att.img_height = height
             else:
@@ -35,7 +32,6 @@ class IrAttachment(models.Model):
 
     @api.model
     def create(self, vals):
-        print("---------attachment---------------")
         if vals.get('res_model') and vals.get('res_model') == 'social.post':
             name = vals.get('name').replace(" ", "_")
             vals['name'] = name

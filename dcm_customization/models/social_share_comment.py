@@ -26,7 +26,6 @@ class SocialBitComments(models.Model):
 
     @api.model
     def create(self, vals):
-        _logger.info("--------comments---vals--------%s",vals)
         if not vals.get('utm_campaign_id'):
             post_id = self.env['social.post'].browse(vals.get('post_id'))
             if post_id:
@@ -37,11 +36,10 @@ class SocialBitComments(models.Model):
             filename = vals.pop("filename")
         if "content" in vals:
             file_content = vals.pop("content")
-        _logger.info("-----comment-------filename------%s-",filename)
         res = super(SocialBitComments,self).create(vals)
         if filename and file_content:
             attachment_id = self.env['ir.attachment'].create({
-                'name': filename,
+                'name': filename.strip("/"),
                 'res_id': res.id,
                 'res_model': res._name,
                 'datas': file_content,
@@ -55,14 +53,27 @@ class SocialBitComments(models.Model):
                 body = res.comment
                 subject = self.env.user.company_id.with_context(lang=res.parent_id.partner_id.lang).fcm_reply_title_message+" %s"%(res.partner_id.name)
                 # subject = "New Reply From %s"%(res.partner_id.name)
-                device_list = self.env['res.partner.token'].search([('partner_id','=',res.parent_id.partner_id.id)]).mapped("push_token")
-                if device_list:
-                    _logger.info("------reply------------%s","%s,%s"%(res.post_id.id,res.parent_id.id))
-                    push_service = FCMNotification(api_key=self.env.user.company_id.fcm_api_key)
-                    push_service.notify_multiple_devices(registration_ids=device_list,
+                # device_list = self.env['res.partner.token'].search([('partner_id','=',res.parent_id.partner_id.id)]).mapped("push_token")
+                token_id = self.env['res.partner.token'].search([('partner_id','=',res.parent_id.partner_id.id)])
+                ios_token_id = token_id.filtered(lambda x: not x.device_type == "ios")
+                android_token_id = token_id.filtered(lambda x: not x.device_type != "ios")
+                push_service = FCMNotification(
+                    api_key=self.env.user.company_id.fcm_api_key)
+                if ios_token_id:
+                    push_service.notify_multiple_devices(registration_ids=ios_token_id.mapped("push_token"),
                                                          message_title=subject,sound="default",
                                                          message_body=body,click_action="%s,%s"%(res.post_id.id,res.parent_id.id)
                                                          )
+                else:
+                    push_service.notify_multiple_devices(
+                        registration_ids=android_token_id.mapped("push_token"),
+                        sound="default",
+                        # message_title=subject,message_body=body,
+                        # extra_notification_kwargs={"post_id": str(res.post_id.id), "comment_id": str(res.parent_id.id)}
+                        data_message={"notification": {"post_id": res.post_id.id, "comment_id": res.parent_id.id,
+                                      "message_title": subject,"click_action":"COMMENTACTIVITY",
+                                      "message_body": body}}
+                        )
         return res
 
     def getCommentMedia(self):
@@ -127,7 +138,6 @@ class SocialBitComments(models.Model):
 
 
     def set_comment_like(self, partner_id):
-        _logger.info("set like comment record :%s-----partner_id---%s"%(self,partner_id))
         if self:
             child_comdislike_ids = self.env['social.bit.comments'].search(
                 [('parent_id','=',self.id),
@@ -147,7 +157,6 @@ class SocialBitComments(models.Model):
         return False
 
     def set_comment_dislike(self,partner_id):
-        _logger.info("set Dislike Comment record %s partner_id:%s"%(self,partner_id))
         if self:
             child_comdislike_ids = self.env['social.bit.comments'].search(
                 [('parent_id', '=', self.id),

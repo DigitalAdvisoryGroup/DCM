@@ -71,18 +71,16 @@ class SocialPostBIT(models.Model):
             self.is_bit_post = False
 
     def get_post_api(self,partner_id=False, limit=None,offset=0):
-        _logger.info("Get Post Records From mobile partner_id:%s"%partner_id)
-        _logger.info("post limit:%s"%limit)
-        _logger.info("post offset:%s"%offset)
         if partner_id:
             data = []
             base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
             partner_browse = self.env["res.partner"].browse(int(partner_id))
             if not self:
-                posts = self.with_context(lang=partner_browse.lang).search([('social_partner_ids','in',[int(partner_id)]),('state','=','posted'),('utm_campaign_id.stage_id.is_active','=',True)], limit=limit,offset=offset)
-                _logger.info("------post---------%s",posts)
+                # posts = self.with_context(lang=partner_browse.lang).search([('social_partner_ids','in',[int(partner_id)]),('state','=','posted'),('utm_campaign_id.stage_id.is_active','=',True)], limit=limit,offset=offset)
+                posts = self.search([('social_partner_ids','in',[int(partner_id)]),('state','=','posted'),('utm_campaign_id.stage_id.is_active','=',True)], limit=limit,offset=offset)
             else:
-                posts = self.with_context(lang=partner_browse.lang)
+                # posts = self.with_context(lang=partner_browse.lang)
+                posts = self
             for post in posts:
                 like = self.env['social.bit.comments'].search_count([('post_id','=',post.id),('record_type','=','like'),('partner_id','=',int(partner_id))])
                 dislike = self.env['social.bit.comments'].search_count([('post_id','=',post.id),('record_type','=','dislike'),('partner_id','=',int(partner_id))])
@@ -106,7 +104,6 @@ class SocialPostBIT(models.Model):
                     'total_comment_count': len(post.comments_ids),
                     'total_share_count': len(post.share_ids),
                 })
-            _logger.info("Get Post Records From mobile records:- \n%s"%pprint.pformat(data))
             return {'data':data}
         else:
             return {'data':[]}
@@ -124,12 +121,21 @@ class SocialPostBIT(models.Model):
                     mimetype = "ppt"
                 if media.mimetype in ['application/vnd.ms-excel']:
                     mimetype = "doc"
-            media_ids.append({
-                'url': url_join(base_url,'/web/content/%s/%s' % (media.id, media.name)),
-                'mimetype': mimetype,
-                'width': media.img_width,
-                'height': media.img_height,
-            })
+            if "image" in mimetype:
+                media_ids.append({
+                    'url': url_join(base_url,'/web/image/%s/%s' % (media.id, media.name)),
+                    'mimetype': mimetype,
+                    'width': media.img_width,
+                    'height': media.img_height,
+                })
+            else:
+                media_ids.append({
+                    'url': url_join(base_url, '/web/content/%s/%s' % (
+                    media.id, media.name)),
+                    'mimetype': mimetype,
+                    'width': media.img_width,
+                    'height': media.img_height,
+                })
         return media_ids
 
     def getComments(self,partner_id):
@@ -166,7 +172,6 @@ class SocialPostBIT(models.Model):
         return comments
     
     def set_post_like(self,partner_id):
-        _logger.info("set like Post record %s partner_id:%s"%(self,partner_id))
         if partner_id and self:
             like_existing_record = self.env['social.bit.comments'].search(
                 [('post_id', '=', self.id),
@@ -186,7 +191,6 @@ class SocialPostBIT(models.Model):
         return False
 
     def set_post_dislike(self,partner_id):
-        _logger.info("set Dislike Post record %s partner_id:%s"%(self,partner_id))
         if partner_id and self:
             dislike_existing_record = self.env['social.bit.comments'].search(
                 [('post_id','=',self.id),
@@ -204,7 +208,6 @@ class SocialPostBIT(models.Model):
         return False
     
     def set_post_delete(self,partner_id, delete_flag="post"):
-        _logger.info("set delete Post record %s partner_id:%s "%(self,partner_id))
         if partner_id and self:
             if delete_flag == "post":
                 self.write({'social_partner_ids': [(3, int(partner_id))]})
@@ -253,7 +256,6 @@ class SocialPostBIT(models.Model):
                                                          message_title=subject,sound="default",click_action="0",
                                                          message_body=body,data_message=data_message,extra_kwargs=extra_kwargs
                                                          )
-                    _logger.info("--------FCM-----ios------------%s",resp)
             if android_partner_device_ids:
                 device_list = android_partner_device_ids.mapped("push_token")
                 if device_list:
@@ -278,7 +280,6 @@ class SocialPostBIT(models.Model):
                         message_body=body,
                         extra_notification_kwargs=extra_notification_kwargs
                         )
-                    _logger.info("--------FCM-----android------------%s", resp)
 
 
     @api.depends('live_post_ids.is_bit_post')

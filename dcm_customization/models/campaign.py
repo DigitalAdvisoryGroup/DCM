@@ -65,7 +65,11 @@ class Campaign(models.Model):
             if partner_rating:
                 partner_rating.write({'rating':rating,'comment':comment})
             else:
-                self.env['social.bit.comments'].create({'utm_campaign_id':self.id,'rating':rating,'comment':comment})
+                self.env['social.bit.comments'].create({'utm_campaign_id':self.id,
+                                                        'rating':rating,
+                                                        'record_type': 'rating',
+                                                        'partner_id': int(partner_id),
+                                                        'comment':comment})
             return True
         return False
 
