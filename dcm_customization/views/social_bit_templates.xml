@@ -35,6 +35,7 @@
                         <t t-if="not image.id">
                             <img t-attf-src="data:image/png;base64, #{image.datas}"  alt="Post Image" t-if="image.mimetype.startswith('image')"/>
                         </t>
+                        <img src="/web/static/src/img/mimetypes/pdf.svg" style="object-fit: contain;"  alt="Post Image" t-if="image.mimetype.startswith('application/pdf')"/>
                         <img t-attf-src="#{image_data}"  alt="Post Image" t-if="image.mimetype.startswith('image')"/>
                         <video width="200"  t-attf-src="/web/content/?social_newid=true&amp;datas=#{image._full_path(image.store_fname)}&amp;mimetype=#{image.mimetype}" alt="Post Image" controls="controls" />
                         <div class="o_social_stream_post_image_more_overlay d-flex align-items-center h-100 w-100 text-white justify-content-center position-absolute h1 m-0" style="user-select: none;">
@@ -44,9 +45,11 @@
                     <video t-if="image_index &lt; 2 and image.mimetype.startswith('video')"  width="200"  t-attf-src="/web/content/?social_newid=true&amp;datas=#{image._full_path(image.store_fname)}&amp;mimetype=#{image.mimetype}" alt="Post Image" controls="controls"  t-att-type="image.mimetype"/>
                     <t t-if="image.id">
                         <img t-att-src="'/web/image/%s'%image.id"  alt="Post Image" t-if="image_index &lt; 2 and image.mimetype.startswith('image')"/>
+                        <img src="/web/static/src/img/mimetypes/pdf.svg" style="object-fit: contain;"  alt="Post Image" t-if="image_index &lt; 2 and image.mimetype.startswith('application/pdf')"/>
                     </t>
                     <t t-if="not image.id">
                         <img t-attf-src="data:image/png;base64, #{image.datas}"  alt="Post Image" t-if="image_index &lt; 2 and image.mimetype.startswith('image')"/>
+                        <img src="/web/static/src/img/mimetypes/pdf.svg" style="object-fit: contain;"  alt="Post Image" t-if="image_index &lt; 2 and image.mimetype.startswith('application/pdf')"/>
                     </t>
                 </t>
             </div>
