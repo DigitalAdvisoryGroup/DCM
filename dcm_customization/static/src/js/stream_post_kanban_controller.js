@@ -70,7 +70,7 @@ social_post_kanban_images_carousel.include({
         if(typeof options.images == 'object'){
             is_array=true
         }
-
+        debugger;
         this.images = options.images;
         this.activeIndex = options.activeIndex || 0;
         this.is_array = is_array;

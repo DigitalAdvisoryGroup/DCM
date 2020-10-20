@@ -80,16 +80,18 @@
                     <t t-foreach="image_urls_json.length > 2 ? image_urls_json.slice(0, 2) : image_urls_json" t-as="image_url">
                         <t t-if="image_url_index == 1 &amp; record.stream_post_image_ids.raw_value.length > 2">
                             <a class="o_social_stream_post_image_more position-relative d-flex ml-1" >
-                                <img t-attf-src="#{image_url['url']}" alt="Post Image" t-if="image_url.mimetype" style="width: 93% !important;"/>
-                                <video width="200"  t-attf-src="#{image_url.url}" t-if="!image_url.mimetype" alt="Post Image" controls="controls" />
+                                <img t-attf-src="#{image_url['url']}" alt="Post Image" t-if="image_url.o_mimetype in ['image/jpg','image/jpeg','image/png','image/gif']" style="width: 93% !important;"/>
+                                <video width="200"  t-attf-src="#{image_url.url}" t-if="image_url.o_mimetype in ['application/octet-stream','video/x-flv','video/mp4','video/x-msvideo','video/quicktime']" alt="Post Image" controls="controls" />
+                                <img t-if="image_url.o_mimetype == 'application/pdf'" src="/web/static/src/img/mimetypes/pdf.svg" style="object-fit: contain;" alt="Post Image" class="pdf-download" t-attf-data-url="/web/content/#{image_url.id}?download=true" />
                                 <div class="o_social_stream_post_image_more_overlay d-flex align-items-center h-100 w-100 text-white justify-content-center position-absolute h1 m-0" style="user-select: none;width: 93% !important;">
                                     +<t t-esc="image_urls_json.length - 2"/>
                                 </div>
                             </a>
                         </t>
                         <t t-else="">
-                            <video t-if="!image_url.mimetype"  width="200"  t-attf-src="#{image_url.url}" alt="Post Image" controls="controls"   t-att-data-current-index="image_url_index"/>
-                            <img t-if="image_url.mimetype" t-attf-src="#{image_url.url}" alt="Post Image"/>
+                            <video t-if="image_url.o_mimetype in ['application/octet-stream','video/x-flv','video/mp4','video/x-msvideo','video/quicktime']"  width="200"  t-attf-src="#{image_url.url}" alt="Post Image" controls="controls"   t-att-data-current-index="image_url_index"/>
+                            <img t-if="image_url.o_mimetype.includes('image')" t-attf-src="#{image_url.url}" alt="Post Image"/>
+                            <img t-if="image_url.o_mimetype == 'application/pdf'" src="/web/static/src/img/mimetypes/pdf.svg" style="object-fit: contain;" alt="Post Image" class="pdf-download" t-attf-data-url="/web/content/#{image_url.id}?download=true" />
                         </t>
                     </t>
                 </div>

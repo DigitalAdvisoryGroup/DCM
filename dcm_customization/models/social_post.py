@@ -23,9 +23,9 @@ class SocialPostBIT(models.Model):
     display_bit_preview = fields.Boolean('Display BIT Preview', compute='_compute_display_bit_preview')
     bit_preview = fields.Html('BIT Preview', compute='_compute_bit_preview')
     social_groups_ids = fields.Many2many("social.partner.group","social_groups_post",string="Social Groups")
-    social_partner_ids = fields.Many2many("res.partner","social_partner_post",string="Social Partners")
+    social_partner_ids = fields.Many2many("res.partner","social_partner_post",string="Social Partners", copy=True)
     is_bit_post = fields.Boolean("Is Bit Post?")
-    message = fields.Text("Message", required=True, translate=True)
+    message = fields.Text("Message", required=True, translate=False)
     share_ids = fields.One2many('social.bit.comments', 'post_id',
                                 string="Shares",
                                 domain=[('record_type','=','share')])
@@ -303,7 +303,7 @@ class SocialPostBIT(models.Model):
             image_data = []
             for i in post.image_ids:
                 image_data.append({'mimetype':i.mimetype,'datas':base64.b64encode(open(i._full_path(i.store_fname), 'rb').read())})
-
+            
             post.bit_preview = self.env.ref('dcm_customization.bit_preview').render({
                 'message': post.message,
                 'published_date': post.scheduled_date if post.scheduled_date else fields.Datetime.now(),
@@ -330,7 +330,7 @@ class SocialPostBIT(models.Model):
         base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
         for post in self:
             if post.is_bit_post:
-                post.image_urls = json.dumps([{'url':url_join(base_url,'web/image/%s' % image_id.id), 'mimetype':True if image_id.mimetype.startswith('image') else False,'fullpath':image_id._full_path(image_id.store_fname)} for image_id in post.image_ids])
+                post.image_urls = json.dumps([{'url':url_join(base_url,'web/image/%s' % image_id.id), 'mimetype':True if image_id.mimetype.startswith('image') else False,'fullpath':image_id._full_path(image_id.store_fname),'o_mimetype':image_id.mimetype} for image_id in post.image_ids])
             else:
                 super(SocialPostBIT,self)._compute_image_urls()
     
