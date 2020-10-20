@@ -324,13 +324,13 @@ class SocialPostBIT(models.Model):
         return super(SocialPostBIT, self).unlink()    
 
 
-    @api.depends('image_ids')
+    @api.depends('image_ids','is_bit_post')
     def _compute_image_urls(self):
         """ See field 'help' for more information. """
         base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
         for post in self:
             if post.is_bit_post:
-                post.image_urls = json.dumps([{'url':url_join(base_url,'web/image/%s' % image_id.id), 'mimetype':True if image_id.mimetype.startswith('image') else False,'fullpath':image_id._full_path(image_id.store_fname),'o_mimetype':image_id.mimetype} for image_id in post.image_ids])
+                post.image_urls = json.dumps([{'url':url_join(base_url,'/web/image/%s' % image_id.id), 'mimetype':True if image_id.mimetype.startswith('image') else False,'fullpath':image_id._full_path(image_id.store_fname),'o_mimetype':image_id.mimetype} for image_id in post.image_ids])
             else:
-                super(SocialPostBIT,self)._compute_image_urls()
+                post.image_urls = json.dumps(['web/image/%s' % image_id.id for image_id in post.image_ids])
     
