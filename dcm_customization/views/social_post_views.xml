@@ -38,7 +38,7 @@
                 <field name="is_bit_post" />
             </xpath>
             <xpath expr="//div[@t-if='has_attachments']" position="replace">
-                <div t-if="has_attachments and !record.is_bit_post"
+                <div t-if="has_attachments and record.is_bit_post.raw_value == false"
                     class="o_social_stream_post_image d-flex mx-n3 overflow-hidden"
                     t-att-data-images="record.image_urls.raw_value">
                     <t t-set="image_urls_json" t-value="JSON.parse(record.image_urls.raw_value)"/>
@@ -55,7 +55,7 @@
                         <img t-else="" class="o_social_stream_post_image_click" t-att-src="image_url" alt="Post Image" t-att-data-current-index="image_url_index" />
                     </t>
                 </div>
-                <div t-if="has_attachments and record.is_bit_post"
+                <div t-if="has_attachments and record.is_bit_post.raw_value == true"
                     class="o_social_stream_post_image d-flex mx-n3 overflow-hidden"
                     t-att-data-images="record.image_urls.raw_value">
                     <t t-set="image_urls_json" t-value="JSON.parse(record.image_urls.raw_value)"/>
@@ -64,8 +64,8 @@
                         <t t-if="image_url_index == 1 &amp; record.image_ids.raw_value.length > 2">
                             <span>ravi</span>
                             <a class="o_social_stream_post_image_more position-relative d-flex ml-1" >
-                                <video t-if="!image_url.mimetype and image_url.o_mimetype in ['application/octet-stream','video/x-flv','video/mp4','video/x-msvideo','video/quicktime']"  width="200"  t-attf-src="#{image_url.url}" alt="Post Image" controls="controls"  t-att-data-current-index="image_url_index"/>
-                                <img t-if="image_url.o_mimetype in ['image/jpg','image/jpeg','image/png','image/gif']" t-attf-src="#{image_url.url}" alt="Post Image"/>
+                                <video t-if="!image_url.mimetype and ['application/octet-stream','video/x-flv','video/mp4','video/x-msvideo','video/quicktime'].includes(image_url.o_mimetype)"  width="200"  t-attf-src="#{image_url.url}" alt="Post Image" controls="controls"  t-att-data-current-index="image_url_index"/>
+                                <img t-if="['image/jpg','image/jpeg','image/png','image/gif'].includes(image_url.o_mimetype)" t-attf-src="#{image_url.url}" alt="Post Image"/>
                                 <img t-if="image_url.o_mimetype == 'application/pdf'" src="/web/static/src/img/mimetypes/pdf.svg" style="object-fit: contain;" alt="Post Image" class="pdf-download" t-attf-data-url="/web/content/#{image_url.id}?download=true" />
                                 <div class="o_social_stream_post_image_more_overlay d-flex align-items-center h-100 w-100 text-white justify-content-center position-absolute h1 m-0" style="user-select: none;">
                                     +<t t-esc="image_urls_json.length - 2"/>
@@ -73,8 +73,8 @@
                             </a>
                         </t>
                         <t t-else="">
-                            <video t-if="image_url.o_mimetype in ['application/octet-stream','video/x-flv','video/mp4','video/x-msvideo','video/quicktime']"  width="200"  t-attf-src="#{image_url.url}" alt="Post Image" controls="controls"  t-att-data-current-index="image_url_index"/>
-                            <img t-if="image_url.o_mimetype.includes('image')" t-attf-src="#{image_url.url}" alt="Post Image"/>
+                            <video t-if="!image_url.mimetype and ['application/octet-stream','video/x-flv','video/mp4','video/x-msvideo','video/quicktime'].includes(image_url.o_mimetype)"  width="200"  t-attf-src="#{image_url.url}" alt="Post Image" controls="controls"  t-att-data-current-index="image_url_index"/>
+                            <img  t-if="image_url.o_mimetype and ['image/jpg','image/jpeg','image/png','image/gif'].includes(image_url.o_mimetype)" t-attf-src="#{image_url.url}" alt="Post Image"/>
                             <img t-if="image_url.o_mimetype == 'application/pdf'" src="/web/static/src/img/mimetypes/pdf.svg" style="object-fit: contain;" alt="Post Image" class="pdf-download" t-attf-data-url="/web/content/#{image_url.id}?download=true" />
                         </t>
                     </t>
