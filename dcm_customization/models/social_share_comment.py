@@ -17,7 +17,7 @@ class SocialBitComments(models.Model):
     utm_campaign_id = fields.Many2one('utm.campaign',related=False, string="Campaign", store=True)
     comment = fields.Text("Comments")
     record_type = fields.Selection([('com_like','Comment Like'),('com_dislike','Comment Dislike'),('like','Like'),('dislike','Dislike'),('comment','Comment'),('share','Share'),('rating','Rating'),("post_delete","Post Delete")],string="Type", default="comment")
-    rating = fields.Integer("Rating",group_operator="avg")
+    rating = fields.Integer("Rating")
     parent_id = fields.Many2one('social.bit.comments',string="Parent")
     child_ids = fields.One2many('social.bit.comments','parent_id',string="Childs",domain=[('record_type','=','comment')])
     child_comlike_ids = fields.One2many('social.bit.comments','parent_id',string="Comment Like",domain=[('record_type','=','com_like')])
@@ -55,8 +55,8 @@ class SocialBitComments(models.Model):
                 # subject = "New Reply From %s"%(res.partner_id.name)
                 # device_list = self.env['res.partner.token'].search([('partner_id','=',res.parent_id.partner_id.id)]).mapped("push_token")
                 token_id = self.env['res.partner.token'].search([('partner_id','=',res.parent_id.partner_id.id)])
-                ios_token_id = token_id.filtered(lambda x: not x.device_type == "ios")
-                android_token_id = token_id.filtered(lambda x: not x.device_type != "ios")
+                ios_token_id = token_id.filtered(lambda x: x.device_type == "ios")
+                android_token_id = token_id.filtered(lambda x: x.device_type == "android")
                 push_service = FCMNotification(
                     api_key=self.env.user.company_id.fcm_api_key)
                 if ios_token_id:
@@ -68,10 +68,10 @@ class SocialBitComments(models.Model):
                     push_service.notify_multiple_devices(
                         registration_ids=android_token_id.mapped("push_token"),
                         sound="default",
-                        # message_title=subject,message_body=body,
+                        message_title=subject,message_body=body,click_action="OPEN_ACTIVITY_1",content_available=True,
                         # extra_notification_kwargs={"post_id": str(res.post_id.id), "comment_id": str(res.parent_id.id)}
                         data_message={"notification": {"post_id": res.post_id.id, "comment_id": res.parent_id.id,
-                                      "message_title": subject,"click_action":"COMMENTACTIVITY",
+                                      "message_title": subject,"click_action":"OPEN_ACTIVITY_1",
                                       "message_body": body}}
                         )
         return res

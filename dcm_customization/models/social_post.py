@@ -104,6 +104,8 @@ class SocialPostBIT(models.Model):
                     'total_comment_count': len(post.comments_ids),
                     'total_share_count': len(post.share_ids),
                 })
+            _logger.info(
+                    "Get Post Records From mobile records:- \n%s" % pprint.pformat(data))
             return {'data':data}
         else:
             return {'data':[]}
@@ -276,7 +278,7 @@ class SocialPostBIT(models.Model):
                         api_key=self.env.user.company_id.fcm_api_key)
                     resp = push_service.notify_multiple_devices(
                         registration_ids=device_list,
-                        message_title=subject, sound="default",click_action="0",
+                        message_title=subject, sound="default",
                         message_body=body,
                         extra_notification_kwargs=extra_notification_kwargs
                         )

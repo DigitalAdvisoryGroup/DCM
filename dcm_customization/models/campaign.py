@@ -1,5 +1,7 @@
 from odoo import api, fields, models
 from werkzeug.urls import url_join
+import logging
+_logger = logging.getLogger(__name__)
 
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
 
@@ -15,7 +17,7 @@ class Campaign(models.Model):
     like_ids = fields.One2many("social.bit.comments",'utm_campaign_id',string="Likes",domain=[('record_type','=','like')])
     dislikes_ids = fields.One2many("social.bit.comments",'utm_campaign_id',string="Dislikes",domain=[('record_type','=','dislike')])
     share_ids = fields.One2many("social.bit.comments",'utm_campaign_id',string="Shares",domain=[('record_type','=','share')])
-    avg_rating = fields.Float("Avg Rating",compute="compute_rating",store=True)
+    avg_rating = fields.Float("Avg Rating",compute="compute_rating",store=False)
 
 
     @api.depends('rating_ids')
@@ -76,6 +78,8 @@ class Campaign(models.Model):
     def get_campaign_details(self,partner_id):
         if self:
             partner_rating = self.env['social.bit.comments'].search([('partner_id','=',int(partner_id)),('utm_campaign_id','=',self.id),('record_type','=','rating')],limit=1)
+            _logger.info(
+                "Campaign Rating:- \n%s" % round(self.avg_rating,1))
             return {'data':[{
                     'create_date':self.create_date,
                     'responsible':self.user_id.name,
