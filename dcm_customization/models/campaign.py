@@ -81,6 +81,7 @@ class Campaign(models.Model):
             _logger.info(
                 "Campaign Rating:- \n%s" % round(self.avg_rating,1))
             return {'data':[{
+                    'name': self.name,
                     'create_date':self.create_date,
                     'responsible':self.user_id.name,
                     'responsible_partner_id':self.user_id.partner_id.id,

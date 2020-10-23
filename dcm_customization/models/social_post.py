@@ -87,7 +87,7 @@ class SocialPostBIT(models.Model):
                 data.append({
                     'id':post.id,
                     'name':post.utm_campaign_id.name,
-                    'date':post.create_date.strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                    'date':post.published_date.strftime(DEFAULT_SERVER_DATETIME_FORMAT),
                     'like':True if like else False,
                     'dislike':True if dislike else False,
                     'image':url_join(base_url,'/web/myimage/utm.campaign/%s/image_128'%post.utm_campaign_id.id),
