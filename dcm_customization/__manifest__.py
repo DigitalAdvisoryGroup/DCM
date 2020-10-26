@@ -9,7 +9,6 @@
         Odoo customizations for JustThis project requirements (http://www.xplain.ch/wp/produkte/justthis/)
     """,
     'description': """
-    
 
 DCM - Customization
 ===================
