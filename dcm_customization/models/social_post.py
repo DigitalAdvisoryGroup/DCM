@@ -20,8 +20,8 @@ class SocialPostBIT(models.Model):
     _inherit = 'social.post'
     _rec_name = ""
 
-    display_bit_preview = fields.Boolean('Display BIT Preview', compute='_compute_display_bit_preview', store=True)
-    bit_preview = fields.Html('BIT Preview', compute='_compute_bit_preview', store=True)
+    display_bit_preview = fields.Boolean('Display BIT Preview', compute='_compute_display_bit_preview')
+    bit_preview = fields.Html('BIT Preview', compute='_compute_bit_preview')
     social_groups_ids = fields.Many2many("social.partner.group","social_groups_post",string="Social Groups")
     social_partner_ids = fields.Many2many("res.partner","social_partner_post",string="Social Partners", copy=True)
     is_bit_post = fields.Boolean("Is Bit Post?")
@@ -78,10 +78,11 @@ class SocialPostBIT(models.Model):
             partner_browse = self.env["res.partner"].browse(int(partner_id))
             if not self:
                 # posts = self.with_context(lang=partner_browse.lang).search([('social_partner_ids','in',[int(partner_id)]),('state','=','posted'),('utm_campaign_id.stage_id.is_active','=',True)], limit=limit,offset=offset)
-                posts = self.search([('social_partner_ids','in',[int(partner_id)]),('state','=','posted'),('utm_campaign_id.stage_id.is_active','=',True)], limit=limit,offset=offset, order="id desc")
+                posts = self.search([('social_partner_ids','in',[int(partner_id)]),('state','=','posted'),('utm_campaign_id.stage_id.is_active','=',True)], limit=limit,offset=offset, order="published_date desc")
             else:
                 # posts = self.with_context(lang=partner_browse.lang)
                 posts = self
+            _logger.info("--------posts---------%s",posts)
             for post in posts:
                 like = self.env['social.bit.comments'].search_count([('post_id','=',post.id),('record_type','=','like'),('partner_id','=',int(partner_id))])
                 dislike = self.env['social.bit.comments'].search_count([('post_id','=',post.id),('record_type','=','dislike'),('partner_id','=',int(partner_id))])
