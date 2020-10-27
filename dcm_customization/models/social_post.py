@@ -20,8 +20,8 @@ class SocialPostBIT(models.Model):
     _inherit = 'social.post'
     _rec_name = ""
 
-    display_bit_preview = fields.Boolean('Display BIT Preview', compute='_compute_display_bit_preview')
-    bit_preview = fields.Html('BIT Preview', compute='_compute_bit_preview')
+    display_bit_preview = fields.Boolean('Display BIT Preview', compute='_compute_display_bit_preview', store=True)
+    bit_preview = fields.Html('BIT Preview', compute='_compute_bit_preview', store=True)
     social_groups_ids = fields.Many2many("social.partner.group","social_groups_post",string="Social Groups")
     social_partner_ids = fields.Many2many("res.partner","social_partner_post",string="Social Partners", copy=True)
     is_bit_post = fields.Boolean("Is Bit Post?")
@@ -39,6 +39,7 @@ class SocialPostBIT(models.Model):
                                    string="Dislike",
                                    domain=[('record_type', '=', 'dislike')])
     recipients_ids = fields.Many2many('res.partner',string="Recipients")
+
 
     @api.constrains('image_ids')
     def _check_image_ids_mimetype(self):
@@ -77,7 +78,7 @@ class SocialPostBIT(models.Model):
             partner_browse = self.env["res.partner"].browse(int(partner_id))
             if not self:
                 # posts = self.with_context(lang=partner_browse.lang).search([('social_partner_ids','in',[int(partner_id)]),('state','=','posted'),('utm_campaign_id.stage_id.is_active','=',True)], limit=limit,offset=offset)
-                posts = self.search([('social_partner_ids','in',[int(partner_id)]),('state','=','posted'),('utm_campaign_id.stage_id.is_active','=',True)], limit=limit,offset=offset)
+                posts = self.search([('social_partner_ids','in',[int(partner_id)]),('state','=','posted'),('utm_campaign_id.stage_id.is_active','=',True)], limit=limit,offset=offset, order="id desc")
             else:
                 # posts = self.with_context(lang=partner_browse.lang)
                 posts = self
