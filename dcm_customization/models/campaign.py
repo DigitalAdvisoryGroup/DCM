@@ -80,8 +80,6 @@ class Campaign(models.Model):
             partner_rating = self.env['social.bit.comments'].search([('partner_id','=',int(partner_id)),('utm_campaign_id','=',self.id),('record_type','=','rating')],limit=1)
             base_url = self.env['ir.config_parameter'].sudo().get_param(
                 'web.base.url')
-            _logger.info(
-                "Campaign Rating:- \n%s" % round(self.avg_rating,1))
             return {'data':[{
                     'name': self.name,
                     'create_date':self.create_date,
