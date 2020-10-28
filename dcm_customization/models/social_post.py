@@ -82,7 +82,6 @@ class SocialPostBIT(models.Model):
             else:
                 # posts = self.with_context(lang=partner_browse.lang)
                 posts = self
-            _logger.info("--------posts---------%s",posts)
             for post in posts:
                 like = self.env['social.bit.comments'].search_count([('post_id','=',post.id),('record_type','=','like'),('partner_id','=',int(partner_id))])
                 dislike = self.env['social.bit.comments'].search_count([('post_id','=',post.id),('record_type','=','dislike'),('partner_id','=',int(partner_id))])
@@ -106,8 +105,6 @@ class SocialPostBIT(models.Model):
                     'total_comment_count': len(post.comments_ids),
                     'total_share_count': len(post.share_ids),
                 })
-            _logger.info(
-                    "Get Post Records From mobile records:- \n%s" % pprint.pformat(data))
             return {'data':data}
         else:
             return {'data':[]}
@@ -296,12 +293,12 @@ class SocialPostBIT(models.Model):
                     [('post_id', '=', post.id)]
                 )
 
-    @api.depends('message', 'account_ids.media_id.media_type')
+    @api.depends('message','account_ids.media_id.media_type')
     def _compute_display_bit_preview(self):
         for post in self:
             post.display_bit_preview = post.message and ('bit' in post.account_ids.media_id.mapped('media_type'))
 
-    @api.depends('message', 'scheduled_date', 'image_ids')
+    @api.depends('message','scheduled_date', 'image_ids')
     def _compute_bit_preview(self):
         for post in self:
             image_data = []
