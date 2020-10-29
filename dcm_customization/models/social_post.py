@@ -41,6 +41,7 @@ class SocialPostBIT(models.Model):
     recipients_ids = fields.Many2many('res.partner',string="Recipients")
 
 
+
     @api.constrains('image_ids')
     def _check_image_ids_mimetype(self):
         for social_post in self:
@@ -298,22 +299,13 @@ class SocialPostBIT(models.Model):
         for post in self:
             post.display_bit_preview = post.message and ('bit' in post.account_ids.media_id.mapped('media_type'))
 
-    @api.depends('message','scheduled_date', 'image_ids')
+    @api.depends('scheduled_date', 'image_ids')
     def _compute_bit_preview(self):
         for post in self:
-            image_data = []
-            for i in post.image_ids:
-                image_data.append({'mimetype':i.mimetype,'datas':base64.b64encode(open(i._full_path(i.store_fname), 'rb').read())})
-            
             post.bit_preview = self.env.ref('dcm_customization.bit_preview').render({
                 'message': post.message,
                 'published_date': post.scheduled_date if post.scheduled_date else fields.Datetime.now(),
                 'image_ids':post.image_ids,
-                'image_data':image_data,
-                # 'images': [
-                #     image.datas if not image.id
-                #     else base64.b64encode(open(image._full_path(image.store_fname), 'rb').read()) for image in post.image_ids
-                # ]
             })
 
     def unlink(self):
