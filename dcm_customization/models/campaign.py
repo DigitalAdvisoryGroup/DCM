@@ -1,5 +1,6 @@
-from odoo import api, fields, models
+from odoo import api, fields, models,_
 from werkzeug.urls import url_join
+from odoo.exceptions import UserError
 import logging
 _logger = logging.getLogger(__name__)
 
@@ -98,6 +99,12 @@ class Campaign(models.Model):
                                   '/web/myimage/utm.campaign/%s/image_128' % self.id),
                  }]}
         return {'data':[]}
+
+    def unlink(self):
+        for record in self:
+            if record.stage_id.is_active:
+                raise UserError(_('You can not delete campaign which is in active stage!'))
+        return super(Campaign, self).unlink()
 
 class UTMStage(models.Model):
     _inherit = 'utm.stage'

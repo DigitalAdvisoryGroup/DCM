@@ -47,6 +47,7 @@
                 <xpath expr="//field[@name='utm_campaign_id']"
                        position="attributes">
                     <attribute name="required">1</attribute>
+                    <attribute name="attrs">{'readonly': [('state', 'in', ['posting'])]}</attribute>
                 </xpath>
                 <xpath expr="//sheet" position="inside">
                     <notebook>
