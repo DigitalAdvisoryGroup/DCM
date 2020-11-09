@@ -72,12 +72,14 @@ class SocialPostBIT(models.Model):
         else:
             self.is_bit_post = False
 
-    def get_post_api(self,partner_id=False, limit=None,offset=0):
+    def get_post_api(self,partner_id=False, limit=None,offset=None):
         if partner_id:
             data = []
             base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
             partner_browse = self.env["res.partner"].browse(int(partner_id))
             if not self:
+                if offset and offset > 0:
+                    offset -= 3
                 # posts = self.with_context(lang=partner_browse.lang).search([('social_partner_ids','in',[int(partner_id)]),('state','=','posted'),('utm_campaign_id.stage_id.is_active','=',True)], limit=limit,offset=offset)
                 posts = self.search([('social_partner_ids','in',[int(partner_id)]),('state','=','posted'),('utm_campaign_id.stage_id.is_active','=',True)], limit=limit,offset=offset, order="published_date desc")
             else:
@@ -310,6 +312,8 @@ class SocialPostBIT(models.Model):
 
     def unlink(self):
         for record in self:
+            if record.state == "posted":
+                raise UserError(_('You can not delete post which was posted!'))
             stream_post = self.env['social.stream.post'].search([('post_id','=',record.id)])
             stream_post.unlink()
             stream_post = self.env['social.live.post'].search([('post_id','=',record.id)])

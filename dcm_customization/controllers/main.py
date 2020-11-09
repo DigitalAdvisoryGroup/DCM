@@ -26,6 +26,8 @@ from odoo.addons.mail.controllers.main import MailController
 from odoo.addons.portal.controllers.portal import CustomerPortal
 import base64
 from odoo.http import Response
+from io import BytesIO
+from werkzeug.wsgi import wrap_file
 
 class PortalAccount(CustomerPortal):
     @http.route()
@@ -86,11 +88,20 @@ class WebController(Binary):
                                                                   headers,
                                                                   content)
             else:
+                # content_base64 = base64.b64decode(content)
+                # headers.append(('Content-Length', len(content_base64)))
+                # buf = BytesIO(content_base64)
+                # data = wrap_file(http.request.httprequest.environ, buf)
+                # response = http.Response(
+                #     data,
+                #     headers=headers,
+                #     direct_passthrough=True)
                 content_base64 = base64.b64decode(content)
                 mainvideo = content_base64
                 if request.httprequest.range:
                     contentrange = request.httprequest.range.make_content_range(
                         len(content_base64))
+
                     if contentrange.stop < len(content_base64):
                         status = 206
                         headers.append(('Content-Range', 'bytes %s-%s/%s' % (
@@ -112,3 +123,4 @@ class WebController(Binary):
             if token:
                 response.set_cookie('fileToken', token)
             return response
+
