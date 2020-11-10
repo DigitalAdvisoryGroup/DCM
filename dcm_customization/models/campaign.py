@@ -91,7 +91,7 @@ class Campaign(models.Model):
                     'comments_count':len(self.comments_ids),
                     'shares_count':len(self.share_ids),
                     'mailing_count':len(self.mailing_mail_ids),
-                    'post_count':len(self.social_post_ids),
+                    'post_count':len(self.social_post_ids.filtered(lambda post: post.state == 'posted')),
                     'rating_count':len(self.rating_ids),
                     'avg_rating':round(self.avg_rating,1),
                     'my_rating':round(partner_rating.rating,1) if partner_rating else 0.0,
