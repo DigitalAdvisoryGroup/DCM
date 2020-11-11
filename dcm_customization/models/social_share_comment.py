@@ -64,7 +64,7 @@ class SocialBitComments(models.Model):
                                                          message_title=subject,sound="default",
                                                          message_body=body,click_action="%s,%s"%(res.post_id.id,res.parent_id.id)
                                                          )
-                else:
+                elif android_token_id:
                     push_service.notify_multiple_devices(
                         registration_ids=android_token_id.mapped("push_token"),
                         sound="default",
