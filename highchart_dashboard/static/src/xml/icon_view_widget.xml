@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <t t-name="FieldViewIcon">
+        <t t-if="widget.mode != 'readonly'">
+            <span t-attf-class="oe_form_field {{widget.widget_class}}" t-att-style="widget.attrs.style">
+
+                <div class="o_form_icon_controls" style="display: flex;">
+                    <button type="button" class="fa fa-image icon_option_show_icons" title="Icons"/>
+                    <button class="fa fa-trash-o fa-lg float-right o_clear_file_button icon_option_clear" title="Clear"
+                            aria-label="Clear"/>
+                </div>
+
+                <input type="text"
+                       t-att-id="widget.id_for_label"
+                       t-att-tabindex="widget.attrs.tabindex"
+                       t-att-autofocus="widget.attrs.autofocus"
+                       t-att-placeholder="widget.attrs.placeholder"
+                       t-att-maxlength="widget.field.size"
+                       t-att-value="widget.value"
+                       class="o_input hidden"/>
+                <span id="favicon_icon" t-att-class="widget.value + ' fa-5x'"/>
+
+                <div class="modal fade" id="icon_select_container" role="dialog">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">Select Your Icon</h4>
+                            </div>
+                            <div class="modal-body">
+                                <t t-foreach="widget.all_icons" t-as="icon">
+                                    <div t-att-id="icon" class="modal_icon_container" data-dismiss="modal">
+                                        <span t-att-id="icon" t-att-class="'fa ' + icon"/>
+                                    </div>
+                                </t>
+                            </div>
+                            <div class="modal-footer">
+                                <!--<button type="button" class="btn btn-primary icon_select_button" data-dismiss="modal">Select</button>-->
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </span>
+        </t>
+        <t t-else="">
+            <p id="favicon_icon" t-attf-class="#{widget.value} fa-5x"/>
+        </t>
+
+    </t>
+
+</odoo>

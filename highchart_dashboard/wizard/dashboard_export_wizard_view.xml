@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- <record id="dashboard_export_wizard" model="ir.ui.view">
+        <field name="name">dashboard.export.wizard.form</field>
+        <field name="model">dashboard.export.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Export Dashboard">
+                <div>
+                    <span>Click to download dashboard file.</span>
+                </div>
+                <footer>
+                    <button name="download_file" type="object" string="Download"/>
+                    <button string="Cancel" class="oe_link" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <act_window
+            id="action_export_dashboard"
+            name="Export Dashboard"
+            res_model="dashboard.export.wizard"
+            src_model="highchart.dashboard"
+            view_mode="form"
+            target="new"
+            multi="True"
+            key2="client_action_multi"/> -->
+
+</odoo>

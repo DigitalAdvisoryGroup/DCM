@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="view_highchart_dashboard_chart_tree" model="ir.ui.view">
+        <field name="name">highchart.dashboard.chart.tree</field>
+        <field name="model">highchart.dashboard.chart</field>
+        <field name="priority" eval="8"/>
+        <field name="arch" type="xml">
+            <tree string="Highchart Dashboard Chart">
+                <field name="name"/>
+                <field name="dashboard_id"/>
+                <field name="chart_type"/>
+                <field name="filter_date_field"/>
+                <field name="chart_date_filter"/>
+                <field name="model_id"/>
+                <field name="gs_x" invisible="1"/>
+                <field name="gs_y" invisible="1"/>
+                <field name="gs_height" invisible="1"/>
+                <field name="gs_width" invisible="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_highchart_dashboard_chart_form" model="ir.ui.view">
+        <field name="name">highchart.dashboard.chart.form</field>
+        <field name="model">highchart.dashboard.chart</field>
+        <field name="priority" eval="16"/>
+        <field name="arch" type="xml">
+            <form string="Highchart Dashboard Chart">
+                <group>
+                    <group>
+                        <field name="name" placeholder="e.g. Dashboard Name"/>
+                        <field name="model_name" invisible="1" readonly="1"/>
+                        <field name="chart_type"/>
+                        <field name="dashboard_id"/>
+                        <field name="model_id"/>
+                        <field name="domain" widget="domain" options="{'model': 'model_name', 'in_dialog': True}"/>
+                        <field name="filter_date_field" attrs="{'invisible':[('model_id', '=', False)]}"/>
+                        <field name="chart_date_filter" attrs="{'invisible':['|', ('model_id', '=', False), ('filter_date_field', '=', False)], 'required':[('model_id', '!=', False), ('filter_date_field', '!=', False)]}"/>
+                        <field name="chart_theme"
+                               attrs="{'invisible':[('chart_type', 'in', ['tile','kpi','list_view','pie'])], 'required':[('chart_type', 'not in', ['tile','kpi','list_view','pie'])]}"/>
+                        <field name="stack_options"
+                               attrs="{'invisible':[('chart_type', 'in', ['tile','kpi','list_view','pie','line','area','polar'])]}"/>
+                        <field name="show_unit"
+                               attrs="{'invisible':[('chart_type', 'in', ['tile','kpi','list_view'])]}"/>
+                        <field name="show_custom_unit" attrs="{'invisible':['|', ('show_unit', '=', False), ('chart_type', 'in', ['tile','kpi','list_view'])]}"/>
+                        <field name="select_unit_type" attrs="{'invisible':['|', '|', ('show_unit', '=', False), ('show_custom_unit', '=', False), ('chart_type', 'in', ['tile','kpi','list_view'])], 'required':[('show_custom_unit', '!=', False)]}"/>
+                        <field name="custom_unit" attrs="{'invisible':['|', '|', ('select_unit_type','!=', 'custom'), ('show_unit', '=', False), ('show_custom_unit','=',False)], 'required':[('select_unit_type', '=', 'custom'), ('show_custom_unit','!=',False)]}"/>
+                        <field name="show_legend" attrs="{'invisible':[('chart_type', 'in', ['tile','kpi','list_view'])]}"/>
+                        <field name="gs_x" invisible="1"/>
+                        <field name="gs_y" invisible="1"/>
+                        <field name="gs_height" invisible="1"/>
+                        <field name="gs_width" invisible="1"/>
+                        <field name="all_domain" invisible="1"/>
+                    </group>
+                    <group>
+                        <field name="chart_preview" nolabel="1" style="display:inline-block !important;"
+                               widget="dashboard_chart_preview"/>
+                    </group>
+                </group>
+                <notebook>
+                    <page name="main_query" string="Query">
+                        <group>
+                            <group>
+                                <field name="calculation_type"
+                                       attrs="{'invisible':[('chart_type','=','list_view')], 'required':[('calculation_type','!=','list_view')]}"/>
+                                <field name="list_view_type"
+                                       attrs="{'invisible':[('chart_type', '!=', 'list_view')], 'required':[('chart_type', '=', 'list_view')]}"/>
+                                <field name="chart_groupby_id"
+                                       attrs="{'invisible':['|', ('chart_type', 'in', ['tile', 'kpi']), '&amp;', ('chart_type', '=', 'list_view'), ('list_view_type','==','ungrouped')], 'required':['|', ('chart_type', 'in', ['column', 'bar', 'line', 'area', 'pie', 'polar']), '&amp;', ('chart_type', '=', 'list_view'), ('list_view_type','==','grouped')]}"/>
+                                <field name="chart_groupby_date"
+                                       attrs="{'invisible':[('chart_groupby_type', '!=', 'date_type')], 'required':[('chart_groupby_type', '=', 'date_type')]}"/>
+                                <field name="chart_sub_groupby_id"
+                                       attrs="{'invisible':['|', ('chart_groupby_id', '=', False), ('chart_type', 'in', ['tile', 'kpi', 'list_view'])]}"/>
+                                <field name="chart_sub_groupby_date"
+                                       attrs="{'invisible':['|', ('chart_groupby_id', '=', False), ('chart_sub_groupby_type', '!=', 'date_type')], 'required':[('chart_sub_groupby_type', '=', 'date_type')]}"/>
+                                <field name="record_field"
+                                       attrs="{'invisible':['|',('chart_type','not in', ['tile', 'kpi']), ('calculation_type','=','count')], 'required':[('chart_type','in', ['tile', 'kpi']), ('calculation_type','!=','count')]}"
+                                       options="{'no_create_edit':True, 'no_open': True}"/>
+                                <field name="chart_measure_field_ids" widget="many2many_tags"
+                                       attrs="{'invisible':['|', ('chart_type', 'in', ['tile', 'kpi', 'list_view']), ('calculation_type', '=', 'count')], 'required':[('chart_type', 'not in', ['tile', 'kpi', 'list_view']), ('calculation_type', '!=', 'count')]}"/>
+                                <field name="list_view_fields"
+                                       attrs="{'invisible':['|', ('chart_type', '!=', 'list_view'), ('list_view_type', '!=', 'ungrouped')], 'required':[('chart_type', '=', 'list_view'), ('list_view_type', '==', 'ungrouped')]}"
+                                       widget="many2many_tags"/>
+                                <field name="list_view_group_fields"
+                                       attrs="{'invisible':['|', ('chart_type', '!=', 'list_view'), ('list_view_type', '!=', 'grouped')], 'required':[('chart_type', '=', 'list_view'), ('list_view_type', '==', 'grouped')]}"
+                                       widget="many2many_tags"/>
+                                <field name="total_record"/>
+                                <field name="chart_groupby_type" invisible="1"/>
+                                <field name="chart_sub_groupby_type" invisible="1"/>
+                                <field name="chart_data" invisible="1"/>
+                            </group>
+                            <group>
+                                <field name="sort_by"
+                                       attrs="{'invisible':[('calculation_type', '=', 'count'), ('chart_type', '!=', 'list_view')]}"/>
+                                <field name="order_by"
+                                       attrs="{'invisible':[('calculation_type', '=', 'count'), ('chart_type', '!=', 'list_view')]}"/>
+                                <field name="record_limit"/>
+                                <field name="list_view_ref_id"/>
+                                <field name="form_view_ref_id"/>
+                            </group>
+                        </group>
+                    </page>
+                    <page name="second_query" string="Query 2" attrs="{'invisible':[('chart_type','!=','kpi')]}">
+                        <group>
+                            <group>
+                                <field name="second_model_id"/>
+                                <field name="second_calculation_type"
+                                       attrs="{'invisible':[('second_model_id', '=', False)], 'required':[('second_model_id', '!=', False)]}"/>
+                                <field name="second_record_field"
+                                       attrs="{'invisible':['|',('second_model_id', '=', False),('second_calculation_type','=','count')], 'required':[('second_model_id', '!=', False), ('second_calculation_type','!=','count')]}"
+                                       options="{'no_create_edit':True, 'no_open': True}"/>
+                                <field name="second_total_record"
+                                       attrs="{'invisible':[('second_model_id', '=', False)]}"/>
+                                <field name="kpi_value" invisible="1"/>
+                                <field name="data_comparision"
+                                       attrs="{'invisible':[('second_model_id', '=', False)], 'required':[('second_model_id', '!=', False)]}"/>
+                            </group>
+                            <group>
+                                <field name="second_model_name" invisible="1" readonly="1"/>
+                                <field name="second_domain" widget="domain" attrs="{'invisible':[('second_model_id', '=', False)]}"
+                                       options="{'model': 'second_model_name', 'in_dialog': True}"/>
+                                <field name="second_filter_date_field" attrs="{'invisible':[('second_model_id', '=', False)]}"/>
+                                <field name="second_date_filter" attrs="{'invisible':['|', ('second_model_id', '=', False), ('second_filter_date_field', '=', False)], 'required':[('second_model_id', '!=', False), ('second_filter_date_field', '!=', False)]}"/>
+                            </group>
+                        </group>
+                    </page>
+                    <page name="design" string="Design"
+                          attrs="{'invisible':[('chart_type','not in', ['tile', 'kpi'])]}">
+                        <group>
+                            <group>
+                                <field name="tile_template"
+                                       attrs="{'required':[('chart_type', '=', 'tile')], 'invisible':[('chart_type', '!=', 'tile')]}"/>
+                                <field name="icon_option" widget="radio"/>
+                                <field name="default_icon" attrs="{'invisible':[('icon_option','=','upload')]}"
+                                       widget="icon_view_widget"/>
+                                <field name="upload_icon" widget="image" class="tile_icon"
+                                       attrs="{'invisible':[('icon_option','=','default')]}"/>
+                                <field name="upload_icon_binary" invisible="1"/>
+                            </group>
+                            <group>
+                                <field name="font_color" widget="color"/>
+                                <field name="background_color" widget="color"/>
+                                <field name="icon_color" widget="color"
+                                       attrs="{'invisible':[('icon_option','=','upload')]}"/>
+                            </group>
+                        </group>
+                    </page>
+                    <page name="target" string="Target"
+                          attrs="{'invisible':['|', ('chart_type', '!=', 'kpi'), ('second_model_id', '!=', False), ('data_comparision', 'not in', ['sum', 'percentage'])]}">
+                        <group>
+                            <field name="kpi_target"/>
+                            <field name="kpi_target_value" attrs="{'invisible':[('kpi_target', '=', False)]}"/>
+                            <field name="kpi_target_view_type"
+                                   attrs="{'invisible':[('kpi_target', '=', False)], 'required':[('kpi_target', '=', True)]}"/>
+                            <field name="target_display_value" invisible="1"/>
+                            <field name="target_value_type" invisible="1"/>
+                            <field name="progress_bar_value" invisible="1"/>
+                            <field name="progress_bar_max" invisible="1"/>
+                        </group>
+                    </page>
+                </notebook>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_highchart_dashboard_chart_search" model="ir.ui.view">
+        <field name="name">highchart.dashboard.chart.search</field>
+        <field name="model">highchart.dashboard.chart</field>
+        <field name="priority" eval="8"/>
+        <field name="arch" type="xml">
+            <search string="Highchart Dashboard Chart">
+                <field name="name"/>
+                <newline/>
+                <group expand="0" string="Group By">
+                    <filter string="Dashboard" name="dashboard" context="{'group_by':'dashboard_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="act_open_highchart_dashboard_chart_view" model="ir.actions.act_window">
+        <field name="name">Highchart Dashboard Charts</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">highchart.dashboard.chart</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_highchart_dashboard_chart_search"/>
+        <field name="domain">[('dashboard_id.active', '=', True)]</field>
+        <field name="context">{'search_default_dashboard': True}</field>
+    </record>
+    <record id="act_open_highchart_dashboard_chart_view_form" model="ir.actions.act_window.view">
+        <field name="act_window_id" ref="act_open_highchart_dashboard_chart_view"/>
+        <field name="sequence" eval="20"/>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_highchart_dashboard_chart_form"/>
+    </record>
+    <record id="act_open_highchart_dashboard_chart_view_tree" model="ir.actions.act_window.view">
+        <field name="act_window_id" ref="act_open_highchart_dashboard_chart_view"/>
+        <field name="sequence" eval="10"/>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="view_highchart_dashboard_chart_tree"/>
+    </record>
+
+</odoo>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="assets_backend" name="highchart assets" inherit_id="web.assets_backend">
+        <xpath expr="." position="inside">
+            <link rel="stylesheet" href="/highchart_dashboard/static/src/css/highchart_dashboard.css"/>
+            <link rel="stylesheet" href="/highchart_dashboard/static/src/less/highchart_dashboard.less"/>
+
+            <script type="text/javascript" src="/highchart_dashboard/static/src/js/dashboard_chart_preview.js"/>
+            <script type="text/javascript" src="/highchart_dashboard/static/src/js/highchart_dashboard.js"/>
+            <script type="text/javascript" src="/highchart_dashboard/static/src/js/icon_view_widget.js"/>
+            <script type="text/javascript" src="/highchart_dashboard/static/src/js/list_controller.js"/>
+            <script type="text/javascript" src="/highchart_dashboard/static/src/js/field_domain.js"/>
+        </xpath>
+    </template>
+
+</odoo>

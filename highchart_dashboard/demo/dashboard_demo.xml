@@ -1,0 +1,458 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <record id="highchart_dashboard_1" model="highchart.dashboard">
+        <field name="name">Template1</field>
+        <field name="menu_name">Template1</field>
+        <field name="parent_menu_id" eval="ref('highchart_dashboard.highchart_dashboards_root_menu')"/>
+        <field name="dashboard_date_filter">none</field>
+        <field name="filter_start_date" eval="DateTime.now()"/>
+        <field name="filter_end_date" eval="DateTime.now()"/>
+        <field name="active">True</field>
+        <field name="group_ids" eval="False"/>
+        <field name="menu_sequence">30</field>
+    </record>
+
+    <record id="highchart_dashboard_chart_1" model="highchart.dashboard.chart">
+        <field name="name">Tile Chart1</field>
+        <field name="model_id" eval="ref('sale.model_sale_order')"/>
+        <field name="domain">[]</field>
+        <field name="chart_type">tile</field>
+        <field name="calculation_type">count</field>
+        <field name="chart_groupby_id" eval="ref('sale.field_sale_order__partner_id')"/>
+        <field name="tile_template">template1</field>
+        <field name="icon_option">default</field>
+        <field name="default_icon">fa fa-book</field>
+        <field name="font_color">#5B84B1FF</field>
+        <field name="icon_color">#5B84B1FF</field>
+        <field name="background_color">#FC766AFF</field>
+        <field name="dashboard_id" ref="highchart_dashboard.highchart_dashboard_1"/>
+    </record>
+
+    <record id="highchart_dashboard_chart_2" model="highchart.dashboard.chart">
+        <field name="name">Tile Chart2</field>
+        <field name="model_id" eval="ref('sale.model_sale_order')"/>
+        <field name="domain">[]</field>
+        <field name="chart_type">tile</field>
+        <field name="calculation_type">sum</field>
+        <field name="chart_groupby_id" eval="ref('sale.field_sale_order__partner_id')"/>
+        <field name="record_field" eval="ref('sale.field_sale_order__amount_total')"/>
+        <field name="tile_template">template2</field>
+        <field name="icon_option">default</field>
+        <field name="default_icon">fa fa-shopping-cart</field>
+        <field name="font_color">#FFFFFFFF</field>
+        <field name="icon_color">#FFFFFFFF</field>
+        <field name="background_color">#000000FF</field>
+        <field name="dashboard_id" ref="highchart_dashboard.highchart_dashboard_1"/>
+    </record>
+
+    <record id="highchart_dashboard_chart_3" model="highchart.dashboard.chart">
+        <field name="name">Tile Chart3</field>
+        <field name="model_id" eval="ref('sale.model_sale_order')"/>
+        <field name="domain">[]</field>
+        <field name="chart_type">tile</field>
+        <field name="calculation_type">average</field>
+        <field name="chart_groupby_id" eval="ref('sale.field_sale_order__partner_id')"/>
+        <field name="record_field" eval="ref('sale.field_sale_order__amount_total')"/>
+        <field name="tile_template">template3</field>
+        <field name="icon_option">default</field>
+        <field name="default_icon">fa fa-thumb-tack</field>
+        <field name="font_color">#ADEFD1FF</field>
+        <field name="icon_color">#ADEFD1FF</field>
+        <field name="background_color">#00203FFF</field>
+        <field name="dashboard_id" ref="highchart_dashboard.highchart_dashboard_1"/>
+    </record>
+
+    <record id="highchart_dashboard_chart_4" model="highchart.dashboard.chart">
+        <field name="name">Tile Chart4</field>
+        <field name="model_id" eval="ref('sale.model_sale_order')"/>
+        <field name="domain">[]</field>
+        <field name="chart_type">tile</field>
+        <field name="calculation_type">average</field>
+        <field name="chart_groupby_id" eval="ref('sale.field_sale_order__partner_id')"/>
+        <field name="record_field" eval="ref('sale.field_sale_order__amount_total')"/>
+        <field name="tile_template">template4</field>
+        <field name="icon_option">default</field>
+        <field name="default_icon">fa fa-thumb-tack</field>
+        <field name="font_color">#ADEFD1FF</field>
+        <field name="icon_color">#ADEFD1FF</field>
+        <field name="background_color">#00203FFF</field>
+        <field name="dashboard_id" ref="highchart_dashboard.highchart_dashboard_1"/>
+    </record>
+
+    <record id="highchart_dashboard_chart_5" model="highchart.dashboard.chart">
+        <field name="name">Tile Chart5</field>
+        <field name="model_id" eval="ref('sale.model_sale_order')"/>
+        <field name="domain">[]</field>
+        <field name="chart_type">tile</field>
+        <field name="calculation_type">average</field>
+        <field name="chart_groupby_id" eval="ref('sale.field_sale_order__partner_id')"/>
+        <field name="record_field" eval="ref('sale.field_sale_order__amount_total')"/>
+        <field name="tile_template">template5</field>
+        <field name="icon_option">default</field>
+        <field name="default_icon">fa fa-thumb-tack</field>
+        <field name="font_color">#ADEFD1FF</field>
+        <field name="icon_color">#ADEFD1FF</field>
+        <field name="background_color">#00203FFF</field>
+        <field name="dashboard_id" ref="highchart_dashboard.highchart_dashboard_1"/>
+    </record>
+
+    <record id="highchart_dashboard_chart_6" model="highchart.dashboard.chart">
+        <field name="name">Tile Chart6</field>
+        <field name="model_id" eval="ref('sale.model_sale_order')"/>
+        <field name="domain">[]</field>
+        <field name="chart_type">tile</field>
+        <field name="calculation_type">average</field>
+        <field name="chart_groupby_id" eval="ref('sale.field_sale_order__partner_id')"/>
+        <field name="record_field" eval="ref('sale.field_sale_order__amount_total')"/>
+        <field name="tile_template">template6</field>
+        <field name="icon_option">default</field>
+        <field name="default_icon">fa fa-thumb-tack</field>
+        <field name="font_color">#ADEFD1FF</field>
+        <field name="icon_color">#ADEFD1FF</field>
+        <field name="background_color">#00203FFF</field>
+        <field name="dashboard_id" ref="highchart_dashboard.highchart_dashboard_1"/>
+    </record>
+
+    <record id="highchart_dashboard_chart_7" model="highchart.dashboard.chart">
+        <field name="name">Chart4</field>
+        <field name="model_id" eval="ref('sale.model_sale_order')"/>
+        <field name="domain">[]</field>
+        <field name="chart_type">column</field>
+        <field name="calculation_type">count</field>
+        <field name="chart_groupby_id" eval="ref('sale.field_sale_order__partner_id')"/>
+        <field name="dashboard_id" ref="highchart_dashboard.highchart_dashboard_1"/>
+    </record>
+
+    <record id="highchart_dashboard_chart_8" model="highchart.dashboard.chart">
+        <field name="name">Bar Chart</field>
+        <field name="model_id" eval="ref('sale.model_sale_order')"/>
+        <field name="domain">[]</field>
+        <field name="chart_type">bar</field>
+        <field name="calculation_type">count</field>
+        <field name="chart_groupby_id" eval="ref('sale.field_sale_order__confirmation_date')"/>
+        <field name="chart_groupby_date">day</field>
+        <field name="dashboard_id" ref="highchart_dashboard.highchart_dashboard_1"/>
+    </record>
+
+    <record id="highchart_dashboard_chart_9" model="highchart.dashboard.chart">
+        <field name="name">Line Chart</field>
+        <field name="model_id" eval="ref('base.model_res_country')"/>
+        <field name="domain">[]</field>
+        <field name="chart_type">line</field>
+        <field name="calculation_type">sum</field>
+        <field name="chart_groupby_id" eval="ref('base.field_res_country__currency_id')"/>
+        <field name="chart_measure_field_ids" eval="[(6, 0, [ref('base.field_res_country__phone_code')])]"/>
+        <field name="dashboard_id" ref="highchart_dashboard.highchart_dashboard_1"/>
+    </record>
+
+    <record id="highchart_dashboard_chart_10" model="highchart.dashboard.chart">
+        <field name="name">Area Chart</field>
+        <field name="model_id" eval="ref('product.model_product_template')"/>
+        <field name="domain">[]</field>
+        <field name="chart_type">area</field>
+        <field name="calculation_type">sum</field>
+        <field name="chart_groupby_id" eval="ref('product.field_product_template__categ_id')"/>
+        <field name="chart_measure_field_ids" eval="[(6, 0, [ref('product.field_product_template__list_price')])]"/>
+        <field name="dashboard_id" ref="highchart_dashboard.highchart_dashboard_1"/>
+    </record>
+
+    <record id="highchart_dashboard_chart_11" model="highchart.dashboard.chart">
+        <field name="name">Pie Chart</field>
+        <field name="model_id" eval="ref('base.model_res_country')"/>
+        <field name="domain">[]</field>
+        <field name="chart_type">pie</field>
+        <field name="calculation_type">sum</field>
+        <field name="chart_groupby_id" eval="ref('base.field_res_country__currency_id')"/>
+        <field name="chart_measure_field_ids" eval="[(6, 0, [ref('base.field_res_country__phone_code')])]"/>
+        <field name="record_limit">10</field>
+        <field name="dashboard_id" ref="highchart_dashboard.highchart_dashboard_1"/>
+    </record>
+
+    <record id="highchart_dashboard_chart_12" model="highchart.dashboard.chart">
+        <field name="name">List Chart</field>
+        <field name="model_id" eval="ref('sale.model_sale_order')"/>
+        <field name="domain">[]</field>
+        <field name="chart_type">list_view</field>
+        <field name="calculation_type">sum</field>
+        <field name="list_view_type">ungrouped</field>
+        <field name="list_view_fields" eval="[(6, 0, [ref('sale.field_sale_order__partner_id'), ref('sale.field_sale_order__confirmation_date'), ref('sale.field_sale_order__amount_total')])]"/>
+        <field name="dashboard_id" ref="highchart_dashboard.highchart_dashboard_1"/>
+    </record>
+
+    <record id="highchart_dashboard_chart_13" model="highchart.dashboard.chart">
+        <field name="name">KPI Chart</field>
+        <field name="model_id" eval="ref('sale.model_sale_order')"/>
+        <field name="domain">[]</field>
+        <field name="chart_type">kpi</field>
+        <field name="calculation_type">count</field>
+        <field name="icon_option">default</field>
+        <field name="default_icon">fa fa-book</field>
+        <field name="font_color">#000000</field>
+        <field name="icon_color">#000000</field>
+        <field name="background_color">#96ff9a</field>
+        <field name="second_model_id" eval="ref('product.model_product_template')"/>
+        <field name="second_domain">[]</field>
+        <field name="second_calculation_type">count</field>
+        <field name="data_comparision">percentage</field>
+        <field name="kpi_target" eval="True"/>
+        <field name="kpi_target_value">100</field>
+        <field name="kpi_target_view_type">progress_bar</field>
+        <field name="dashboard_id" ref="highchart_dashboard.highchart_dashboard_1"/>
+    </record>
+
+    <record id="highchart_dashboard_chart_14" model="highchart.dashboard.chart">
+        <field name="name">Sales KPI</field>
+        <field name="model_id" eval="ref('sale.model_sale_order')"/>
+        <field name="domain">[('state', '=', 'draft')]</field>
+        <field name="chart_type">kpi</field>
+        <field name="calculation_type">count</field>
+        <field name="icon_option">default</field>
+        <field name="default_icon">fa fa-book</field>
+        <field name="font_color">#000000</field>
+        <field name="icon_color">#000000</field>
+        <field name="background_color">#FFF787</field>
+        <field name="second_model_id" eval="ref('sale.model_sale_order')"/>
+        <field name="second_domain">[('state', '=', 'done')]</field>
+        <field name="second_calculation_type">count</field>
+        <field name="data_comparision">sum</field>
+        <field name="kpi_target" eval="True"/>
+        <field name="kpi_target_value">100</field>
+        <field name="kpi_target_view_type">progress_bar</field>
+        <field name="dashboard_id" ref="highchart_dashboard.highchart_dashboard_1"/>
+    </record>
+
+    <record id="highchart_dashboard_2" model="highchart.dashboard">
+        <field name="name">Template2</field>
+        <field name="menu_name">Template2</field>
+        <field name="parent_menu_id" eval="ref('highchart_dashboard.highchart_dashboards_root_menu')"/>
+        <field name="dashboard_date_filter">none</field>
+        <field name="filter_start_date" eval="DateTime.now()"/>
+        <field name="filter_end_date" eval="DateTime.now()"/>
+        <field name="active">True</field>
+        <field name="group_ids" eval="False"/>
+        <field name="menu_sequence">30</field>
+    </record>
+
+    <record id="highchart_dashboard_chart2_1" model="highchart.dashboard.chart">
+        <field name="name">Tile Chart1</field>
+        <field name="model_id" eval="ref('sale.model_sale_order')"/>
+        <field name="domain">[]</field>
+        <field name="chart_type">tile</field>
+        <field name="calculation_type">count</field>
+        <field name="chart_groupby_id" eval="ref('sale.field_sale_order__partner_id')"/>
+        <field name="tile_template">template1</field>
+        <field name="icon_option">default</field>
+        <field name="default_icon">fa fa-book</field>
+        <field name="font_color">#5B84B1FF</field>
+        <field name="icon_color">#5B84B1FF</field>
+        <field name="background_color">#FC766AFF</field>
+        <field name="dashboard_id" ref="highchart_dashboard.highchart_dashboard_2"/>
+    </record>
+
+    <record id="highchart_dashboard_chart2_2" model="highchart.dashboard.chart">
+        <field name="name">Tile Chart2</field>
+        <field name="model_id" eval="ref('sale.model_sale_order')"/>
+        <field name="domain">[]</field>
+        <field name="chart_type">tile</field>
+        <field name="calculation_type">sum</field>
+        <field name="chart_groupby_id" eval="ref('sale.field_sale_order__partner_id')"/>
+        <field name="record_field" eval="ref('sale.field_sale_order__amount_total')"/>
+        <field name="tile_template">template2</field>
+        <field name="icon_option">default</field>
+        <field name="default_icon">fa fa-shopping-cart</field>
+        <field name="font_color">#FFFFFFFF</field>
+        <field name="icon_color">#FFFFFFFF</field>
+        <field name="background_color">#000000FF</field>
+        <field name="dashboard_id" ref="highchart_dashboard.highchart_dashboard_2"/>
+    </record>
+
+    <record id="highchart_dashboard_chart2_3" model="highchart.dashboard.chart">
+        <field name="name">Tile Chart3</field>
+        <field name="model_id" eval="ref('sale.model_sale_order')"/>
+        <field name="domain">[]</field>
+        <field name="chart_type">tile</field>
+        <field name="calculation_type">average</field>
+        <field name="chart_groupby_id" eval="ref('sale.field_sale_order__partner_id')"/>
+        <field name="record_field" eval="ref('sale.field_sale_order__amount_total')"/>
+        <field name="tile_template">template3</field>
+        <field name="icon_option">default</field>
+        <field name="default_icon">fa fa-thumb-tack</field>
+        <field name="font_color">#ADEFD1FF</field>
+        <field name="icon_color">#ADEFD1FF</field>
+        <field name="background_color">#00203FFF</field>
+        <field name="dashboard_id" ref="highchart_dashboard.highchart_dashboard_2"/>
+    </record>
+
+    <record id="highchart_dashboard_chart2_4" model="highchart.dashboard.chart">
+        <field name="name">KPI Chart</field>
+        <field name="model_id" eval="ref('sale.model_sale_order')"/>
+        <field name="domain">[]</field>
+        <field name="chart_type">kpi</field>
+        <field name="calculation_type">count</field>
+        <field name="icon_option">default</field>
+        <field name="default_icon">fa fa-book</field>
+        <field name="font_color">#000000</field>
+        <field name="icon_color">#000000</field>
+        <field name="background_color">#96ff9a</field>
+        <field name="second_model_id" eval="ref('product.model_product_template')"/>
+        <field name="second_domain">[]</field>
+        <field name="second_calculation_type">count</field>
+        <field name="data_comparision">percentage</field>
+        <field name="kpi_target" eval="True"/>
+        <field name="kpi_target_value">100</field>
+        <field name="kpi_target_view_type">progress_bar</field>
+        <field name="dashboard_id" ref="highchart_dashboard.highchart_dashboard_2"/>
+    </record>
+
+    <record id="highchart_dashboard_chart2_5" model="highchart.dashboard.chart">
+        <field name="name">Chart4</field>
+        <field name="model_id" eval="ref('sale.model_sale_order')"/>
+        <field name="domain">[]</field>
+        <field name="chart_type">column</field>
+        <field name="calculation_type">count</field>
+        <field name="chart_groupby_id" eval="ref('sale.field_sale_order__partner_id')"/>
+        <field name="dashboard_id" ref="highchart_dashboard.highchart_dashboard_2"/>
+    </record>
+
+    <record id="highchart_dashboard_chart2_6" model="highchart.dashboard.chart">
+        <field name="name">Bar Chart</field>
+        <field name="model_id" eval="ref('sale.model_sale_order')"/>
+        <field name="domain">[]</field>
+        <field name="chart_type">bar</field>
+        <field name="calculation_type">count</field>
+        <field name="chart_groupby_id" eval="ref('sale.field_sale_order__confirmation_date')"/>
+        <field name="chart_groupby_date">day</field>
+        <field name="dashboard_id" ref="highchart_dashboard.highchart_dashboard_2"/>
+    </record>
+
+    <record id="highchart_dashboard_chart2_7" model="highchart.dashboard.chart">
+        <field name="name">Tile Chart4</field>
+        <field name="model_id" eval="ref('sale.model_sale_order')"/>
+        <field name="domain">[]</field>
+        <field name="chart_type">tile</field>
+        <field name="calculation_type">average</field>
+        <field name="chart_groupby_id" eval="ref('sale.field_sale_order__partner_id')"/>
+        <field name="record_field" eval="ref('sale.field_sale_order__amount_total')"/>
+        <field name="tile_template">template4</field>
+        <field name="icon_option">default</field>
+        <field name="default_icon">fa fa-thumb-tack</field>
+        <field name="font_color">#ADEFD1FF</field>
+        <field name="icon_color">#ADEFD1FF</field>
+        <field name="background_color">#00203FFF</field>
+        <field name="dashboard_id" ref="highchart_dashboard.highchart_dashboard_2"/>
+    </record>
+
+    <record id="highchart_dashboard_chart2_8" model="highchart.dashboard.chart">
+        <field name="name">Tile Chart5</field>
+        <field name="model_id" eval="ref('sale.model_sale_order')"/>
+        <field name="domain">[]</field>
+        <field name="chart_type">tile</field>
+        <field name="calculation_type">average</field>
+        <field name="chart_groupby_id" eval="ref('sale.field_sale_order__partner_id')"/>
+        <field name="record_field" eval="ref('sale.field_sale_order__amount_total')"/>
+        <field name="tile_template">template5</field>
+        <field name="icon_option">default</field>
+        <field name="default_icon">fa fa-thumb-tack</field>
+        <field name="font_color">#ADEFD1FF</field>
+        <field name="icon_color">#ADEFD1FF</field>
+        <field name="background_color">#00203FFF</field>
+        <field name="dashboard_id" ref="highchart_dashboard.highchart_dashboard_2"/>
+    </record>
+
+    <record id="highchart_dashboard_chart2_9" model="highchart.dashboard.chart">
+        <field name="name">Tile Chart6</field>
+        <field name="model_id" eval="ref('sale.model_sale_order')"/>
+        <field name="domain">[]</field>
+        <field name="chart_type">tile</field>
+        <field name="calculation_type">average</field>
+        <field name="chart_groupby_id" eval="ref('sale.field_sale_order__partner_id')"/>
+        <field name="record_field" eval="ref('sale.field_sale_order__amount_total')"/>
+        <field name="tile_template">template6</field>
+        <field name="icon_option">default</field>
+        <field name="default_icon">fa fa-thumb-tack</field>
+        <field name="font_color">#ADEFD1FF</field>
+        <field name="icon_color">#ADEFD1FF</field>
+        <field name="background_color">#00203FFF</field>
+        <field name="dashboard_id" ref="highchart_dashboard.highchart_dashboard_2"/>
+    </record>
+
+    <record id="highchart_dashboard_chart2_10" model="highchart.dashboard.chart">
+        <field name="name">Sales KPI</field>
+        <field name="model_id" eval="ref('sale.model_sale_order')"/>
+        <field name="domain">[('state', '=', 'draft')]</field>
+        <field name="chart_type">kpi</field>
+        <field name="calculation_type">count</field>
+        <field name="icon_option">default</field>
+        <field name="default_icon">fa fa-book</field>
+        <field name="font_color">#000000</field>
+        <field name="icon_color">#000000</field>
+        <field name="background_color">#FFF787</field>
+        <field name="second_model_id" eval="ref('sale.model_sale_order')"/>
+        <field name="second_domain">[('state', '=', 'done')]</field>
+        <field name="second_calculation_type">count</field>
+        <field name="data_comparision">sum</field>
+        <field name="kpi_target" eval="True"/>
+        <field name="kpi_target_value">100</field>
+        <field name="kpi_target_view_type">progress_bar</field>
+        <field name="dashboard_id" ref="highchart_dashboard.highchart_dashboard_2"/>
+    </record>
+
+    <record id="highchart_dashboard_chart2_11" model="highchart.dashboard.chart">
+        <field name="name">Line Chart</field>
+        <field name="model_id" eval="ref('base.model_res_country')"/>
+        <field name="domain">[]</field>
+        <field name="chart_type">line</field>
+        <field name="calculation_type">sum</field>
+        <field name="chart_groupby_id" eval="ref('base.field_res_country__currency_id')"/>
+        <field name="chart_measure_field_ids" eval="[(6, 0, [ref('base.field_res_country__phone_code')])]"/>
+        <field name="dashboard_id" ref="highchart_dashboard.highchart_dashboard_2"/>
+    </record>
+
+    <record id="highchart_dashboard_chart2_12" model="highchart.dashboard.chart">
+        <field name="name">Area Chart</field>
+        <field name="model_id" eval="ref('product.model_product_template')"/>
+        <field name="domain">[]</field>
+        <field name="chart_type">area</field>
+        <field name="calculation_type">sum</field>
+        <field name="chart_groupby_id" eval="ref('product.field_product_template__categ_id')"/>
+        <field name="chart_measure_field_ids" eval="[(6, 0, [ref('product.field_product_template__list_price')])]"/>
+        <field name="dashboard_id" ref="highchart_dashboard.highchart_dashboard_2"/>
+    </record>
+
+    <record id="highchart_dashboard_chart2_13" model="highchart.dashboard.chart">
+        <field name="name">Pie Chart</field>
+        <field name="model_id" eval="ref('base.model_res_country')"/>
+        <field name="domain">[]</field>
+        <field name="chart_type">pie</field>
+        <field name="calculation_type">sum</field>
+        <field name="chart_groupby_id" eval="ref('base.field_res_country__currency_id')"/>
+        <field name="chart_measure_field_ids" eval="[(6, 0, [ref('base.field_res_country__phone_code')])]"/>
+        <field name="record_limit">10</field>
+        <field name="dashboard_id" ref="highchart_dashboard.highchart_dashboard_2"/>
+    </record>
+
+    <record id="highchart_dashboard_chart2_14" model="highchart.dashboard.chart">
+        <field name="name">List Chart</field>
+        <field name="model_id" eval="ref('sale.model_sale_order')"/>
+        <field name="domain">[]</field>
+        <field name="chart_type">list_view</field>
+        <field name="calculation_type">sum</field>
+        <field name="list_view_type">ungrouped</field>
+        <field name="list_view_fields" eval="[(6, 0, [ref('sale.field_sale_order__partner_id'), ref('sale.field_sale_order__confirmation_date'), ref('sale.field_sale_order__amount_total')])]"/>
+        <field name="dashboard_id" ref="highchart_dashboard.highchart_dashboard_2"/>
+    </record>
+
+    <record id="highchart_dashboard_3" model="highchart.dashboard">
+        <field name="name">Template3</field>
+        <field name="menu_name">Template3</field>
+        <field name="parent_menu_id" eval="ref('highchart_dashboard.highchart_dashboards_root_menu')"/>
+        <field name="dashboard_date_filter">none</field>
+        <field name="filter_start_date" eval="DateTime.now()"/>
+        <field name="filter_end_date" eval="DateTime.now()"/>
+        <field name="active">True</field>
+        <field name="group_ids" eval="False"/>
+        <field name="menu_sequence">30</field>
+    </record>
+
+</odoo>

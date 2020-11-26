@@ -1,0 +1,14 @@
+.tile_template6_content_body,.tile_template1_info,.tile_template2_content_body,.tile_template3_content_body,.tile_template4_content_body {
+    width: calc(100% - 100px) !important;
+}
+.highcharts-contextmenu .highcharts-menu{
+    height: 156px;
+    overflow-y: auto;
+ }
+.tile_template6_content_body{
+    margin-left: 10px;
+}
+.tile_template6_icon_body{
+    padding: 0px 15px;
+    width: 100px;
+}

@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <t t-name="highchartMainDashboard">
+        <div id="highchart-header" class="row">
+            <div class="col-md-5 col-9">
+                <span id="dashboard_title" t-esc="dashboardName"/>
+            </div>
+            <div class="dropdown d-md-none d-lg-none d-sm-none col-3">
+                <a class="dropdown-toggle" type="button" data-toggle="dropdown">
+                    <i class="fa fa-bars"/>
+                </a>
+                <ul class="dropdown-menu" style="right: 0;left: unset;">
+                    <li>
+                        <a id="highchart_edit_layout">
+                            <span class="fa fa-lg fa-pencil"/>
+                            Edit Layout
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div id="highchart_dashboard_settings" class="col-md-7 col-12 text-right">
+                <div class="btn-group highchart_date_filter_button_div">
+                    <button id="highchart_date_filter_button" class="btn btn-primary dropdown-toggle"
+                            data-toggle="dropdown" aria-expanded="false">
+                        <i class="fa fa-lg fa-calendar"/>
+                        <p id="highchart_date_filter_name" style="display: inline-block;margin: 0;"><t t-esc="dashboardDateFilter"/></p>
+                        <span class="caret"/>
+                    </button>
+                    <ul class="dropdown-menu dashboard_date_filter" role="menu">
+                        <li data-type="none">
+                            None
+                        </li>
+                        <li data-type="today">
+                            Today
+                        </li>
+                        <li data-type="this_week">
+                            This Week
+                        </li>
+                        <li data-type="this_month">
+                            This Month
+                        </li>
+                        <li data-type="this_quarter">
+                            This Quarter
+                        </li>
+                        <li data-type="this_year">
+                            This Year
+                        </li>
+                        <li data-type="next_day">
+                            Next Day
+                        </li>
+                        <li data-type="next_week">
+                            Next Week
+                        </li>
+                        <li data-type="next_month">
+                            Next Month
+                        </li>
+                        <li data-type="next_quarter">
+                            Next Quarter
+                        </li>
+                        <li data-type="next_year">
+                            Next Year
+                        </li>
+                        <li data-type="last_day">
+                            Last Day
+                        </li>
+                        <li data-type="last_week">
+                            Last Week
+                        </li>
+                        <li data-type="last_month">
+                            Last Month
+                        </li>
+                        <li data-type="last_quarter">
+                            Last Quarter
+                        </li>
+                        <li data-type="last_year">
+                            Last Year
+                        </li>
+                        <li data-type="last_7_days">
+                            Last 7 Days
+                        </li>
+                        <li data-type="last_30_days">
+                            Last 30 Days
+                        </li>
+                        <li data-type="last_90_days">
+                            Last 90 Days
+                        </li>
+                        <li data-type="last_365_days">
+                            Last 365 Days
+                        </li>
+                        <li data-type="custom">
+                            Custom
+                        </li>
+                    </ul>
+                </div>
+                <!--<div t-att-class="dashboardDateFilter == 'Custom' and 'dashboard_date_filter_inputs' or 'dashboard_date_filter_inputs hide_element'">-->
+                <div class="dashboard_date_filter_inputs hide_element">
+                    <input id="custom_start_date" type="text" placeholder="Start Date"/>
+                    <input id="custom_end_date" type="text" placeholder="End Date"/>
+                </div>
+                <div class="dashboard_date_filter_buttons hide_element">
+                    <button type='button' class='button btn btn-primary btn-sm dashboard_apply_date_filter'>
+                        Apply
+                    </button>
+                    <button type='button' class='button btn btn-primary btn-sm dashboard_clear_date_filter'>
+                        Clear
+                    </button>
+                </div>
+
+                <div class="btn-group highchart_add_chart_button_div">
+                    <button id="highchart_add_chart_button" class="btn btn-primary dropdown-toggle"
+                            data-toggle="dropdown"
+                            aria-expanded="false">
+                        <span class="fa fa-lg fa-plus-circle"/>
+                        Add
+                        <span class="caret"/>
+                    </button>
+                    <ul class="dropdown-menu add_chart_selection" role="menu">
+                        <li data-type="tile">
+                            Tile
+                        </li>
+                        <li data-type="column">
+                            Bar Chart
+                        </li>
+                        <li data-type="bar">
+                            Horizontal Bar Chart
+                        </li>
+                        <li data-type="line">
+                            Line Chart
+                        </li>
+                        <li data-type="area">
+                            Area Chart
+                        </li>
+                        <li data-type="pie">
+                            Pie Chart
+                        </li>
+                        <li data-type="polar">
+                            Polar Chart
+                        </li>
+                        <li data-type="list_view">
+                            List View
+                        </li>
+                        <li data-type="kpi">
+                            KPI
+                        </li>
+                    </ul>
+                </div>
+
+                <button id="highchart_edit_layout" class="btn btn-primary d-none d-md-inline">
+                    <span class="fa fa-lg fa-pencil"/>
+                    Edit Layout
+                </button>
+                <div class="dashboard_edit_mode_buttons hide_element">
+                    <button type="button" class="btn btn-primary btn-sm dashboard_save_layout o_form_button_save">
+                        Save
+                    </button>
+                    <button type="button" class="btn btn-default btn-sm dashboard_cancel_layout o_form_button_cancel">
+                        Discard
+                    </button>
+                </div>
+            </div>
+        </div>
+        <t t-call="highchart_dashboard.highchartMainContentBody"/>
+    </t>
+
+    <t t-name="highchart_dashboard.highchartMainContentBody">
+        <div class="grid-stack grid-stack-main-container" data-gs-width="12">
+            <t t-foreach="chartData" t-as="chart">
+                <div class="grid-stack-item item-unset-relative" t-att-data-gs-id="chart.chart_id"
+                     t-att-data-gs-auto-position="chart.data_gs_auto_position"
+                     t-att-data-gs-x="chart.gs_x"
+                     t-att-data-gs-y="chart.gs_y"
+                     t-att-data-gs-width="chart.gs_width" t-att-data-gs-min-width="chart.data_gs_min_width"
+                     t-att-data-gs-height="chart.gs_height" t-att-data-gs-min-height="chart.data_gs_min_height">
+
+                    <div t-att-class="chart.chart_type == 'list_view' and 'grid-stack-item-content' or 'grid-stack-item-content chart_design'"
+                         style="background:white;">
+
+                        <div class="highcharts-title" t-if="chart.chart_type == 'list_view'" style="position:absolute; top:6px; left:10px;">
+                            <t t-esc="chart.name"/>
+                        </div>
+
+                        <div class="chart_header_button">
+                            <button class="dashboard_chart_info" title="More Info" type="button"
+                                    t-att-data-chart-id="chart.chart_id">
+                                <i class="fa fa-info-circle"/>
+                            </button>
+
+                            <!--<button class="dashboard_chart_color" title="Color Palette" type="button" t-att-data-chart-id="chart.chart_id">
+                                <i class="fa fa-paint-brush"/>
+                            </button>-->
+
+                            <button class="dashboard_duplicate_chart dropdown-toggle" data-toggle="dropdown"
+                                    title="Move/Duplicate" type="button" t-att-data-chart-id="chart.chart_id">
+                                <i class="fa fa-files-o"/>
+                                <span class="caret"/>
+                            </button>
+                            <ul role="menu" class="dropdown-menu dashboard_dropdown_options all_dashboard_dropdown_ul">
+                                <li class="dashboard_dropdown_heading">
+                                    <span>Select Dashboard</span>
+                                </li>
+                                <li>
+                                    <select t-att-id="'dashboard_dropdown_selector_' + chart.chart_id"
+                                            class="o_input o_add_group o_group_selector">
+                                        <t t-foreach="allDashboards" t-as="dashboard">
+                                            <option t-att-value="dashboard.id">
+                                                <t t-esc="dashboard.name"/>
+                                            </option>
+                                        </t>
+                                    </select>
+                                </li>
+                                <li class="dashboard_dropdown_buttons">
+                                    <button class="btn btn-primary dashboard_chart_duplicate" title="Duplicate Chart"
+                                            type="button" t-att-data-chart-id="chart.chart_id">
+                                        Duplicate
+                                    </button>
+                                    <button class="btn btn-primary dashboard_chart_move" title="Move Chart"
+                                            type="button" t-att-data-chart-id="chart.chart_id">
+                                        Move
+                                    </button>
+                                </li>
+                            </ul>
+
+                            <button class="dashboard_edit_chart" title="Edit Chart" type="button"
+                                    t-att-data-chart-id="chart.chart_id">
+                                <i class="fa fa-pencil"/>
+                            </button>
+
+                            <button class="dashboard_remove_chart" title="Remove Chart" type="button"
+                                    t-att-data-chart-id="chart.chart_id">
+                                <i class="fa fa-times"/>
+                            </button>
+                        </div>
+                        <div t-att-id="'chart_container_' + chart.chart_id" t-att-data-chart-id="chart.chart_id"
+                             class="graph_container" style="height:100%; width:100%;"/>
+                    </div>
+                </div>
+            </t>
+        </div>
+    </t>
+
+    <t t-name="highchart_dashboard_chart_form_view_preivew">
+        <div id="chart_container"/>
+    </t>
+
+    <t t-name="ListViewPreview">
+        <div id="list_view_table">
+            <table class="table table-hover" t-if="chartData" width="100%">
+                <thead>
+                    <t t-foreach="chartData['header']" t-as="header">
+                        <th>
+                            <t t-esc="header"/>
+                        </th>
+                    </t>
+                </thead>
+                <tbody>
+                    <t t-foreach="chartData['row_data']" t-as="row_data">
+                        <tr>
+                            <t t-foreach="row_data" t-as="cell_value">
+                                <td>
+                                    <t t-esc="cell_value"/>
+                                </td>
+                            </t>
+                        </tr>
+                    </t>
+                </tbody>
+            </table>
+        </div>
+    </t>
+</odoo>
