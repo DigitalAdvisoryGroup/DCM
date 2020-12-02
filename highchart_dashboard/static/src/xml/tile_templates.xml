@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <t t-name="kpi_template">
+        <div class='kpi_template_icon'>
+            <t t-if="icon_option == 'default'">
+                <span t-att-class="default_icon"/>
+            </t>
+            <t t-if="icon_option == 'upload'">
+                <img class="img img-responsive" t-attf-src="data:image/png;base64, #{upload_icon_binary}"
+                     style="max-height:45px;"/>
+            </t>
+        </div>
+        <div class='kpi_template_body'>
+            <div class='kpi_template_content_body'>
+                <div class='kpi_template_name_body'>
+                    <t t-esc="template_name"/>
+                </div>
+                <div class='kpi_template_count_body'>
+                    <t t-esc="template_count"/>
+                </div>
+            </div>
+            <t t-if="kpi_target and (second_model == false or (second_model and (data_comparision == 'sum' or data_comparision == 'percentage')))">
+                <t t-if="kpi_target_view_type == 'number'">
+                    <div>
+                        <span>vs Target</span>
+                    </div>
+                    <div>
+                        <t t-esc="target_display_value"/>
+                        <t t-if="target_value_type == 'positive'">
+                            <i class="fa fa-arrow-up"/>
+                        </t>
+                        <t t-if="target_value_type == 'negative'">
+                            <i class="fa fa-arrow-down"/>
+                        </t>
+                    </div>
+                </t>
+                <t t-if="kpi_target_view_type == 'progress_bar'">
+                    <div>
+                        <progress id="target_progress_bar" value="0" max="0"/>
+                    </div>
+                    <div>
+                        <t t-esc="target_display_value"/>
+                    </div>
+                </t>
+            </t>
+        </div>
+    </t>
+
+    <t t-name="tile_template1">
+        <div class='tile_template1_body'>
+            <div class='tile_template1_icon'>
+                <t t-if="icon_option == 'default'">
+                    <span t-att-class="default_icon" t-att-style='"color: " + icon_color + ";"'/>
+                </t>
+                <t t-if="icon_option == 'upload'">
+                    <img class="img img-responsive" t-attf-src="data:image/png;base64, #{upload_icon_binary}"
+                         style="max-height:45px;"/>
+                </t>
+            </div>
+            <div class='tile_template1_info' style="display:inline-block;">
+                <div class="tile_template1_name">
+                    <t t-esc="template_name"/>
+                </div>
+                <div class="tile_template1_count">
+                    <t t-esc="template_count"/>
+                </div>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="tile_template2">
+        <div class='tile_template2_body'>
+            <div class='tile_template2_icon_body'>
+                <t t-if="icon_option == 'default'">
+                    <span t-att-class="default_icon" t-att-style='"color: " + icon_color + ";"'/>
+                </t>
+                <t t-if="icon_option == 'upload'">
+                    <img class="img img-responsive" t-attf-src="data:image/png;base64, #{upload_icon_binary}"
+                         style="max-height:45px;"/>
+                </t>
+            </div>
+            <div class='tile_template2_content_body'>
+                <div class='tile_template2_count_body'>
+                    <t t-esc="template_count"/>
+                </div>
+                <div class='tile_template2_name_body'>
+                    <t t-esc="template_name"/>
+                </div>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="tile_template3">
+        <div class='tile_template3_body common_tile'>
+            <div class='tile_template3_icon_body'>
+                <t t-if="icon_option == 'default'">
+                    <span t-att-class="default_icon" t-att-style='"color: " + icon_color + ";"'/>
+                </t>
+                <t t-if="icon_option == 'upload'">
+                    <img class="img img-responsive" t-attf-src="data:image/png;base64, #{upload_icon_binary}"
+                         style="max-height:45px;"/>
+                </t>
+            </div>
+            <div class='tile_template3_content_body'>
+                <div class='tile_template3_count_body'>
+                    <t t-esc="template_count"/>
+                </div>
+                <div class='tile_template3_name_body common_tile_name'>
+                    <t t-esc="template_name"/>
+                </div>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="tile_template4">
+        <div class='tile_template4_body common_tile'>
+            <div class='tile_template4_icon_body'>
+                <t t-if="icon_option == 'default'">
+                    <span t-att-class="default_icon" t-att-style='"color: " + icon_color + ";"'/>
+                </t>
+                <t t-if="icon_option == 'upload'">
+                    <img class="img img-responsive" t-attf-src="data:image/png;base64, #{upload_icon_binary}"
+                         style="max-height:45px;"/>
+                </t>
+            </div>
+            <div class='tile_template4_content_body'>
+                <div class='tile_template4_count_body common_tile_name'>
+                    <t t-esc="template_count"/>
+                </div>
+                <div class='tile_template4_name_body common_tile_name'>
+                    <t t-esc="template_name"/>
+                </div>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="tile_template5">
+        <div class='tile_template5_body'>
+            <div class='tile_template5_content_body'>
+                <div class='tile_template5_count_body common_tile_name'>
+                    <t t-esc="template_count"/>
+                </div>
+                <div class='tile_template5_name_body common_tile_name'>
+                    <t t-esc="template_name"/>
+                </div>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="tile_template6">
+        <div class='tile_template6_body common_tile'>
+            <div class='tile_template6_content_body'>
+                <div class='template6_td_count common_tile_name'>
+                    <t t-esc="template_count"/>
+                </div>
+                <div class='template6_td common_tile_name'>
+                    <t t-esc="template_name"/>
+                </div>
+            </div>
+            <div class='tile_template6_icon_body'>
+                <t t-if="icon_option == 'default'">
+                    <span t-att-class="default_icon" t-att-style='"color: " + icon_color + ";"'/>
+                </t>
+                <t t-if="icon_option == 'upload'">
+                    <img class="img img-responsive" t-attf-src="data:image/png;base64, #{upload_icon_binary}"
+                         style="max-height:45px;"/>
+                </t>
+            </div>
+
+        </div>
+    </t>
+
+</odoo>

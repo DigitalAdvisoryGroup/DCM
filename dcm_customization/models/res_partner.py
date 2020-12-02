@@ -14,14 +14,16 @@ LANG_CODE_ODOO = {
             "fr-CH":"fr_CH",
             "de-CH":"de_CH",
             "en":"en_US",
-            "de": "de_CH"
+            "de": "de_CH",
+            "rm-CH":"ro_RO"
 }
 
 LANG_CODE_APP = {
             "it_IT":"it-IT",
             "fr_CH":"fr-CH",
             "de_CH":"de-CH",
-            "en_US":"en"
+            "en_US":"en",
+            "ro_RO": "rm-CH"
 }
 
 class ResPartner(models.Model):

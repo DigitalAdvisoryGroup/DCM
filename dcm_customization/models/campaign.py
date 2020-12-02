@@ -19,7 +19,7 @@ class Campaign(models.Model):
     dislikes_ids = fields.One2many("social.bit.comments",'utm_campaign_id',string="Dislikes",domain=[('record_type','=','dislike')])
     share_ids = fields.One2many("social.bit.comments",'utm_campaign_id',string="Shares",domain=[('record_type','=','share')])
     avg_rating = fields.Float("Avg Rating",compute="compute_rating",store=False)
-
+    file_name = fields.Char("Filename")
 
     @api.depends('rating_ids')
     def compute_rating(self):
@@ -38,7 +38,7 @@ class Campaign(models.Model):
                     'web.base.url')
                 for campaign in utm_campaign_ids:
                     data.append({
-                        'image':url_join(base_url,'/web/myimage/utm.campaign/%s/image_128'%campaign.id),
+                        'image':url_join(base_url,'/web/image/utm.campaign/%s/image_128/%s'% (campaign.id,campaign.file_name)),
                         'name': campaign.name,
                         'post_owner': campaign.user_id.name,
                         'date': campaign.create_date.strftime(DEFAULT_SERVER_DATETIME_FORMAT),
@@ -95,8 +95,8 @@ class Campaign(models.Model):
                     'rating_count':len(self.rating_ids),
                     'avg_rating':round(self.avg_rating,1),
                     'my_rating':round(partner_rating.rating,1) if partner_rating else 0.0,
-                'image': url_join(base_url,
-                                  '/web/myimage/utm.campaign/%s/image_128' % self.id),
+                    'image': url_join(base_url,'/web/image/utm.campaign/%s/image_128/%s' % (self.id,self.file_name)),
+
                  }]}
         return {'data':[]}
 

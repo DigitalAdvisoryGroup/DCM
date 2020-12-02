@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="view_highchart_dashboard_tree" model="ir.ui.view">
+        <field name="name">highchart.dashboard.tree</field>
+        <field name="model">highchart.dashboard</field>
+        <field name="priority" eval="8"/>
+        <field name="arch" type="xml">
+            <tree string="Highchart Dashboard">
+                <field name="name"/>
+                <field name="menu_name"/>
+                <field name="parent_menu_id"/>
+                <field name="refresh_interval"/>
+                <field name="group_ids" widget="many2many_tags"/>
+                <field name="active"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_highchart_dashboard_form" model="ir.ui.view">
+        <field name="name">highchart.dashboard.form</field>
+        <field name="model">highchart.dashboard</field>
+        <field name="priority" eval="8"/>
+        <field name="arch" type="xml">
+            <form string="Highchart Dashboard">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" name="button_dashboard_charts" type="object"
+                                context="{'default_dashboard_id': active_id}" icon="fa-bars">
+                            <field string="Charts" name="charts_count" widget="statinfo"/>
+                        </button>
+                        <field name="chart_ids" invisible="1"/>
+                        <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
+                            <field name="active" widget="boolean_button" options='{"terminology": "archive"}'/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1><field name="name" placeholder="e.g. Sales Dashboard"/></h1>
+                    </div>
+                    <group col="4">
+                        <field name="menu_name"/>
+                        <field name="parent_menu_id"/>
+                        <field name="menu_sequence"/>
+                        <field name="refresh_interval"/>
+                        <field name="group_ids" widget="many2many_tags"/>
+                        <field name="menu_id" invisible="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_highchart_dashboard_search" model="ir.ui.view">
+        <field name="name">highchart.dashboard.search</field>
+        <field name="model">highchart.dashboard</field>
+        <field name="priority" eval="8"/>
+        <field name="arch" type="xml">
+            <search string="Highchart Dashboard">
+                <field name="name"/>
+                <newline/>
+            </search>
+        </field>
+    </record>
+
+    <record id="act_open_highchart_dashboard_view" model="ir.actions.act_window">
+        <field name="name">Highchart Dashboards</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">highchart.dashboard</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_highchart_dashboard_search"/>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+    </record>
+    <record id="act_open_highchart_dashboard_view_form" model="ir.actions.act_window.view">
+        <field name="act_window_id" ref="act_open_highchart_dashboard_view"/>
+        <field name="sequence" eval="20"/>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_highchart_dashboard_form"/>
+    </record>
+    <record id="act_open_highchart_dashboard_view_tree" model="ir.actions.act_window.view">
+        <field name="act_window_id" ref="act_open_highchart_dashboard_view"/>
+        <field name="sequence" eval="10"/>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="view_highchart_dashboard_tree"/>
+    </record>
+
+</odoo>

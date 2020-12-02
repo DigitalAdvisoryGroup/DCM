@@ -94,7 +94,7 @@ class SocialPostBIT(models.Model):
                     'date':post.published_date.strftime(DEFAULT_SERVER_DATETIME_FORMAT),
                     'like':True if like else False,
                     'dislike':True if dislike else False,
-                    'image':url_join(base_url,'/web/myimage/utm.campaign/%s/image_128'%post.utm_campaign_id.id),
+                    'image':url_join(base_url,'/web/image/utm.campaign/%s/image_128/%s'%(post.utm_campaign_id.id,post.utm_campaign_id.file_name)),
                     'message':post.message,
                     'comments':post.getComments(partner_id),
                     'media_ids':post.getMedia(),

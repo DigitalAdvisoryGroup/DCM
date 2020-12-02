@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates>
+
+    <t t-extend="ImportView.import_button">
+        <t t-jquery="button.o_button_import" t-operation="replace">
+            <button t-if="widget and widget.importEnabled and widget.modelName != 'highchart.dashboard'" type="button" class="btn btn-sm btn-default o_button_import">
+                Import
+            </button>
+
+            <button t-if="widget and widget.importEnabled and widget.modelName == 'highchart.dashboard'" type="button" class="btn btn-sm btn-default o_button_dashboard_import">
+                Import Dashboard
+            </button>
+        </t>
+    </t>
+
+</templates>
