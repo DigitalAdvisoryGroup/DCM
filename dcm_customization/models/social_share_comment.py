@@ -102,11 +102,11 @@ class SocialBitComments(models.Model):
             'web.base.url')
         if self:
             image_url = url_join(base_url,
-                                 '/web/myimage/res.partner/%s/image_128' % self.partner_id.id)
+                                 '/web/myimage/res.partner/%s/image_128/?%s' % (self.partner_id.id,self.partner_id.file_name_custom))
             child_comments = []
             for c_comment in self.child_ids:
                 c_image_url = url_join(base_url,
-                                       '/web/myimage/res.partner/%s/image_128' % c_comment.partner_id.id)
+                                       '/web/myimage/res.partner/%s/image_128/?%s' % (c_comment.partner_id.id,c_comment.partner_id.file_name_custom))
                 child_comments.append({'comment': c_comment.comment,
                                        'id': c_comment.id,
                                        'author_name': c_comment.partner_id.name,

@@ -146,10 +146,10 @@ class SocialPostBIT(models.Model):
         base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
         comments = []
         for msg in self.comments_ids.filtered(lambda a:not a.parent_id):
-            image_url = url_join(base_url,'/web/myimage/res.partner/%s/image_128'%msg.partner_id.id)
+            image_url = url_join(base_url,'/web/myimage/res.partner/%s/image_128/?%s'%(msg.partner_id.id,msg.partner_id.file_name_custom))
             child_comments = []
             for c_comment in msg.child_ids:
-                c_image_url = url_join(base_url,'/web/myimage/res.partner/%s/image_128'%c_comment.partner_id.id)
+                c_image_url = url_join(base_url,'/web/myimage/res.partner/%s/image_128/?%s'%(c_comment.partner_id.id,c_comment.partner_id.file_name_custom))
                 child_comments.append({'comment':c_comment.comment,
                              'id':c_comment.id,
                              'author_name':c_comment.partner_id.name,

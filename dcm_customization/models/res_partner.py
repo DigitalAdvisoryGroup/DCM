@@ -34,7 +34,7 @@ class ResPartner(models.Model):
     change_connection = fields.Boolean("Change Connection")
     partner_token_lines = fields.One2many("res.partner.token","partner_id", string="Token Lines")
     is_token_available = fields.Boolean("Is Token Available?", compute="_get_token_available", store=True)
-
+    file_name_custom = fields.Char("Filename")
 
     @api.depends("partner_token_lines")
     def _get_token_available(self):
@@ -66,7 +66,7 @@ class ResPartner(models.Model):
                 partner_id.send_otp_partner()
                 base_url = self.env['ir.config_parameter'].sudo().get_param(
                     'web.base.url')
-                image_url = url_join(base_url,'/web/myimage/res.partner/%s/image_128'%partner_id.id)
+                image_url = url_join(base_url,'/web/myimage/res.partner/%s/image_128/?%s'%(partner_id.id,partner_id.file_name_custom))
                 data.append({
                     'id': partner_id.id,
                     'name': partner_id.name,
@@ -136,7 +136,7 @@ class ResPartner(models.Model):
             base_url = self.env['ir.config_parameter'].sudo().get_param(
                 'web.base.url')
             image_url = url_join(base_url,
-                                 '/web/myimage/res.partner/%s/image_512' % self.id)
+                                 '/web/myimage/res.partner/%s/image_128/?%s' % (self.id,self.file_name_custom))
             data.append({
                 'id': self.id,
                 'name': self.name,

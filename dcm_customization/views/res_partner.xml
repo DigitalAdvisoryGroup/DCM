@@ -13,6 +13,10 @@
                     <field name="change_connection" />
                     <field name="is_token_available" />
                     <field name="partner_token_lines" />
+                    <field name="file_name_custom" />
+                </xpath>
+                <xpath expr="//field[@name='image_1920']" position="attributes">
+                    <attribute name="filename">file_name_custom</attribute>
                 </xpath>
             </field>
         </record>
