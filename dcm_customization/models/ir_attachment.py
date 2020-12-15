@@ -10,7 +10,7 @@ class IrAttachment(models.Model):
 
     img_width = fields.Float("Image Width(px)", compute="_get_widht_height_img",store=True)
     img_height = fields.Float("Image Height(px)",compute="_get_widht_height_img",store=True)
-
+    is_video_thumnail = fields.Boolean("Video Thumnail Image")
 
     @api.depends("mimetype")
     def _get_widht_height_img(self):
@@ -25,8 +25,6 @@ class IrAttachment(models.Model):
             else:
                 att.img_width = 0.0
                 att.img_height = 0.0
-
-
 
     @api.model
     def create(self, vals):

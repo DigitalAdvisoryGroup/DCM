@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo Module Developed by Candidroot Solutions Pvt. Ltd.
 # See LICENSE file for full copyright and licensing details.
+import os
+import tempfile
 
+import cv2
 import requests
 import base64
 import json
@@ -40,6 +43,50 @@ class SocialPostBIT(models.Model):
                                    domain=[('record_type', '=', 'dislike')])
     recipients_ids = fields.Many2many('res.partner',string="Recipients")
 
+    @api.model
+    def create(self, vals):
+        res = super(SocialPostBIT, self).create(vals)
+        res.set_video_thumanil_image()
+        return res
+
+    def write(self, vals):
+        res = super(SocialPostBIT, self).write(vals)
+        for rec in self:
+            rec.set_video_thumanil_image()
+        return res
+
+    def set_video_thumanil_image(self):
+        for rec in self:
+            for media in rec.image_ids:
+                if "video" in media.mimetype:
+                    video_file_path = tempfile.gettempdir() + "/" + media.name
+                    with open(video_file_path, 'wb') as f:
+                        f.write(base64.b64decode(media.datas))
+                    f.close()
+                    success = True
+                    cap = cv2.VideoCapture(video_file_path)
+                    while success:
+                        success, image = cap.read()
+                        print('read a new frame:', success)
+                        image_file_path = tempfile.gettempdir() + "/%s.jpg" % (media.name).split(".")[0]
+                        cv2.imwrite(image_file_path, image)
+                        success = False
+                    if image_file_path:
+                        img_data = open(image_file_path, 'rb').read()
+                        att_vals = {
+                            'name': image_file_path.split("/")[-1],
+                            'type': 'binary',
+                            'datas': base64.b64encode(img_data),
+                            'res_model': media._name,
+                            'res_id': media.id,
+                            "is_video_thumnail": True,
+                            "public": True,
+                            }
+                        att_id = self.env['ir.attachment'].create(att_vals)
+                    if image_file_path and video_file_path:
+                        os.remove(image_file_path)
+                        os.remove(video_file_path)
+
 
 
     @api.constrains('image_ids')
@@ -72,14 +119,17 @@ class SocialPostBIT(models.Model):
         else:
             self.is_bit_post = False
 
-    def get_post_api(self,partner_id=False, limit=None,offset=None):
+    def get_post_api(self,partner_id=False, limit=None,offset=None,new_ver=None):
         if partner_id:
             data = []
             base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
             partner_browse = self.env["res.partner"].browse(int(partner_id))
             if not self:
-                if offset and offset > 0:
-                    offset -= 3
+                # _logger.info("--------limit---------%s",limit)
+                # _logger.info("--------offset---------%s",offset)
+                if not new_ver:
+                    if offset and offset > 0:
+                        offset -= 3
                 # posts = self.with_context(lang=partner_browse.lang).search([('social_partner_ids','in',[int(partner_id)]),('state','=','posted'),('utm_campaign_id.stage_id.is_active','=',True)], limit=limit,offset=offset)
                 posts = self.search([('social_partner_ids','in',[int(partner_id)]),('state','=','posted'),('utm_campaign_id.stage_id.is_active','=',True)], limit=limit,offset=offset, order="published_date desc")
             else:
@@ -108,6 +158,7 @@ class SocialPostBIT(models.Model):
                     'total_comment_count': len(post.comments_ids),
                     'total_share_count': len(post.share_ids),
                 })
+            # _logger.info("---------post------------%s",data)
             return {'data':data}
         else:
             return {'data':[]}
@@ -133,9 +184,14 @@ class SocialPostBIT(models.Model):
                     'height': media.img_height,
                 })
             else:
+                thumbanil_att_id = self.env["ir.attachment"].search([('is_video_thumnail','=',True),
+                                                                     ('res_id','=',media.id),
+                                                                     ('res_model','=',media._name)])
                 media_ids.append({
                     'url': url_join(base_url, '/web/content/%s/%s' % (
                     media.id, media.name)),
+                    "thumbnail_url": thumbanil_att_id and url_join(base_url, '/web/image/%s/%s' % (
+                    thumbanil_att_id.id, thumbanil_att_id.name)),
                     'mimetype': mimetype,
                     'width': media.img_width,
                     'height': media.img_height,
