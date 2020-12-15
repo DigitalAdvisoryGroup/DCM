@@ -186,12 +186,12 @@ class SocialPostBIT(models.Model):
             else:
                 thumbanil_att_id = self.env["ir.attachment"].search([('is_video_thumnail','=',True),
                                                                      ('res_id','=',media.id),
-                                                                     ('res_model','=',media._name)])
+                                                                     ('res_model','=',media._name)], limit=1)
                 media_ids.append({
                     'url': url_join(base_url, '/web/content/%s/%s' % (
                     media.id, media.name)),
                     "thumbnail_url": thumbanil_att_id and url_join(base_url, '/web/image/%s/%s' % (
-                    thumbanil_att_id.id, thumbanil_att_id.name)),
+                    thumbanil_att_id.id, thumbanil_att_id.name)) or False,
                     'mimetype': mimetype,
                     'width': media.img_width,
                     'height': media.img_height,
