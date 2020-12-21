@@ -125,8 +125,6 @@ class SocialPostBIT(models.Model):
             base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
             partner_browse = self.env["res.partner"].browse(int(partner_id))
             if not self:
-                # _logger.info("--------limit---------%s",limit)
-                # _logger.info("--------offset---------%s",offset)
                 if not new_ver:
                     if offset and offset > 0:
                         offset -= 3
@@ -158,7 +156,6 @@ class SocialPostBIT(models.Model):
                     'total_comment_count': len(post.comments_ids),
                     'total_share_count': len(post.share_ids),
                 })
-            # _logger.info("---------post------------%s",data)
             return {'data':data}
         else:
             return {'data':[]}

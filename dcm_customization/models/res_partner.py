@@ -10,12 +10,14 @@ import logging
 _logger = logging.getLogger(__name__)
 LANG_CODE_ODOO = {
             "it-IT":"it_IT",
-            "rm-CH":"de_CH",
+            "rm-CH":"ro_RO",
             "fr-CH":"fr_CH",
             "de-CH":"de_CH",
             "en":"en_US",
             "de": "de_CH",
-            "rm-CH":"ro_RO"
+            "fr": "fr_CH",
+            "it": "it_IT",
+            "rm": "ro_RO",
 }
 
 LANG_CODE_APP = {
