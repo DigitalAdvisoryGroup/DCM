@@ -81,7 +81,8 @@ class ResPartner(models.Model):
                     'country_id': partner_id.country_id and partner_id.country_id.name or '',
                     'zip': partner_id.zip,
                     'image_1920': image_url,
-                    'change_connection':partner_id.change_connection
+                    'change_connection':partner_id.change_connection,
+                    'lang': LANG_CODE_APP.get(partner_id.lang)
                 })
                 return {'data': data}
         return {'data': data}
