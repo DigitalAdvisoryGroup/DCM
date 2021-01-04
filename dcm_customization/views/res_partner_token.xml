@@ -26,6 +26,7 @@
                 <tree>
                     <field name="partner_id" />
                     <field name="device_type" />
+                    <field name="active" />
                 </tree>
             </field>
         </record>
@@ -67,7 +68,7 @@
             <field name="name">Device Token</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">res.partner.token</field>
-            <field name="view_mode">tree,form,pivot</field>
+            <field name="view_mode">tree,form,graph,pivot</field>
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">
                     <!-- Add Text Here -->
@@ -79,5 +80,14 @@
 
         <!-- This Menu Item an action -->
         <menuitem id="res_partner_token_menu_act" name="Device Token" parent="social.menu_social_configuration" action="res_partner_token_action" sequence="100"/>
+
+
+        <menuitem id="menu_midar_statistics" name="Statistics111" parent="social.menu_social_global" sequence="10"/>
+
+        <menuitem id="menu_midar_statistics_token" name="User evolvment" parent="menu_midar_statistics" action="res_partner_token_action" sequence="10"/>
+
+
+
+
     </data>
 </odoo>

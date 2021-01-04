@@ -2,6 +2,7 @@
 # Part of Odoo Module Developed by Candidroot Solutions Pvt. Ltd.
 # See LICENSE file for full copyright and licensing details.
 
+from pyfcm import FCMNotification
 from odoo import models, fields, api
 from odoo.tools.misc import formatLang, format_date, get_lang
 import math, random
@@ -172,6 +173,19 @@ class ResPartnerToken(models.Model):
     partner_id = fields.Many2one("res.partner","Partner")
     push_token = fields.Char("Firebase Token")
     device_type = fields.Selection([("ios","Apple"),("android","Android")],string="Device Type", default="android")
+    active = fields.Boolean("Active", default=True)
+
+    @api.model
+    def _clean_invalid_device_ids(self):
+        device_ids = self.search([])
+        if device_ids and self.env.user.company_id.fcm_api_key:
+            device_list = [x.push_token for x in device_ids]
+            push_service = FCMNotification(api_key=self.env.user.company_id.fcm_api_key)
+            valid_registration_ids = push_service.clean_registration_ids(device_list)
+            inactive_device_ids = list(set(device_list) - set(valid_registration_ids))
+            if inactive_device_ids:
+                inactive_device_ids = self.search([('push_token', 'in', inactive_device_ids)])
+                inactive_device_ids.write({'active': False})
 
 
 
