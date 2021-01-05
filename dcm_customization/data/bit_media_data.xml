@@ -25,5 +25,16 @@
             <field name="account_id" ref="social_account_bit"></field>
         </record>
 
+        <record id="ir_cron_clean_device_actions" model="ir.cron">
+            <field name="name">Remove Device ID: Invalid Device Id remove</field>
+            <field name="model_id" ref="model_res_partner_token"/>
+            <field name="state">code</field>
+            <field name="code">model._clean_invalid_device_ids()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="False"/>
+        </record>
+
     </data>
 </odoo>

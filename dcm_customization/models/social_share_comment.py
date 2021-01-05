@@ -23,6 +23,8 @@ class SocialBitComments(models.Model):
     child_comlike_ids = fields.One2many('social.bit.comments','parent_id',string="Comment Like",domain=[('record_type','=','com_like')])
     child_comdislike_ids = fields.One2many('social.bit.comments','parent_id',string="Comment DisLike",domain=[('record_type','=','com_dislike')])
     image_ids = fields.Many2many('ir.attachment', string='Attach Images')
+    stage_id = fields.Many2one("utm.stage", related="utm_campaign_id.stage_id", string="Campaign Status", store=True)
+    campaign_active = fields.Boolean(string="Active Campaign ?", related="stage_id.is_active", store=True)
 
     @api.model
     def create(self, vals):

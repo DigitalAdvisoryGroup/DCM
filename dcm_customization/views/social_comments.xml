@@ -55,4 +55,5 @@
      
     <!-- This Menu Item must have a parent and an action -->
      <menuitem id="comments_bit_menu_act" name="Social Comments" parent="social.menu_social_configuration" action="comments_model_name_action" sequence="100"/>
+     <menuitem id="menu_midar_statistics_eng" name="Social Engagements" parent="menu_midar_statistics" action="comments_model_name_action" sequence="20"/>
 </odoo>
