@@ -187,6 +187,26 @@ class ResPartnerToken(models.Model):
                 inactive_device_ids = self.search([('push_token', 'in', inactive_device_ids)])
                 inactive_device_ids.write({'active': False})
 
+    @api.model
+    def read_group(self, domain, fields, groupby, offset=0, limit=None, orderby=False, lazy=True):
+        res = super(ResPartnerToken, self).read_group(domain, fields, groupby, offset=offset, limit=limit, orderby=orderby, lazy=lazy)
+        if self.env.context.get("click_graph"):
+            current_ios_count = 0
+            current_android_count = 0
+            for line in res:
+                if line['device_type'] == "ios":
+                    current_count = line['__count']
+                    current_ios_count += line['__count']
+                    line['__count'] += (current_ios_count - current_count)
+                elif line['device_type'] == "android":
+                    current_count = line['__count']
+                    current_android_count += line['__count']
+                    line['__count'] += (current_android_count - current_count)
+                else:
+                    continue
+        return res
+
+
 
 
 
