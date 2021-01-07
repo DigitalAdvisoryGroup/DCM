@@ -63,6 +63,17 @@
         </record>
 
 
+        <record id="res_partner_token_view_graph" model="ir.ui.view">
+            <field name="name">res.partner.token.graph</field>
+            <field name="model">res.partner.token</field>
+            <field name="arch" type="xml">
+                <graph string="User Evolment" type="bar" >
+                    <field name="create_date" interval="week"/>
+                    <field name="device_type" />
+                </graph>
+            </field>
+        </record>
+
         <!-- res.partner.token action window -->
         <record id="res_partner_token_action" model="ir.actions.act_window">
             <field name="name">Device Token</field>
@@ -78,13 +89,29 @@
             </field>
         </record>
 
+
+        <record id="res_partner_token_graph_action" model="ir.actions.act_window">
+            <field name="name">User evolvmentttt</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">res.partner.token</field>
+            <field name="view_mode">tree,form,graph,pivot</field>
+            <field name="context">{'click_graph':'1'}</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    <!-- Add Text Here -->
+                </p><p>
+                    <!-- More details about what a user can do with this object will be OK -->
+                </p>
+            </field>
+        </record>
+
         <!-- This Menu Item an action -->
         <menuitem id="res_partner_token_menu_act" name="Device Token" parent="social.menu_social_configuration" action="res_partner_token_action" sequence="100"/>
 
 
-        <menuitem id="menu_midar_statistics" name="Statistics111" parent="social.menu_social_global" sequence="10"/>
+        <menuitem id="menu_midar_statistics" name="Statistics" parent="social.menu_social_global" sequence="10"/>
 
-        <menuitem id="menu_midar_statistics_token" name="User evolvment" parent="menu_midar_statistics" action="res_partner_token_action" sequence="10"/>
+        <menuitem id="menu_midar_statistics_token" name="User evolvmentttt" parent="menu_midar_statistics" action="res_partner_token_graph_action" sequence="10"/>
 
 
 
