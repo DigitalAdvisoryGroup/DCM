@@ -1,6 +1,18 @@
 <?xml version="1.0" ?>
 <odoo>
 
+    <record id="ir_cron_contacts_add_posts" model="ir.cron">
+        <field name="name">Midar: Add new contact to posts</field>
+        <field name="model_id" ref="model_res_partner"/>
+        <field name="state">code</field>
+        <field name="code">model._add_contact_posts()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field name="doall" eval="False"/>
+    </record>
+
+
     <data noupdate="1">
         <!--Email template -->
         <record id="email_template_otp_partner" model="mail.template">

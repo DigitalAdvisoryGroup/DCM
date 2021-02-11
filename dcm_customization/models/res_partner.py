@@ -5,8 +5,10 @@
 from pyfcm import FCMNotification
 from odoo import models, fields, api
 from odoo.tools.misc import formatLang, format_date, get_lang
+from odoo.tools import DEFAULT_SERVER_DATE_FORMAT
 import math, random
 from werkzeug.urls import url_join
+import datetime
 import logging
 _logger = logging.getLogger(__name__)
 LANG_CODE_ODOO = {
@@ -163,7 +165,17 @@ class ResPartner(models.Model):
             self.lang = LANG_CODE_ODOO.get(lang_code,"en_US")
         return True
 
-    
+    @api.model
+    def _add_contact_posts(self):
+        current_date = datetime.date.today().strftime(DEFAULT_SERVER_DATE_FORMAT)
+        new_partner_ids = self.search([('create_date','>=',current_date)])
+        if new_partner_ids:
+            for part in new_partner_ids:
+                post_ids = self.env['social.post'].search([('utm_campaign_id.stage_id.is_active','=',True),('state','=','posted')])
+                if post_ids:
+                    for post in post_ids:
+                        post.with_context(add_post=True).social_partner_ids = [(4, part.id)]
+
 
 class ResPartnerToken(models.Model):
     _name = 'res.partner.token'
@@ -194,20 +206,15 @@ class ResPartnerToken(models.Model):
             current_ios_count = 0
             current_android_count = 0
             for line in res:
-                if line['device_type'] == "ios":
-                    current_count = line['__count']
-                    current_ios_count += line['__count']
-                    line['__count'] += (current_ios_count - current_count)
-                elif line['device_type'] == "android":
-                    current_count = line['__count']
-                    current_android_count += line['__count']
-                    line['__count'] += (current_android_count - current_count)
-                else:
-                    continue
+                if line.get("device_type"):
+                    if line['device_type'] == "ios":
+                        current_count = line['__count']
+                        current_ios_count += line['__count']
+                        line['__count'] += (current_ios_count - current_count)
+                    elif line['device_type'] == "android":
+                        current_count = line['__count']
+                        current_android_count += line['__count']
+                        line['__count'] += (current_android_count - current_count)
+                    else:
+                        continue
         return res
-
-
-
-
-
-
