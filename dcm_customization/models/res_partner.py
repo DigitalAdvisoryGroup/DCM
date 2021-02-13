@@ -166,15 +166,19 @@ class ResPartner(models.Model):
         return True
 
     @api.model
-    def _add_contact_posts(self):
-        current_date = datetime.date.today().strftime(DEFAULT_SERVER_DATE_FORMAT)
-        new_partner_ids = self.search([('create_date','>=',current_date)])
+    def add_contact_posts(self,new_partner_ids=False):
+        if not new_partner_ids:
+            current_date = datetime.date.today().strftime(DEFAULT_SERVER_DATE_FORMAT)
+            new_partner_ids = self.search([('create_date','>=',current_date)]).ids
         if new_partner_ids:
             for part in new_partner_ids:
+                _logger.info("--------part---------------%s", part)
                 post_ids = self.env['social.post'].search([('utm_campaign_id.stage_id.is_active','=',True),('state','=','posted')])
                 if post_ids:
                     for post in post_ids:
-                        post.with_context(add_post=True).social_partner_ids = [(4, part.id)]
+                        if part not in post.social_partner_ids.ids:
+                            post.with_context(add_post=True).social_partner_ids = [(4, part)]
+        return True
 
 
 class ResPartnerToken(models.Model):

@@ -5,7 +5,7 @@
         <field name="name">Midar: Add new contact to posts</field>
         <field name="model_id" ref="model_res_partner"/>
         <field name="state">code</field>
-        <field name="code">model._add_contact_posts()</field>
+        <field name="code">model.add_contact_posts()</field>
         <field name="interval_number">1</field>
         <field name="interval_type">days</field>
         <field name="numbercall">-1</field>
