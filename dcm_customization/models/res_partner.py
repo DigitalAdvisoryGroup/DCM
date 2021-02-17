@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo Module Developed by Candidroot Solutions Pvt. Ltd.
 # See LICENSE file for full copyright and licensing details.
+import json
 
 from pyfcm import FCMNotification
 from odoo import models, fields, api
 from odoo.tools.misc import formatLang, format_date, get_lang
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT
+from itertools import groupby
 import math, random
 from werkzeug.urls import url_join
 import datetime
@@ -209,6 +211,7 @@ class ResPartnerToken(models.Model):
         if self.env.context.get("click_graph"):
             current_ios_count = 0
             current_android_count = 0
+            res = self.get_arrange_dict(res)
             for line in res:
                 if line.get("device_type"):
                     if line['device_type'] == "ios":
@@ -222,3 +225,26 @@ class ResPartnerToken(models.Model):
                     else:
                         continue
         return res
+
+    def get_arrange_dict(self,lst):
+        final_list = []
+        for k, v in groupby(lst, key=lambda x: x['create_date:week']):
+            same_week_list = list(v)
+            if len(same_week_list) == 2:
+                final_list.extend(same_week_list)
+            for i in same_week_list:
+                if i.get('device_type', False) and len(same_week_list) != 2 and i.get('device_type') == 'ios':
+                    android_dict = json.dumps(i.copy())
+                    android_dict = android_dict.replace('ios', 'android')
+                    android_dict = json.loads(android_dict)
+                    android_dict['__count'] = 0
+                    final_list.append(i)
+                    final_list.append(android_dict)
+                if i.get('device_type', False) and len(same_week_list) != 2 and i.get('device_type') == 'android':
+                    android_dict = json.dumps(i.copy())
+                    android_dict = android_dict.replace('android', 'ios')
+                    android_dict = json.loads(android_dict)
+                    android_dict['__count'] = 0
+                    final_list.append(i)
+                    final_list.append(android_dict)
+        return final_list
