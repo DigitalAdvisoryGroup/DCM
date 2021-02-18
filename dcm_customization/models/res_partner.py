@@ -42,6 +42,30 @@ class ResPartner(models.Model):
     partner_token_lines = fields.One2many("res.partner.token","partner_id", string="Token Lines")
     is_token_available = fields.Boolean("Is Token Available?", compute="_get_token_available", store=True)
     file_name_custom = fields.Char("Filename")
+    category_id_name = fields.Char("Tags Name", compute="_set_category_name", store=True)
+    category_skill_ids = fields.Many2many("res.partner.category", "rel_parnter_category_skill","skill_partner_id","skill_category_id", string="Skills")
+    category_skill_id_name = fields.Char("Skill Name", compute="_set_category_skill_ids_name", store=True)
+    category_res_ids = fields.Many2many("res.partner.category", "rel_parnter_category_res","res_partner_id","res_category_id",string="Responsbilities")
+    category_res_id_name = fields.Char("Responsbility Name", compute="_set_category_res_ids_name", store=True)
+
+
+    @api.depends("category_id")
+    def _set_category_name(self):
+        for part in self:
+            if part.category_id:
+                part.category_id_name = ",".join([x.name for x in part.category_id])
+
+    @api.depends("category_skill_ids")
+    def _set_category_skill_ids_name(self):
+        for part in self:
+            if part.category_skill_ids:
+                part.category_skill_id_name = ",".join([x.name for x in part.category_skill_ids])
+
+    @api.depends("category_res_ids")
+    def _set_category_res_ids_name(self):
+        for part in self:
+            if part.category_res_ids:
+                part.category_res_id_name = ",".join([x.name for x in part.category_res_ids])
 
     @api.depends("partner_token_lines")
     def _get_token_available(self):

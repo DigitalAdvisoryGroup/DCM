@@ -6,7 +6,7 @@
     'description': "Search Contacts. Open searched results in separate form having Filters and Views per App. Add support for multilingual search.",
     'author': "Candidroot Solutions Pvt. Ltd.",
     'website': "https://www.candidroot.com/",
-    'depends': ['contacts','web_enterprise'],
+    'depends': ['contacts','web_enterprise','dcm_customization'],
     "data": [
         'security/global_search_security.xml',
         'security/ir.model.access.csv',

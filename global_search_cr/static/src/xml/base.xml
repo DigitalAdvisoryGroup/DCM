@@ -33,6 +33,11 @@
                             <div class="o_channel_info" style="text-align: left; padding: 5px;">
                                 <div class="">
                                     <span class="o_record_name" t-att-data-res_category="record.display_name"> <t t-if="record.display_name" t-esc="record.display_name"/><t t-if="!record.display_name and record.utm_campaign_id" t-esc="record.utm_campaign_id[1]"/></span>
+                                    <t t-if="model == 'res.partner'">
+                                        <br/><span>Tags : <t t-esc="record.category_id_name" /> </span>
+                                        <br/><span>Skills : <t t-esc="record.category_skill_id_name" /> </span>
+                                        <br/><span>Responsibilities : <t t-esc="record.category_res_id_name" /> </span>
+                                    </t>
                                 </div>
                             </div>
                         </div>
