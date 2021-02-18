@@ -36,7 +36,6 @@ class GlobalSearch(models.Model):
         
     @api.model
     def open_in_dashboard(self, data, model_data):
-        print("-----open_in_dashboard---------")
         domains = self.get_domains(data)
         searched_models = {}
         for model in model_data:
