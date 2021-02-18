@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="assets_backend" name="Web Global Search Assets" inherit_id="web.assets_backend" priority="17">
+        <xpath expr="." position="inside">
+            <script type="text/javascript" src="/global_search_cr/static/src/js/dialog.js"></script>
+            <script type="text/javascript" src="/global_search_cr/static/src/js/global_search.js"></script>
+            <script type="text/javascript" src="/global_search_cr/static/src/js/menu.js"></script>
+            <script type="text/javascript" src="/global_search_cr/static/src/js/view_dialogs.js"></script>
+            <link rel="stylesheet"
+              type="text/scss"
+              href="/global_search_cr/static/src/scss/global_search.scss"/>
+            <link rel="stylesheet"
+              type="text/scss"
+              href="/global_search_cr/static/src/scss/dialog.scss"/>
+        </xpath>
+    </template>
+</odoo>
