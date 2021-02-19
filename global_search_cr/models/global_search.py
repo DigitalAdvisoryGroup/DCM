@@ -92,7 +92,6 @@ class GlobalSearch(models.Model):
 
     @api.model
     def get_records(self, data):
-        print("-------data----------",data)
         global_data = {}
         models = self.get_models()
         domains = self.get_model_domains(data)
