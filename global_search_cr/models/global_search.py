@@ -110,6 +110,7 @@ class GlobalSearch(models.Model):
                             all_parent_ids = list(set([x['parent_id'][0] for x in results if x.get("parent_id")]))
                             if all_parent_ids:
                                 parent_results = self.env[model.split('-')[0]].search_read([('id','in',all_parent_ids)], field_list, limit=5)
+                                parent_results += self.env[model.split('-')[0]].search_read([('parent_id','=',False),('name','ilike',data)], field_list, limit=5)
                                 model = "company"
                                 global_data[model] = {'header': _("Companies"), 'count': len(all_parent_ids)}
                                 global_data[model].update(self.get_global_data(model))
@@ -137,6 +138,7 @@ class GlobalSearch(models.Model):
                         all_parent_ids = list(set([x['parent_id'][0] for x in results if x.get("parent_id")]))
                         if all_parent_ids:
                             parent_results = self.env[model.split('-')[0]].search_read([('id', 'in', all_parent_ids)], field_list, limit=5)
+                            parent_results += self.env[model.split('-')[0]].search_read([('parent_id', '=', False), ('name', 'ilike', data)], field_list, limit=5)
                             model = "company"
                             global_data[model] = {'header': "Companies", 'count': len(all_parent_ids)}
                             global_data[model].update(self.get_global_data(model))
