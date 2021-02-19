@@ -11,7 +11,6 @@
         'security/global_search_security.xml',
         'security/ir.model.access.csv',
         'views/templates.xml',
-        'views/res_partner_view.xml',
     ],
     'qweb': ['static/src/xml/base.xml'],
     'installable': True,

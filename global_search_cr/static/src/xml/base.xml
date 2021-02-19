@@ -9,7 +9,7 @@
             <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" title="Global Search" href="#">
                 <i class="fa fa-search"/>
             </a>
-            <ul class="o_mail_navbar_global_dropdown dropdown-menu" role="menu" style="width: 800px">
+            <ul class="o_mail_navbar_global_dropdown dropdown-menu" role="menu" style="width: 850px">
                 <li class="o_mail_navbar_global_search_dropdown"/>
             </ul>
         </li>
@@ -35,7 +35,6 @@
                                 <div class="">
                                     <span class="o_record_name" t-att-data-res_category="record.display_name"> <t t-if="record.display_name" t-esc="record.display_name"/><t t-if="!record.display_name and record.utm_campaign_id" t-esc="record.utm_campaign_id[1]"/></span>
                                     <t t-if="model == 'res.partner'">
-                                        <br/><span>Tags : <t t-esc="record.category_id_name" /> </span>
                                         <br/><span>Skills : <t t-esc="record.category_skill_id_name" /> </span>
                                         <br/><span>Responsibilities : <t t-esc="record.category_res_id_name" /> </span>
                                     </t>

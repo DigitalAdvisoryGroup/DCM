@@ -160,7 +160,7 @@ msgstr ""
 #: code:addons/global_search_cr/static/src/xml/base.xml:0
 #, python-format
 msgid "Responsibilities :"
-msgstr ""
+msgstr "Zuständigkeit :"
 
 #. module: global_search_cr
 #. openerp-web
@@ -174,20 +174,13 @@ msgstr "Suchen..."
 #: code:addons/global_search_cr/static/src/xml/base.xml:0
 #, python-format
 msgid "Skills :"
-msgstr ""
+msgstr "Expertise :"
 
 #. module: global_search_cr
 #: code:addons/global_search_cr/models/global_search.py:0
 #, python-format
 msgid "Social Groups"
 msgstr "Empfängergruppen"
-
-#. module: global_search_cr
-#. openerp-web
-#: code:addons/global_search_cr/static/src/xml/base.xml:0
-#, python-format
-msgid "Tags :"
-msgstr ""
 
 #. module: global_search_cr
 #: model:ir.model,name:global_search_cr.model_res_users
