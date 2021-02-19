@@ -1,4 +1,4 @@
-from odoo import api, models
+from odoo import api, models, _
 
 
 class GlobalSearch(models.Model):
@@ -61,7 +61,7 @@ class GlobalSearch(models.Model):
         
     @api.model
     def get_models(self):
-        models = {'res.partner': 'Contacts','social.partner.group': 'Social Groups','social.bit.comments': 'Engagements','social.post': 'Posts'}
+        models = {'res.partner': _('Contacts'),'social.partner.group': _('Social Groups'),'social.bit.comments': _('Engagements'),'social.post': _('Posts')}
         return models
 
     @api.model
@@ -87,6 +87,7 @@ class GlobalSearch(models.Model):
             field_list.append("category_id_name")
             field_list.append("category_skill_id_name")
             field_list.append("category_res_id_name")
+            field_list.append("parent_id")
         return field_list
 
     @api.model
@@ -106,6 +107,19 @@ class GlobalSearch(models.Model):
                         field_list = self.get_field_list(model)
                         # Search First 5 Records
                         results = self.env[model.split('-')[0]].search_read(domains[model], field_list, limit=5)
+                        if model == "res.partner":
+                            all_parent_ids = list(set([x['parent_id'][0] for x in results]))
+                            if all_parent_ids:
+
+                                parent_results = self.env[model.split('-')[0]].search_read([('id','in',all_parent_ids)], field_list, limit=5)
+                                model = "company"
+                                global_data[model] = {'header': _("Companies"), 'count': len(all_parent_ids)}
+                                global_data[model].update(self.get_global_data(model))
+                                # Update Search Results
+                                global_data[model].update({
+                                    'data': parent_results
+                                })
+                                model = "res.partner"
                         if results:
                             global_data[model] = {'header': models[model], 'count': count}
                             global_data[model].update(self.get_global_data(model))
@@ -122,7 +136,17 @@ class GlobalSearch(models.Model):
 
                     results = self.env[model.split('-')[0]].search_read(domains[model], field_list, limit=5)
                     if model == "res.partner":
-                        print("--------results----------",results)
+                        all_parent_ids = list(set([x['parent_id'][0] for x in results]))
+                        if all_parent_ids:
+                            parent_results = self.env[model.split('-')[0]].search_read([('id', 'in', all_parent_ids)], field_list, limit=5)
+                            model = "company"
+                            global_data[model] = {'header': "Companies", 'count': len(all_parent_ids)}
+                            global_data[model].update(self.get_global_data(model))
+                            # Update Search Results
+                            global_data[model].update({
+                                'data': parent_results
+                            })
+                            model = "res.partner"
                     if results:
                         global_data[model] = {'header': models[model], 'count': count}
                         global_data[model].update(self.get_global_data(model))
@@ -130,4 +154,5 @@ class GlobalSearch(models.Model):
                         global_data[model].update({
                             'data': results
                         })
+
         return global_data

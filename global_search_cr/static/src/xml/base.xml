@@ -9,7 +9,7 @@
             <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" title="Global Search" href="#">
                 <i class="fa fa-search"/>
             </a>
-            <ul class="o_mail_navbar_global_dropdown dropdown-menu" role="menu" style="width: 650px">
+            <ul class="o_mail_navbar_global_dropdown dropdown-menu" role="menu" style="width: 800px">
                 <li class="o_mail_navbar_global_search_dropdown"/>
             </ul>
         </li>
@@ -29,6 +29,7 @@
                         <t t-esc="records[model]['header']"/> (<t t-esc="records[model]['count']"/>)
                     </div>
                     <t t-foreach="records[model]['data']" t-as="record">
+                        <t t-if="model == 'company'" t-set="model" t-value="'res.partner'" />
                         <div class="o_global_search_preview" style="min-height: 30px;" t-att-data-res_model="model" t-att-data-res_header="records[model]['header']" t-att-data-res_id="record.id" t-att-data-list_view_id="records[model]['list_view_id']" t-att-data-form_view_id="records[model]['form_view_id']">
                             <div class="o_channel_info" style="text-align: left; padding: 5px;">
                                 <div class="">
