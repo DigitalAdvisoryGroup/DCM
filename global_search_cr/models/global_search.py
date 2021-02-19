@@ -106,7 +106,7 @@ class GlobalSearch(models.Model):
                         field_list = self.get_field_list(model)
                         # Search First 5 Records
                         results = self.env[model.split('-')[0]].search_read(domains[model], field_list, limit=5)
-                        if model == "res.partner":
+                        if model == "res.partner" and results:
                             all_parent_ids = list(set([x['parent_id'][0] for x in results]))
                             if all_parent_ids:
 
@@ -134,7 +134,7 @@ class GlobalSearch(models.Model):
                     # Search First 5 Records
 
                     results = self.env[model.split('-')[0]].search_read(domains[model], field_list, limit=5)
-                    if model == "res.partner":
+                    if model == "res.partner" and results:
                         all_parent_ids = list(set([x['parent_id'][0] for x in results]))
                         if all_parent_ids:
                             parent_results = self.env[model.split('-')[0]].search_read([('id', 'in', all_parent_ids)], field_list, limit=5)
