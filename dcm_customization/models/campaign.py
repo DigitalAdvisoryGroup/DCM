@@ -12,6 +12,7 @@ class Campaign(models.Model):
     _inherit = ['utm.campaign', 'image.mixin']
 
     is_mandatory_campaign = fields.Boolean("Is Mandatory Campaign?")
+    is_public_campaign = fields.Boolean("Is Public Campaign?", default=True)
     opt_out_partner_ids = fields.Many2many('res.partner','res_partner_opt_out',string="Opt Out Users")
     rating_ids = fields.One2many("social.bit.comments",'utm_campaign_id',string="Rating",domain=[('record_type','=','rating')])
     comments_ids = fields.One2many("social.bit.comments",'utm_campaign_id',string="Comments",domain=[('record_type','=','comment')])

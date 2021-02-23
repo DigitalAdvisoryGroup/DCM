@@ -199,7 +199,7 @@ class ResPartner(models.Model):
         if new_partner_ids:
             for part in new_partner_ids:
                 _logger.info("--------part---------------%s", part)
-                post_ids = self.env['social.post'].search([('utm_campaign_id.stage_id.is_active','=',True),('state','=','posted')])
+                post_ids = self.env['social.post'].search([('utm_campaign_id.stage_id.is_active','=',True),('state','=','posted'),('is_public_campaign','=',False)])
                 if post_ids:
                     for post in post_ids:
                         if part not in post.social_partner_ids.ids:
