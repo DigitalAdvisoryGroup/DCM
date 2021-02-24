@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<templates xml:space="preserve">
+    <t t-name="GlobalSearch.input">
+        <li style="padding-top: 10px;">
+            <input class="o_menu_global_search_input" id="search_bar" onfocus="this.value = this.value;" placeholder="Search..." type="text" style="color: black; width: 250px;" autofocus="autofocus"/>
+        </li>
+        <li class="o_mail_navbar_item o_global_search_systray">
+            <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false" title="Global Search" href="#">
+                <i class="fa fa-search"/>
+            </a>
+            <ul class="o_mail_navbar_global_dropdown dropdown-menu" role="menu" style="width: 850px">
+                <li class="o_mail_navbar_global_search_dropdown"/>
+            </ul>
+        </li>
+    </t>
+    
+    <t t-name="GlobalSearch">
+        <t t-if="_.isEmpty(search_models)">
+            <li class="text-center o_no_results" style="color: #666666;">
+                <span>No results found.</span>
+            </li>
+        </t>
+        <!-- <button t-if="!_.isEmpty(search_models)" type="button" class="fa fa-external-link btn btn-secondary o_view_detailed_search" style="font-size: 15px"/> -->
+        <t t-foreach="search_models" t-as="model">
+            <div class="o_global_preview" style="min-height: 50px;display: inline-block;padding:10px" t-att-data-res_model="model">
+                <div class="o_channel_info">
+                    <div class="o_category_header" t-att-data-res_model="model" t-att-data-count="records[model]['count']" t-att-data-res_header="records[model]['header']" t-att-data-form_view_id="records[model]['form_view_id']" t-att-data-list_view_id="records[model]['list_view_id']" t-att-data-kanban_view_id="records[model]['kanban_view_id']">
+                        <t t-esc="records[model]['header']"/> (<t t-esc="records[model]['count']"/>)
+                    </div>
+                    <t t-foreach="records[model]['data']" t-as="record">
+                        <t t-if="model == 'company'" t-set="model" t-value="'res.partner'" />
+                        <div class="o_global_search_preview" style="min-height: 30px;" t-att-data-res_model="model" t-att-data-res_header="records[model]['header']" t-att-data-res_id="record.id" t-att-data-list_view_id="records[model]['list_view_id']" t-att-data-form_view_id="records[model]['form_view_id']">
+                            <div class="o_channel_info" style="text-align: left; padding: 5px;">
+                                <div class="">
+                                    <span class="o_record_name" t-att-data-res_category="record.display_name"> <t t-if="record.display_name" t-esc="record.display_name"/><t t-if="!record.display_name and record.utm_campaign_id" t-esc="record.utm_campaign_id[1]"/></span>
+                                    <t t-if="model == 'res.partner'">
+                                        <br/><span>Skills : <t t-esc="record.category_skill_id_name" /> </span>
+                                        <br/><span>Responsibilities : <t t-esc="record.category_res_id_name" /> </span>
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+            </div>
+        </t>
+    </t>
+    
+</templates>

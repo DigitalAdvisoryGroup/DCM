@@ -1,12 +1,16 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo Module Developed by Candidroot Solutions Pvt. Ltd.
 # See LICENSE file for full copyright and licensing details.
+import json
 
 from pyfcm import FCMNotification
 from odoo import models, fields, api
 from odoo.tools.misc import formatLang, format_date, get_lang
+from odoo.tools import DEFAULT_SERVER_DATE_FORMAT
+from itertools import groupby
 import math, random
 from werkzeug.urls import url_join
+import datetime
 import logging
 _logger = logging.getLogger(__name__)
 LANG_CODE_ODOO = {
@@ -38,6 +42,30 @@ class ResPartner(models.Model):
     partner_token_lines = fields.One2many("res.partner.token","partner_id", string="Token Lines")
     is_token_available = fields.Boolean("Is Token Available?", compute="_get_token_available", store=True)
     file_name_custom = fields.Char("Filename")
+    category_id_name = fields.Char("Tags Name", compute="_set_category_name", store=True)
+    category_skill_ids = fields.Many2many("res.partner.category", "rel_parnter_category_skill","skill_partner_id","skill_category_id", string="Skills")
+    category_skill_id_name = fields.Char("Skill Name", compute="_set_category_skill_ids_name", store=True)
+    category_res_ids = fields.Many2many("res.partner.category", "rel_parnter_category_res","res_partner_id","res_category_id",string="Responsbilities")
+    category_res_id_name = fields.Char("Responsbility Name", compute="_set_category_res_ids_name", store=True)
+
+
+    @api.depends("category_id")
+    def _set_category_name(self):
+        for part in self:
+            if part.category_id:
+                part.category_id_name = ",".join([x.name for x in part.category_id])
+
+    @api.depends("category_skill_ids")
+    def _set_category_skill_ids_name(self):
+        for part in self:
+            if part.category_skill_ids:
+                part.category_skill_id_name = ",".join([x.name for x in part.category_skill_ids])
+
+    @api.depends("category_res_ids")
+    def _set_category_res_ids_name(self):
+        for part in self:
+            if part.category_res_ids:
+                part.category_res_id_name = ",".join([x.name for x in part.category_res_ids])
 
     @api.depends("partner_token_lines")
     def _get_token_available(self):
@@ -163,7 +191,21 @@ class ResPartner(models.Model):
             self.lang = LANG_CODE_ODOO.get(lang_code,"en_US")
         return True
 
-    
+    @api.model
+    def add_contact_posts(self,new_partner_ids=False):
+        if not new_partner_ids:
+            current_date = datetime.date.today().strftime(DEFAULT_SERVER_DATE_FORMAT)
+            new_partner_ids = self.search([('create_date','>=',current_date)]).ids
+        if new_partner_ids:
+            for part in new_partner_ids:
+                _logger.info("--------part---------------%s", part)
+                post_ids = self.env['social.post'].search([('utm_campaign_id.stage_id.is_active','=',True),('state','=','posted'),('is_public_campaign','=',False)])
+                if post_ids:
+                    for post in post_ids:
+                        if part not in post.social_partner_ids.ids:
+                            post.with_context(add_post=True).social_partner_ids = [(4, part)]
+        return True
+
 
 class ResPartnerToken(models.Model):
     _name = 'res.partner.token'
@@ -193,21 +235,40 @@ class ResPartnerToken(models.Model):
         if self.env.context.get("click_graph"):
             current_ios_count = 0
             current_android_count = 0
+            res = self.get_arrange_dict(res)
             for line in res:
-                if line['device_type'] == "ios":
-                    current_count = line['__count']
-                    current_ios_count += line['__count']
-                    line['__count'] += (current_ios_count - current_count)
-                elif line['device_type'] == "android":
-                    current_count = line['__count']
-                    current_android_count += line['__count']
-                    line['__count'] += (current_android_count - current_count)
-                else:
-                    continue
+                if line.get("device_type"):
+                    if line['device_type'] == "ios":
+                        current_count = line['__count']
+                        current_ios_count += line['__count']
+                        line['__count'] += (current_ios_count - current_count)
+                    elif line['device_type'] == "android":
+                        current_count = line['__count']
+                        current_android_count += line['__count']
+                        line['__count'] += (current_android_count - current_count)
+                    else:
+                        continue
         return res
 
-
-
-
-
-
+    def get_arrange_dict(self,lst):
+        final_list = []
+        for k, v in groupby(lst, key=lambda x: x['create_date:week']):
+            same_week_list = list(v)
+            if len(same_week_list) == 2:
+                final_list.extend(same_week_list)
+            for i in same_week_list:
+                if i.get('device_type', False) and len(same_week_list) != 2 and i.get('device_type') == 'ios':
+                    android_dict = json.dumps(i.copy())
+                    android_dict = android_dict.replace('ios', 'android')
+                    android_dict = json.loads(android_dict)
+                    android_dict['__count'] = 0
+                    final_list.append(i)
+                    final_list.append(android_dict)
+                if i.get('device_type', False) and len(same_week_list) != 2 and i.get('device_type') == 'android':
+                    android_dict = json.dumps(i.copy())
+                    android_dict = android_dict.replace('android', 'ios')
+                    android_dict = json.loads(android_dict)
+                    android_dict['__count'] = 0
+                    final_list.append(i)
+                    final_list.append(android_dict)
+        return final_list

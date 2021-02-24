@@ -52,7 +52,7 @@
                 <xpath expr="//sheet" position="inside">
                     <notebook>
                         <page string="Social Partners">
-                            <field name="social_partner_ids" readonly="1"
+                            <field name="social_partner_ids"
                                    force_save="1">
                                 <tree>
                                     <field name="name"/>

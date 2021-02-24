@@ -31,6 +31,7 @@
                 </xpath>
                 <xpath expr="//field[@name='tag_ids']" position="after">
                     <field name="is_mandatory_campaign"/>
+                    <field name="is_public_campaign"/>
                     <field name="avg_rating" readonly="1"/>
                 </xpath>
 

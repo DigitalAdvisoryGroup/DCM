@@ -51,8 +51,9 @@ class SocialPostBIT(models.Model):
 
     def write(self, vals):
         res = super(SocialPostBIT, self).write(vals)
-        for rec in self:
-            rec.set_video_thumanil_image()
+        if not self.env.context.get("add_post"):
+            for rec in self:
+                rec.set_video_thumanil_image()
         return res
 
     def set_video_thumanil_image(self):

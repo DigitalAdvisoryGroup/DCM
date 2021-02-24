@@ -9,6 +9,8 @@
             <field name="arch" type="xml">
                 <!-- Add your xpath here -->
                 <xpath expr="//field[@name='category_id']" position="after">
+                    <field name="category_skill_ids" widget="many2many_tags"/>
+                    <field name="category_res_ids" widget="many2many_tags"/>
                     <field name="social_group_id" widget="many2many_tags_open"/>
                     <field name="change_connection" />
                     <field name="is_token_available" />
