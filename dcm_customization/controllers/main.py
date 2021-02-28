@@ -29,6 +29,13 @@ from odoo.http import Response
 from io import BytesIO
 from werkzeug.wsgi import wrap_file
 
+class MidarVideoAttachment(http.Controller):
+
+    @http.route(['/comment-video'], type='json', auth='public', website=True)
+    def comment_video(self, **post):
+        res_id = request.env['social.bit.comments'].sudo().create(post)
+        return res_id.id
+
 class PortalAccount(CustomerPortal):
     @http.route()
     def account(self, redirect=None, **post):
