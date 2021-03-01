@@ -1,8 +1,12 @@
+import base64
 
 from odoo import models, api, fields
 from pyfcm import FCMNotification
 from werkzeug.urls import url_join
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
+import os
+import tempfile
+import cv2
 import logging
 _logger = logging.getLogger(__name__)
 
@@ -76,7 +80,40 @@ class SocialBitComments(models.Model):
                                       "message_title": subject,"click_action":"OPEN_ACTIVITY_1",
                                       "message_body": body}}
                         )
+        res.set_video_thumanil_image()
         return res
+
+    def set_video_thumanil_image(self):
+        for rec in self:
+            for media in rec.image_ids:
+                if "video" in media.mimetype:
+                    video_file_path = tempfile.gettempdir() + "/" + media.name
+                    with open(video_file_path, 'wb') as f:
+                        f.write(base64.b64decode(media.datas))
+                    f.close()
+                    success = True
+                    cap = cv2.VideoCapture(video_file_path)
+                    while success:
+                        success, image = cap.read()
+                        print('read a new frame:', success)
+                        image_file_path = tempfile.gettempdir() + "/%s.jpg" % (media.name).split(".")[0]
+                        cv2.imwrite(image_file_path, image)
+                        success = False
+                    if image_file_path:
+                        img_data = open(image_file_path, 'rb').read()
+                        att_vals = {
+                            'name': image_file_path.split("/")[-1],
+                            'type': 'binary',
+                            'datas': base64.b64encode(img_data),
+                            'res_model': media._name,
+                            'res_id': media.id,
+                            "is_video_thumnail": True,
+                            "public": True,
+                            }
+                        att_id = self.env['ir.attachment'].create(att_vals)
+                    if image_file_path and video_file_path:
+                        os.remove(image_file_path)
+                        os.remove(video_file_path)
 
     def getCommentMedia(self):
         base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
@@ -91,10 +128,30 @@ class SocialBitComments(models.Model):
                     mimetype = "ppt"
                 if media.mimetype in ['application/vnd.ms-excel']:
                     mimetype = "doc"
-            media_ids.append({
-                'url': url_join(base_url,'/web/content/%s/%s' % (media.id, media.name)),
-                'mimetype': mimetype
-            })
+            if "image" in mimetype:
+                media_ids.append({
+                    'url': url_join(base_url,'/web/image/%s/%s' % (media.id, media.name)),
+                    'mimetype': mimetype,
+                    'width': media.img_width,
+                    'height': media.img_height,
+                })
+            else:
+                thumbanil_att_id = self.env["ir.attachment"].search([('is_video_thumnail','=',True),
+                                                                     ('res_id','=',media.id),
+                                                                     ('res_model','=',media._name)], limit=1)
+                media_ids.append({
+                    'url': url_join(base_url, '/web/content/%s/%s' % (
+                    media.id, media.name)),
+                    "thumbnail_url": thumbanil_att_id and url_join(base_url, '/web/image/%s/%s' % (
+                    thumbanil_att_id.id, thumbanil_att_id.name)) or '',
+                    'mimetype': mimetype,
+                    'width': media.img_width,
+                    'height': media.img_height,
+                })
+            # media_ids.append({
+            #     'url': url_join(base_url,'/web/content/%s/%s' % (media.id, media.name)),
+            #     'mimetype': mimetype
+            # })
         return media_ids
 
 
