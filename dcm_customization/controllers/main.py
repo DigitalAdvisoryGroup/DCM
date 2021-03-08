@@ -36,6 +36,34 @@ class MidarVideoAttachment(http.Controller):
         res_id = request.env['social.bit.comments'].sudo().create(post)
         return res_id.id
 
+    @http.route('/dcm/get_sg_org_chart', type='json', auth='user')
+    def get_org_chart(self, partner_id, **kw):
+        if not partner_id:
+            return {
+                'managers': [],
+                'children': [],
+            }
+        managers_list = []
+        partner_browse = request.env['res.partner'].sudo().browse(partner_id)
+        if not partner_browse.social_group_id:
+            return {
+                'managers': [],
+                'children': [],
+            }
+        self_dict = {'id': partner_browse.social_group_id[0].id, 'name': partner_browse.social_group_id[0].name,'code': partner_browse.social_group_id[0].code}
+        parent_sg_id = request.env['social.partner.group'].sudo().search([('code','=',partner_browse.social_group_id[0].parent2_id)],limit=1)
+        if parent_sg_id:
+            managers_list.append({"id": parent_sg_id.id,"name": parent_sg_id.name,"code": parent_sg_id.code})
+            if parent_sg_id.x_parent2_id:
+                parent_sg_id1 = request.env['social.partner.group'].sudo().search([('code', '=', parent_sg_id.parent2_id)], limit=1)
+                managers_list.append({"id": parent_sg_id1.id, "name": parent_sg_id1.name,"code": parent_sg_id1.code})
+        return {
+                'self': self_dict,
+                'managers': managers_list,
+                'children': [],
+            }
+
+
 class PortalAccount(CustomerPortal):
     @http.route()
     def account(self, redirect=None, **post):

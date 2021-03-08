@@ -23,6 +23,17 @@
         <xpath expr="." position="inside">
             <link rel="stylesheet" type="text/scss"
                   href="/dcm_customization/static/src/scss/social.scss"/>
+            <script type="text/javascript" src="/dcm_customization/static/src/js/dialog.js"></script>
+            <script type="text/javascript" src="/dcm_customization/static/src/js/global_search.js"></script>
+            <script type="text/javascript" src="/dcm_customization/static/src/js/menu.js"></script>
+            <script type="text/javascript" src="/dcm_customization/static/src/js/view_dialogs.js"></script>
+            <link rel="stylesheet"
+              type="text/scss"
+              href="/dcm_customization/static/src/scss/global_search.scss"/>
+            <link rel="stylesheet"
+              type="text/scss"
+              href="/dcm_customization/static/src/scss/dialog.scss"/>
+            <script type="text/javascript" src="/dcm_customization/static/src/js/social_group_org_chart.js"></script>
         </xpath>
 
     </template>

@@ -48,6 +48,25 @@ class ResPartner(models.Model):
     category_res_ids = fields.Many2many("res.partner.category", "rel_parnter_category_res","res_partner_id","res_category_id",string="Responsbilities")
     category_res_id_name = fields.Char("Responsbility Name", compute="_set_category_res_ids_name", store=True)
 
+    # ao1_id = fields.Char("AO 1")
+    # ao2_id = fields.Char("AO 2")
+    # ao3_id = fields.Char("AO 3")
+    # ao_key = fields.Char("AO-Key")
+    fu1_id = fields.Char("FU 1")
+    fu2_id = fields.Char("FU 2")
+    fu3_id = fields.Char("FU 3")
+    fu_key = fields.Char("Func Unit Key")
+    # hlevel = fields.Char("Hierarchy Level")
+    # hlevel_id = fields.Char("Hierarchy Level")
+    mlevel_id = fields.Many2one("partner.mlevel","Management level")
+    # oe1_id = fields.Char("OE 1")
+    # oe2_id = fields.Char("OE 2")
+    # oe3_id = fields.Char("OE 3")
+    # oe_key = fields.Char("OE-Key")
+    # ou1_id = fields.Char("OU 1")
+    # ou2_id = fields.Char("OU 2")
+    # ou3_id = fields.Char("OU 3")
+    # ou_key = fields.Char("Org Unit Key")
 
     @api.depends("category_id")
     def _set_category_name(self):
@@ -272,3 +291,9 @@ class ResPartnerToken(models.Model):
                     final_list.append(i)
                     final_list.append(android_dict)
         return final_list
+
+class PartnerMlevel(models.Model):
+    _name = "partner.mlevel"
+
+    name = fields.Char("Name")
+    code = fields.Char("Code")

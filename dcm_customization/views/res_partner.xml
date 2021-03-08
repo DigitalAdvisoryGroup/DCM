@@ -12,14 +12,40 @@
                     <field name="category_skill_ids" widget="many2many_tags"/>
                     <field name="category_res_ids" widget="many2many_tags"/>
                     <field name="social_group_id" widget="many2many_tags_open"/>
-                    <field name="change_connection" />
-                    <field name="is_token_available" />
-                    <field name="partner_token_lines" />
-                    <field name="file_name_custom" />
+                    <field name="change_connection"/>
+                    <field name="is_token_available"/>
+                    <field name="partner_token_lines"/>
+                    <field name="file_name_custom"/>
                 </xpath>
                 <xpath expr="//field[@name='image_1920']" position="attributes">
                     <attribute name="filename">file_name_custom</attribute>
                 </xpath>
+                <notebook position="inside">
+                    <page name="organisation" string="Organisation" autofocus="autofocus">
+                        <div id="o_work_employee_container">
+                            <div class="o_work_employee_main">
+                                <group string="Organisational" name="row_1_left">
+                                    <field name="function" string="Function"/>
+                                    <field name="mlevel_id" string="Management level"/>
+                                </group>
+                                <group string="Functional" name="row_1_middle">
+                                    <field name="fu_key" string="FU Key"/>
+                                    <field name="fu1_id" string="FU 1"/>
+                                    <field name="fu2_id" string="FU 2"/>
+                                    <field name="fu3_id" string="FU 3"/>
+                                </group>
+                                <group string="Expertise" name="row_1_right">
+                                    <field name="category_skill_ids" string="Skills" widget="many2many_tags"/>
+                                    <field name="category_res_ids" string="Responsibilities" widget="many2many_tags"/>
+                                </group>
+                            </div>
+                            <div id="o_employee_right">
+                                <h4 class="o_org_chart_title mb16 mt0">Organization Chart</h4>
+                                <field name="social_group_id" string="Org Unit" widget="sg_org_chart"/>
+                            </div>
+                        </div>
+                    </page>
+                </notebook>
             </field>
         </record>
 

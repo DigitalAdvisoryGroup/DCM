@@ -7,6 +7,8 @@
         <field name="arch" type="xml">
             <tree>
                 <field name="name" />
+                <field name="x_code"/>
+                <field name="x_parent2_id"/>
                 <field name="partner_ids" />
             </tree>
         </field>
@@ -28,7 +30,14 @@
                         </button>
                     </div>
                     <group>
-                        <field name="name" />
+                        <field name="image_1920" widget='image' class="oe_avatar" options='{"zoom": true, "preview_image":"image_128"}'/>
+                    </group>
+                    <group>
+                        <field name="name"/>
+                        <field name="code"/>
+                        <field name="x_code"/>
+                        <field name="parent2_id"/>
+                        <field name="x_parent2_id"/>
                         <field name="id" invisible="1"/>
                         <field name="parent_id" domain="[('parent_id','=',False),('id','!=',id)]"/>
                         <field name="partner_ids" />
