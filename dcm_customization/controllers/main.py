@@ -54,7 +54,7 @@ class MidarVideoAttachment(http.Controller):
         parent_sg_id = request.env['social.partner.group'].sudo().search([('code','=',partner_browse.social_group_id[0].parent2_id)],limit=1)
         if parent_sg_id:
             managers_list.append({"id": parent_sg_id.id,"name": parent_sg_id.name,"code": parent_sg_id.code})
-            if parent_sg_id.x_parent2_id:
+            if parent_sg_id.parent2_id:
                 parent_sg_id1 = request.env['social.partner.group'].sudo().search([('code', '=', parent_sg_id.parent2_id)], limit=1)
                 managers_list.append({"id": parent_sg_id1.id, "name": parent_sg_id1.name,"code": parent_sg_id1.code})
         return {
