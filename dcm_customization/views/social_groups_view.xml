@@ -38,7 +38,9 @@
                         <field name="parent2_id"/>
                         <field name="id" invisible="1"/>
                         <field name="parent_id" domain="[('parent_id','=',False),('id','!=',id)]"/>
-                        <field name="partner_ids" />
+                        <field name="type" />
+                        <field name="partner_ids" attrs="{'invisible': [('type','=','functional')]}"/>
+                        <field name="fun_partner_ids" attrs="{'invisible': [('type','!=','functional')]}"/>
                         <field name="child_ids" invisible="1"/>
                         <field name="parent_id" invisible="1"/>
                     </group>

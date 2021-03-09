@@ -19,7 +19,9 @@ class SocialPartnerGroups(models.Model):
 
     image_1920 = fields.Image(default=_default_image)
     name = fields.Char("Name",required=True)
+    type = fields.Selection([('normal','Normal'),('functional','Functional')], string="Type", default="normal")
     partner_ids = fields.Many2many('res.partner','social_group_partner_rel','social_group_id','partner_id',string="Partner")
+    fun_partner_ids = fields.Many2many('res.partner','social_group_fun_partner_rel','social_group_id','partner_id',string="Partner")
     parent_id = fields.Many2one("social.partner.group",string="Parent")
     child_ids = fields.One2many('social.partner.group','parent_id',string="Child Groups")
     total_count = fields.Integer("Total Subscribers",compute="compute_total_count")

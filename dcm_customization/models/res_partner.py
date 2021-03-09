@@ -38,6 +38,7 @@ class ResPartner(models.Model):
 
     otp_token = fields.Char("OTP Token", copy=False)
     social_group_id = fields.Many2many('social.partner.group','social_group_partner_rel','partner_id','social_group_id',string="Social Group")
+    social_group_fun_id = fields.Many2many('social.partner.group','social_group_fun_partner_rel','partner_id','social_group_id',string="Functional Social Group")
     change_connection = fields.Boolean("Change Connection")
     partner_token_lines = fields.One2many("res.partner.token","partner_id", string="Token Lines")
     is_token_available = fields.Boolean("Is Token Available?", compute="_get_token_available", store=True)

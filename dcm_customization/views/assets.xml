@@ -34,6 +34,7 @@
               type="text/scss"
               href="/dcm_customization/static/src/scss/dialog.scss"/>
             <script type="text/javascript" src="/dcm_customization/static/src/js/social_group_org_chart.js"></script>
+            <script type="text/javascript" src="/dcm_customization/static/src/js/social_group_fun_org_chart.js"></script>
         </xpath>
 
     </template>

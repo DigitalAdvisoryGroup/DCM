@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+
+    <template id="midardir_search" name="MidarDir">
+        <t t-call="website.layout">
+            <t t-set="additional_title">MidarDir</t>
+            <form t-att-action="'/midardir'" method="post">
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                <div t-attf-class="input-group #{_classes}" role="search">
+                    <input type="text" name="search" class="search-query form-control oe_search_box" placeholder="Search..." t-att-value="search"/>
+                    <div class="input-group-append">
+                        <button type="submit" class="btn btn-primary oe_search_button" aria-label="Search" title="Search">
+                            <i class="fa fa-search"/>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </t>
+    </template>
+
+    <template id="midardir_search_result" name="MidarDir Result">
+        <t t-call="website.layout">
+            <t t-set="additional_title">MidarDir Result</t>
+            <span t-esc="company"/>
+            <!--<t t-foreach="search_models" t-as="model">
+                <div class="o_global_preview" style="min-height: 50px;display: inline-block;padding:10px" t-att-data-res_model="model">
+                    <div class="o_channel_info">
+                        <div class="o_category_header" t-att-data-res_model="model" t-att-data-count="records[model]['count']" t-att-data-res_header="records[model]['header']"
+                             t-att-data-form_view_id="records[model]['form_view_id']" t-att-data-list_view_id="records[model]['list_view_id']"
+                             t-att-data-kanban_view_id="records[model]['kanban_view_id']">
+                            <t t-esc="records[model]['header']"/>
+                            (<t t-esc="records[model]['count']"/>)
+                        </div>
+                        <t t-foreach="records[model]['data']" t-as="record">
+                            <t t-if="model == 'company'" t-set="model" t-value="'res.partner'"/>
+                            <div class="o_global_search_preview" style="min-height: 30px;" t-att-data-res_model="model" t-att-data-res_header="records[model]['header']" t-att-data-res_id="record.id"
+                                 t-att-data-list_view_id="records[model]['list_view_id']" t-att-data-form_view_id="records[model]['form_view_id']">
+                                <div class="o_channel_info" style="text-align: left; padding: 5px;">
+                                    <div class="">
+                                        <span class="o_record_name" t-att-data-res_category="record.display_name">
+                                            <t t-if="record.display_name" t-esc="record.display_name"/>
+                                            <t t-if="!record.display_name and record.utm_campaign_id" t-esc="record.utm_campaign_id[1]"/>
+                                        </span>
+                                        <t t-if="model == 'res.partner'">
+                                            <br/>
+                                            <span>Skills :
+                                                <t t-esc="record.category_skill_id_name"/>
+                                            </span>
+                                            <br/>
+                                            <span>Responsibilities :
+                                                <t t-esc="record.category_res_id_name"/>
+                                            </span>
+                                        </t>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+            </t>-->
+        </t>
+    </template>
+
+
+</odoo>

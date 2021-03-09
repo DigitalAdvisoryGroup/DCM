@@ -28,12 +28,12 @@
                                     <field name="function" string="Function"/>
                                     <field name="mlevel_id" string="Management level"/>
                                 </group>
-                                <group string="Functional" name="row_1_middle">
+                                <!--<group string="Functional" name="row_1_middle">
                                     <field name="fu_key" string="FU Key"/>
                                     <field name="fu1_id" string="FU 1"/>
                                     <field name="fu2_id" string="FU 2"/>
                                     <field name="fu3_id" string="FU 3"/>
-                                </group>
+                                </group>-->
                                 <group string="Expertise" name="row_1_right">
                                     <field name="category_skill_ids" string="Skills" widget="many2many_tags"/>
                                     <field name="category_res_ids" string="Responsibilities" widget="many2many_tags"/>
@@ -42,6 +42,10 @@
                             <div id="o_employee_right">
                                 <h4 class="o_org_chart_title mb16 mt0">Organization Chart</h4>
                                 <field name="social_group_id" string="Org Unit" widget="sg_org_chart"/>
+                            </div>
+                            <div id="o_employee_right">
+                                <h4 class="o_org_chart_title mb16 mt0">Functional Chart</h4>
+                                <field name="social_group_fun_id" string="Functional Unit" widget="sg_fun_org_chart"/>
                             </div>
                         </div>
                     </page>

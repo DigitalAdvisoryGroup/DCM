@@ -59,9 +59,47 @@ class MidarVideoAttachment(http.Controller):
                 managers_list.append({"id": parent_sg_id1.id, "name": parent_sg_id1.name,"code": parent_sg_id1.code})
         return {
                 'self': self_dict,
-                'managers': managers_list,
+                'managers': sorted(managers_list, key = lambda i: i['id']),
                 'children': [],
             }
+
+    @http.route('/dcm/get_fun_sg_org_chart', type='json', auth='user')
+    def get_fun_org_chart(self, partner_id, **kw):
+        if not partner_id:
+            return {
+                'managers': [],
+                'children': [],
+            }
+        managers_list = []
+        partner_browse = request.env['res.partner'].sudo().browse(partner_id)
+        if not partner_browse.social_group_fun_id:
+            return {
+                'managers': [],
+                'children': [],
+            }
+        self_dict = {'id': partner_browse.social_group_fun_id[0].id, 'name': partner_browse.social_group_fun_id[0].name, 'code': partner_browse.social_group_fun_id[0].code}
+        parent_sg_id = request.env['social.partner.group'].sudo().search([('code', '=', partner_browse.social_group_fun_id[0].parent2_id)], limit=1)
+        if parent_sg_id:
+            managers_list.append({"id": parent_sg_id.id, "name": parent_sg_id.name, "code": parent_sg_id.code})
+            if parent_sg_id.parent2_id:
+                parent_sg_id1 = request.env['social.partner.group'].sudo().search([('code', '=', parent_sg_id.parent2_id)], limit=1)
+                managers_list.append({"id": parent_sg_id1.id, "name": parent_sg_id1.name, "code": parent_sg_id1.code})
+        return {
+            'self': self_dict,
+            'managers': sorted(managers_list, key=lambda i: i['id']),
+            'children': [],
+        }
+
+    @http.route('/midardir', type='http', auth='user', website=True)
+    def midardir_search(self, **kw):
+        print("-------kw------------",kw)
+        if kw:
+            data = request.env['global.search'].sudo().get_records(kw['search'])
+            print("-------data--------------",data)
+            return request.render("dcm_customization.midardir_search_result", data)
+            stop
+        return request.render("dcm_customization.midardir_search", {})
+
 
 
 class PortalAccount(CustomerPortal):
