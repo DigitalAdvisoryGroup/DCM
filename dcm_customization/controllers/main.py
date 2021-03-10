@@ -90,15 +90,13 @@ class MidarVideoAttachment(http.Controller):
             'children': [],
         }
 
-    @http.route('/midardir', type='http', auth='user', website=True)
+    @http.route('/midardir', type='http', auth='user', website=True, csrf=False)
     def midardir_search(self, **kw):
         print("-------kw------------",kw)
-        if kw:
+        data = {}
+        if kw and kw.get("search"):
             data = request.env['global.search'].sudo().get_records(kw['search'])
-            print("-------data--------------",data)
-            return request.render("dcm_customization.midardir_search_result", data)
-            stop
-        return request.render("dcm_customization.midardir_search", {})
+        return request.render("dcm_customization.midardir_search", {'search_models': data.keys(),'records': data,'search': kw.get("search")})
 
 
 
