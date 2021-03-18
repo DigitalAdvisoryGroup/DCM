@@ -29,6 +29,16 @@ from odoo.http import Response
 from io import BytesIO
 from werkzeug.wsgi import wrap_file
 
+
+class MidarLogin(Home):
+
+    @http.route()
+    def web_login(self, redirect=None, *args, **kw):
+        response = super(MidarLogin, self).web_login(redirect=redirect, *args, **kw)
+        if 'X-Frame-Options' in response.headers:
+            response.headers['X-Frame-Options'] = 'ALLOWALL'
+        return response
+
 class MidarVideoAttachment(http.Controller):
 
     @http.route(['/comment-video'], type='json', auth='public', website=True)
