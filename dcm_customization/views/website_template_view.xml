@@ -11,6 +11,9 @@
                 <div class="row">
                     <t t-set="additional_title">MidarDir Contact</t>
                     <div class="col-md-6">
+                        <div class="text-center">
+                        <img alt="Avatar" t-attf-src="/web/image/res.partner/#{record.id}/image_1920/100x100"/>
+                    </div>
                         <span><strong>Name :</strong>
                             <t t-esc="record.name"/>
                         </span><br/>
@@ -112,8 +115,8 @@
                                                 <t t-esc="record['name']"/>
                                             </a>
 <!--                                            <t t-esc="search" />-->
-                                            <t t-if="record['category_res_id_name'] and search in record['category_res_id_name']" >,<t t-esc="record['category_res_id_name']"/></t>
-                                            <t t-if="record['category_skill_id_name'] and search in record['category_skill_id_name']" >,<t t-esc="record['category_skill_id_name']"/></t>
+                                            <t t-if="record['category_res_id_name'] and search.lower() in record['category_res_id_name'].lower()" >,<t t-esc="record['category_res_id_name']"/></t>
+                                            <t t-if="record['category_skill_id_name'] and search.lower() in record['category_skill_id_name'].lower()" >,<t t-esc="record['category_skill_id_name']"/></t>
                                             <t t-if="record['category_social_id_name']" >,<t t-esc="record['category_social_id_name']" /></t>
                                         </t>
                                         <t t-if="'display_name' not in record and 'utm_campaign_id' in record" t-esc="record['utm_campaign_id'][1]"/>
