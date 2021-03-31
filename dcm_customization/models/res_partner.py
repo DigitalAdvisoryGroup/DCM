@@ -38,6 +38,7 @@ class ResPartner(models.Model):
 
     otp_token = fields.Char("OTP Token", copy=False)
     social_group_id = fields.Many2many('social.partner.group','social_group_partner_rel','partner_id','social_group_id',string="Social Group")
+    category_social_id_name = fields.Char("Social Name", compute="_set_category_social_ids_name", store=True)
     social_group_fun_id = fields.Many2many('social.partner.group','social_group_fun_partner_rel','partner_id','social_group_id',string="Functional Social Group")
     change_connection = fields.Boolean("Change Connection")
     partner_token_lines = fields.One2many("res.partner.token","partner_id", string="Token Lines")
@@ -80,6 +81,12 @@ class ResPartner(models.Model):
         for part in self:
             if part.category_skill_ids:
                 part.category_skill_id_name = ",".join([x.name for x in part.category_skill_ids])
+
+    @api.depends("social_group_id")
+    def _set_category_social_ids_name(self):
+        for part in self:
+            if part.category_skill_ids:
+                part.category_social_id_name = ",".join([x.name for x in part.social_group_id])
 
     @api.depends("category_res_ids")
     def _set_category_res_ids_name(self):

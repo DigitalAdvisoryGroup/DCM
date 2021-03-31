@@ -102,7 +102,6 @@ class MidarVideoAttachment(http.Controller):
 
     @http.route('/midardir', type='http', auth='user', website=True, csrf=False)
     def midardir_search(self, **kw):
-        print("-------kw------------",kw)
         data = {}
         if kw and kw.get("search"):
             data = request.env['global.search'].sudo().get_records(kw['search'])
@@ -130,7 +129,7 @@ class MidarVideoAttachment(http.Controller):
             level_1_dict = {}
             level_2_dict = {}
             level_3_dict = {}
-        return request.render("dcm_customization.midardir_contact", {'record': partner,'level_1': level_1_dict,
+        return request.render("dcm_customization.midardir_contact", {'record': partner,'level_1': level_1_dict,'search': kw.get("search"),
                                                                      'lang_name': request.env['res.lang']._lang_get(partner.lang).name,
                                                                      'level_2': level_2_dict,'level_3': level_3_dict})
 
