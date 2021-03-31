@@ -1,28 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
+    <template id="midardir_contact" name="MidarDir Contact">
+        <t t-call="website.layout">
+            <div class="oe_structure"/>
+            <div class="container">
+                <div class="row">
+                    <t t-set="additional_title">MidarDir Contact</t>
+                    <div class="col-md-6">
+                        <span><strong>Name :</strong>
+                            <t t-esc="record.name"/>
+                        </span><br/>
+                        <span><strong>Anrede :</strong>
+                            <t t-esc="record.title.name"/>
+                        </span><br/>
+                        <span><strong>Email :</strong>
+                            <t t-esc="record.email"/>
+                        </span><br/>
+                        <span><strong>Telefon :</strong>
+                            <t t-esc="record.phone"/>
+                        </span><br/>
+                        <span><strong>Mobil :</strong>
+                            <t t-esc="record.mobile"/>
+                        </span><br/>
+                        <span><strong>Dienstadresse :</strong>
+                            <t t-esc="record.street"/>, <t t-esc="record.zip"/> <t t-esc="record.city"/>
+                        </span><br/>
+                        <span><strong>Sprache :</strong>
+                            <t t-esc="lang_name"/>
+                        </span><br/>
+                        <span><strong>Level 1 :</strong>
+                            <t t-if="level_1.get('name')">
+                            <t t-esc="level_1['name']"/> (<t t-esc="level_1['code']"/>)
+                            </t>
+                        </span><br/>
+                        <span><strong>Level 2 :</strong>
+                            <t t-if="level_2.get('name')">
+                            <t t-esc="level_2['name']"/> (<t t-esc="level_2['code']"/>)
+                            </t>
+                        </span><br/>
+                        <span><strong>Level 3 :</strong>
+                            <t t-if="level_3.get('name')">
+                            <t  t-esc="level_3['name']"/> (<t t-esc="level_3['code']"/>)
+                            </t>
+                        </span><br/>
+                        <span><strong>Funktion :</strong>
+                            <t t-esc="record.function"/>
+                        </span><br/>
+                        <span><strong>Skills :</strong>
+                            <t t-esc="record.category_skill_id_name"/>
+                        </span><br/>
+                        <span><strong>Responsibilities :</strong>
+                            <t t-esc="record.category_res_id_name"/>
+                        </span><br/>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
 
     <template id="midardir_search" name="MidarDir">
         <t t-call="website.layout">
-                <div class="oe_structure" />
-                <div class="container">
-                    <div class="row">
-                        <t t-set="additional_title">MidarDir</t>
-                        <form t-att-action="'/midardir'" method="post">
-                            <div t-attf-class="input-group #{_classes}" role="search">
-                                <input type="text" name="search" class="search-query form-control oe_search_box" placeholder="Search..." t-att-value="search"/>
-                                <div class="input-group-append">
-                                    <button type="submit" class="btn btn-primary oe_search_button" aria-label="Search" title="Search">
-                                        <i class="fa fa-search"/>
-                                    </button>
-                                </div>
+            <div class="oe_structure"/>
+            <div class="container">
+                <div class="row">
+                    <t t-set="additional_title">MidarDir</t>
+                    <form t-att-action="'/midardir'" method="post">
+                        <div t-attf-class="input-group #{_classes}" role="search">
+                            <input type="text" name="search" class="search-query form-control oe_search_box" placeholder="Search..." t-att-value="search"/>
+                            <div class="input-group-append">
+                                <button type="submit" class="btn btn-primary oe_search_button" aria-label="Search" title="Search">
+                                    <i class="fa fa-search"/>
+                                </button>
                             </div>
-                        </form>
-                    </div>
+                        </div>
+                    </form>
                 </div>
-                <br/>
-                <t t-call="dcm_customization.midardir_search_result"/>
-        <div class="oe_structure" />
+            </div>
+            <br/>
+            <t t-call="dcm_customization.midardir_search_result"/>
+            <div class="oe_structure"/>
         </t>
     </template>
 
@@ -44,8 +101,14 @@
                             <div class="pl-2" t-att-data-res_model="model" t-att-data-res_header="records[model]['header']" t-att-data-res_id="record['id']"
                             >
                                 <div class="">
-                                    <span class="o_record_name" t-att-data-res_category="record.get('display_name')">
-                                        <t t-if="'display_name' in record" t-esc="record['display_name']"/>
+                                    <span class="o_record_name" t-att-id="record.get('id')" t-att-data-res_category="record.get('display_name')">
+
+                                        <t t-if="'display_name' in record and 'name' not in record" t-esc="record['display_name']"/>
+                                        <t t-if="'name' in record">
+                                            <a t-att-href="'/midardir/contact/%s' % record.get('id')">
+                                                <t t-esc="record['name']"/>
+                                            </a>
+                                        </t>
                                         <t t-if="'display_name' not in record and 'utm_campaign_id' in record" t-esc="record['utm_campaign_id'][1]"/>
                                     </span>
                                     <t t-if="model == 'res.partner'">

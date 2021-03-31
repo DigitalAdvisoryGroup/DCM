@@ -88,6 +88,7 @@ class GlobalSearch(models.Model):
             field_list.append("category_skill_id_name")
             field_list.append("category_res_id_name")
             field_list.append("parent_id")
+            field_list.append("name")
         return field_list
 
     @api.model
@@ -154,5 +155,4 @@ class GlobalSearch(models.Model):
                         global_data[model].update({
                             'data': results
                         })
-
         return global_data
