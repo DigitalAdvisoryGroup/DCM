@@ -6,7 +6,6 @@
             <div class="oe_structure"/>
             <div class="container">
                 <div class="clearfix">
-                    <t t-esc="search" />
                     <a t-att-href="'/midardir?search=%s'%(search)" class="btn btn-primary float-left mb32">Back To Search</a>
                 </div>
                 <div class="row">
