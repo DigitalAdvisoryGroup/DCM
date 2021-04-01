@@ -225,7 +225,6 @@ class ResPartner(models.Model):
             new_partner_ids = self.search([('create_date','>=',current_date)]).ids
         if new_partner_ids:
             for part in new_partner_ids:
-                _logger.info("--------part---------------%s", part)
                 post_ids = self.env['social.post'].search([('utm_campaign_id.stage_id.is_active','=',True),('state','=','posted'),('utm_campaign_id.is_public_campaign','=',True)])
                 if post_ids:
                     for post in post_ids:
