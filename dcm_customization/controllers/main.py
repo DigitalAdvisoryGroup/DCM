@@ -1,33 +1,15 @@
 # -*- coding: utf-8 -*-
-import odoo
-from odoo import http
 from odoo.http import request
-import traceback
-from datetime import datetime,date,timedelta
-from dateutil.relativedelta import relativedelta
-from odoo.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT
-from odoo.exceptions import UserError, ValidationError
-from psycopg2 import IntegrityError
-
-import werkzeug
 from odoo import http, _
-from odoo.addons.web.controllers.main import ensure_db, Home
-from odoo.addons.auth_signup.models.res_users import SignupError
 
 import logging
 _logger = logging.getLogger(__name__)
-import re
 from odoo import SUPERUSER_ID
-from collections import OrderedDict
 from odoo.addons.web.controllers.main import Binary
 
-import uuid
-from odoo.addons.mail.controllers.main import MailController
 from odoo.addons.portal.controllers.portal import CustomerPortal
 import base64
 from odoo.http import Response
-from io import BytesIO
-from werkzeug.wsgi import wrap_file
 
 class MidarVideoAttachment(http.Controller):
 
@@ -90,43 +72,59 @@ class WebController(Binary):
                 filename=filename,
                 filename_field=filename_field, download=download,
                 mimetype=mimetype, access_token=access_token)
-            if status != 200:
+            if status not in (200, 206):
                 return request.env['ir.http']._response_by_status(status,
                                                                   headers,
                                                                   content)
+            # else:
+            #     # content_base64 = base64.b64decode(content)
+            #     # headers.append(('Content-Length', len(content_base64)))
+            #     # buf = BytesIO(content_base64)
+            #     # data = wrap_file(http.request.httprequest.environ, buf)
+            #     # response = http.Response(
+            #     #     data,
+            #     #     headers=headers,
+            #     #     direct_passthrough=True)
+            #     content_base64 = base64.b64decode(content)
+            #     mainvideo = content_base64
+            #     if request.httprequest.range:
+            #         contentrange = request.httprequest.range.make_content_range(
+            #             len(content_base64))
+            #
+            #         if contentrange.stop < len(content_base64):
+            #             status = 206
+            #             headers.append(('Content-Range', 'bytes %s-%s/%s' % (
+            #                 str(contentrange.start), str(1),
+            #                 str(len(content_base64)))))
+            #         elif contentrange.stop > len(content_base64):
+            #             status = 416
+            #             mainvideo = ""
+            #
+            #         if status != 416:
+            #             mainvideo = mainvideo[
+            #                         contentrange.start:contentrange.stop]
+            #             headers.append(('Content-Length', len(mainvideo)))
+            #
+            #     headers.append(('Accept-Ranges', "bytes"))
+            #     headers.append(('access-control-allow-origin', "*"))
+            #     response = Response(mainvideo, status=status, headers=headers,
+            #                         content_type=mimetype)
+            elif status == 206:
+                if content:
+                    image_base64 = base64.b64decode(content)
+                else:
+                    image_base64 = self.placeholder(image='placeholder.png')  # could return (contenttype, content) in master
+                    dictheaders = dict(headers)
+                    dictheaders['Content-Type'] = 'image/png'
+                    headers = list(dictheaders.items())
+
+                response = Response(headers=headers, status=status)
+                response.automatically_set_content_length = False
+                response.set_data(image_base64)
             else:
-                # content_base64 = base64.b64decode(content)
-                # headers.append(('Content-Length', len(content_base64)))
-                # buf = BytesIO(content_base64)
-                # data = wrap_file(http.request.httprequest.environ, buf)
-                # response = http.Response(
-                #     data,
-                #     headers=headers,
-                #     direct_passthrough=True)
                 content_base64 = base64.b64decode(content)
-                mainvideo = content_base64
-                if request.httprequest.range:
-                    contentrange = request.httprequest.range.make_content_range(
-                        len(content_base64))
-
-                    if contentrange.stop < len(content_base64):
-                        status = 206
-                        headers.append(('Content-Range', 'bytes %s-%s/%s' % (
-                            str(contentrange.start), str(1),
-                            str(len(content_base64)))))
-                    elif contentrange.stop > len(content_base64):
-                        status = 416
-                        mainvideo = ""
-
-                    if status != 416:
-                        mainvideo = mainvideo[
-                                    contentrange.start:contentrange.stop]
-                        headers.append(('Content-Length', len(mainvideo)))
-
-                headers.append(('Accept-Ranges', "bytes"))
-                headers.append(('access-control-allow-origin', "*"))
-                response = Response(mainvideo, status=status, headers=headers,
-                                    content_type=mimetype)
+                headers.append(('Content-Length', len(content_base64)))
+                response = request.make_response(content_base64, headers)
             if token:
                 response.set_cookie('fileToken', token)
             return response

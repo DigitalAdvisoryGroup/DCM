@@ -14,3 +14,4 @@ from . import social_share_comment
 from . import res_users
 from . import mass_mailing
 from . import ir_attachment
+from . import ir_http

@@ -1,5 +1,5 @@
 import base64
-
+import odoo
 from odoo import models, api, fields
 from pyfcm import FCMNotification
 from werkzeug.urls import url_join
@@ -7,6 +7,7 @@ from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
 import os
 import tempfile
 import cv2
+from subprocess import Popen, PIPE
 import logging
 _logger = logging.getLogger(__name__)
 
@@ -32,6 +33,7 @@ class SocialBitComments(models.Model):
 
     @api.model
     def create(self, vals):
+        module_path = os.path.realpath(odoo.modules.get_module_path("dcm_customization"))
         if not vals.get('utm_campaign_id'):
             post_id = self.env['social.post'].browse(vals.get('post_id'))
             if post_id:
@@ -44,6 +46,28 @@ class SocialBitComments(models.Model):
             file_content = vals.pop("content")
         res = super(SocialBitComments,self).create(vals)
         if filename and file_content:
+            filename_ext = filename.split(".")
+            if len(filename_ext) > 1 and filename_ext[-1] in ['mp4', 'MP4', 'mov', 'MOV']:
+                current_video_file_path = tempfile.gettempdir() + "/" + filename
+                with open(current_video_file_path, 'wb') as f:
+                    f.write(base64.b64decode(file_content))
+                f.close()
+                new_video_file_path = tempfile.gettempdir() + "/new-" + filename
+                cmds = [module_path + "/ffmpeg_lib/ffmpeg", '-i', current_video_file_path, '-max_muxing_queue_size', '500', '-acodec', 'aac', '-ac', '2', '-strict', 'experimental', '-vcodec',
+                        'libx264',
+                        '-pix_fmt', 'yuv420p', '-profile:v', 'baseline', '-sn', '-f', 'mp4', '-y', new_video_file_path]
+
+                p = Popen(cmds, shell=False, stdin=PIPE, stdout=PIPE, stderr=PIPE, close_fds=True)
+                while True:
+                    ret = p.stderr.read(10)
+                    if not ret:
+                        break
+                with open(new_video_file_path, 'rb') as nf:
+                    file_content = base64.b64encode(nf.read())
+                nf.close()
+                if current_video_file_path and new_video_file_path:
+                    os.remove(current_video_file_path)
+                    os.remove(new_video_file_path)
             attachment_id = self.env['ir.attachment'].create({
                 'name': filename.strip("/"),
                 'res_id': res.id,
@@ -232,8 +256,6 @@ class SocialBitComments(models.Model):
                     {'post_id': self.post_id.id, 'partner_id': int(partner_id),
                      "parent_id": self.id,
                      'record_type': "com_dislike"})
-            return True
-
             return True
         return False
 
