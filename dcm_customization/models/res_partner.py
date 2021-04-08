@@ -38,16 +38,17 @@ class ResPartner(models.Model):
 
     otp_token = fields.Char("OTP Token", copy=False)
     social_group_id = fields.Many2many('social.partner.group','social_group_partner_rel','partner_id','social_group_id',string="Social Group")
-    category_social_id_name = fields.Char("Social Name", compute="_set_category_social_ids_name", store=True)
     social_group_fun_id = fields.Many2many('social.partner.group','social_group_fun_partner_rel','partner_id','social_group_id',string="Functional Social Group")
     change_connection = fields.Boolean("Change Connection")
     partner_token_lines = fields.One2many("res.partner.token","partner_id", string="Token Lines")
     is_token_available = fields.Boolean("Is Token Available?", compute="_get_token_available", store=True)
     file_name_custom = fields.Char("Filename")
-    category_id_name = fields.Char("Tags Name", compute="_set_category_name", store=True)
     category_skill_ids = fields.Many2many("res.partner.category", "rel_parnter_category_skill","skill_partner_id","skill_category_id", string="Skills")
-    category_skill_id_name = fields.Char("Skill Name", compute="_set_category_skill_ids_name", store=True)
     category_res_ids = fields.Many2many("res.partner.category", "rel_parnter_category_res","res_partner_id","res_category_id",string="Responsbilities")
+
+    category_social_id_name = fields.Char("Social Name", compute="_set_category_social_ids_name", store=True)
+    category_id_name = fields.Char("Tags Name", compute="_set_category_name", store=True)
+    category_skill_id_name = fields.Char("Skill Name", compute="_set_category_skill_ids_name", store=True)
     category_res_id_name = fields.Char("Responsbility Name", compute="_set_category_res_ids_name", store=True)
 
     # ao1_id = fields.Char("AO 1")
@@ -70,29 +71,39 @@ class ResPartner(models.Model):
     # ou3_id = fields.Char("OU 3")
     # ou_key = fields.Char("Org Unit Key")
 
+
+    def update_store_fields(self):
+        for part in self:
+            part._set_category_name()
+            part._set_category_skill_ids_name()
+            part._set_category_res_ids_name()
+            part._set_category_social_ids_name()
+        return True
+
+
     @api.depends("category_id")
     def _set_category_name(self):
         for part in self:
             if part.category_id:
-                part.category_id_name = ",".join([x.name for x in part.category_id])
+                part.category_id_name = ",".join([x.name+":"+str(x.id) for x in part.category_id])
 
     @api.depends("category_skill_ids")
     def _set_category_skill_ids_name(self):
         for part in self:
             if part.category_skill_ids:
-                part.category_skill_id_name = ",".join([x.name for x in part.category_skill_ids])
+                part.category_skill_id_name = ",".join([x.name+":"+str(x.id) for x in part.category_skill_ids])
 
     @api.depends("social_group_id")
     def _set_category_social_ids_name(self):
         for part in self:
             if part.social_group_id:
-                part.category_social_id_name = ",".join([x.name for x in part.social_group_id])
+                part.category_social_id_name = ",".join([x.name+":"+str(x.id) for x in part.social_group_id])
 
     @api.depends("category_res_ids")
     def _set_category_res_ids_name(self):
         for part in self:
             if part.category_res_ids:
-                part.category_res_id_name = ",".join([x.name for x in part.category_res_ids])
+                part.category_res_id_name = ",".join([x.name+":"+str(x.id) for x in part.category_res_ids])
 
     @api.depends("partner_token_lines")
     def _get_token_available(self):

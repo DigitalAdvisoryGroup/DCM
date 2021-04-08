@@ -1,6 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
+    <template id="midardir_cat_res_contacts" name="MidarDir Responsibility">
+        <t t-call="website.layout">
+            <div class="oe_structure"/>
+            <div class="container clearfix">
+                <a t-att-href="'/midardir?search=%s'%(search)" class="btn btn-primary float-left mb32" style="position: relative; overflow: hidden;">
+                    <span class="graph-ripple"
+                          style="height: 121.717px; width: 121.717px; top: -50.8585px; left: -15.8585px;"/>
+                    Back To Search
+                </a>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <table class="table w-50" style="background-color: lightgrey;">
+                        <tbody>
+                            <tr>
+                                <td colspan="2" class="btn-primary">
+                                    <span>
+                                        <strong>
+                                            <t t-esc="partner_category.name"/>
+                                        </strong>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <td>
+                                                    <strong>Name:</strong>
+                                                </td>
+                                                <td>
+                                                    <strong>Email:</strong>
+                                                </td>
+                                            </tr>
+                                        </thead>
+                                        <t t-foreach="partners" t-as="part">
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <span>
+                                                            <a t-att-href="'/midardir/contact/%s?search=%s' % (part.id,search)">
+                                                                <t t-esc="part.name"/>
+                                                            </a>
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <span>
+                                                            <a t-att-href="'mailto:%s' % part.email">
+                                                                <t t-esc="part.email"/>
+                                                            </a>
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </t>
+                                    </table>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </t>
+    </template>
+
     <template id="midardir_social_group" name="MidarDir Social Group">
         <t t-call="website.layout">
             <div class="oe_structure"/>
@@ -73,7 +139,9 @@
                                                     </td>
                                                     <td>
                                                         <span>
-                                                            <a t-att-href="'mailto:%s' % part.email" ><t t-esc="part.email"/></a>
+                                                            <a t-att-href="'mailto:%s' % part.email">
+                                                                <t t-esc="part.email"/>
+                                                            </a>
                                                         </span>
                                                     </td>
                                                 </tr>
@@ -345,39 +413,31 @@
                                                 <t t-esc="record['name']"/>
                                             </a>
                                             <t t-if="record['category_res_id_name'] and search.lower() in record['category_res_id_name'].lower()">,
-<!--                                                <t t-esc="record['category_res_id_name'].split(',')"/>-->
                                                 <t t-foreach="record['category_res_id_name'].split(',')" t-as="cat_res">
                                                     <t t-if="search.lower() in cat_res.lower()">
-                                                        <span t-esc="cat_res"/>
+                                                        <a t-att-href="'/midardir/res/contact/%s?search=%s' % (cat_res.split(':')[1],search)">
+                                                            <span t-esc="cat_res.split(':')[0]"/>
+                                                        </a>
                                                     </t>
                                                 </t>
                                             </t>
                                             <t t-if="record['category_skill_id_name'] and search.lower() in record['category_skill_id_name'].lower()">,
-<!--                                                <t t-esc="record['category_skill_id_name']"/>-->
                                                 <t t-foreach="record['category_skill_id_name'].split(',')" t-as="cat_skill">
                                                     <t t-if="search.lower() in cat_skill.lower()">
-                                                        <span t-esc="cat_skill"/>
+                                                        <a t-att-href="'/midardir/res/contact/%s?search=%s' % (cat_skill.split(':')[1],search)">
+                                                            <span t-esc="cat_skill.split(':')[0]"/>
+                                                        </a>
                                                     </t>
                                                 </t>
                                             </t>
                                             <t t-if="record['category_social_id_name']">,
-                                                <a t-att-href="'/midardir/socialgroup/%s?search=%s' % (record.get('social_group_id')[0],search)">
-                                                    <t t-esc="record['category_social_id_name']"/>
+                                                <a t-att-href="'/midardir/socialgroup/%s?search=%s' % (record['category_social_id_name'].split(':')[1],search)">
+                                                    <t t-esc="record['category_social_id_name'].split(':')[0]"/>
                                                 </a>
                                             </t>
                                         </t>
                                         <t t-if="'display_name' not in record and 'utm_campaign_id' in record" t-esc="record['utm_campaign_id'][1]"/>
                                     </span>
-                                    <!--<t t-if="model == 'res.partner'">
-                                        <br/>
-                                        <span>Skills :
-                                            <t t-esc="record['category_skill_id_name']"/>
-                                        </span>
-                                        <br/>
-                                        <span>Responsibilities :
-                                            <t t-esc="record['category_res_id_name']"/>
-                                        </span>
-                                    </t>-->
                                 </div>
                             </div>
                         </t>

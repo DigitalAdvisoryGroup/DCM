@@ -90,7 +90,6 @@ class GlobalSearch(models.Model):
             field_list.append("parent_id")
             field_list.append("name")
             field_list.append("category_social_id_name")
-            field_list.append("social_group_id")
         return field_list
 
     @api.model

@@ -119,6 +119,16 @@ class MidarVideoAttachment(http.Controller):
     def midardir_social_group(self, social_group, **kw):
         return request.render("dcm_customization.midardir_social_group", {'record': social_group, 'search': kw.get("search")
                                                                      })
+
+    @http.route('/midardir/res/contact/<model("res.partner.category"):partner_category>', type='http', auth='user', website=True, csrf=False)
+    def midardir_cat_res(self, partner_category, **kw):
+        parnter_ids = request.env['res.partner'].sudo()
+        if partner_category:
+            parnter_ids = request.env['res.partner'].sudo().search([('category_res_ids','in',partner_category.ids)])
+        return request.render("dcm_customization.midardir_cat_res_contacts", {'partners': parnter_ids, 'partner_category':partner_category,'search': kw.get("search")
+                                                                          })
+
+
 class PortalAccount(CustomerPortal):
     @http.route()
     def account(self, redirect=None, **post):
