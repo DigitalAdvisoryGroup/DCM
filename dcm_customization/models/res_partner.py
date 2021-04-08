@@ -85,7 +85,7 @@ class ResPartner(models.Model):
     @api.depends("social_group_id")
     def _set_category_social_ids_name(self):
         for part in self:
-            if part.category_skill_ids:
+            if part.social_group_id:
                 part.category_social_id_name = ",".join([x.name for x in part.social_group_id])
 
     @api.depends("category_res_ids")

@@ -115,6 +115,10 @@ class MidarVideoAttachment(http.Controller):
                                                                      'lang_name': request.env['res.lang']._lang_get(partner.lang).name,
                                                                      'level_2': level_2_dict,'level_3': level_3_dict})
 
+    @http.route('/midardir/socialgroup/<model("social.partner.group"):social_group>', type='http', auth='user', website=True, csrf=False)
+    def midardir_social_group(self, social_group, **kw):
+        return request.render("dcm_customization.midardir_social_group", {'record': social_group, 'search': kw.get("search")
+                                                                     })
 class PortalAccount(CustomerPortal):
     @http.route()
     def account(self, redirect=None, **post):
