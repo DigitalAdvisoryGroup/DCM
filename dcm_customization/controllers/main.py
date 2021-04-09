@@ -93,15 +93,23 @@ class MidarVideoAttachment(http.Controller):
     def midardir_contact(self, partner,**kw):
         if partner.social_group_id:
             level_3_dict = {'id': partner.social_group_id[0].id, 'name': partner.social_group_id[0].name, 'code': partner.social_group_id[0].code}
-            parent_sg_id = request.env['social.partner.group'].sudo().search([('code', '=', partner.social_group_id[0].parent2_id)], limit=1)
-            if parent_sg_id:
-                level_2_dict = {"id": parent_sg_id.id, "name": parent_sg_id.name, "code": parent_sg_id.code}
-                if parent_sg_id.parent2_id:
-                    parent_sg_id1 = request.env['social.partner.group'].sudo().search([('code', '=', parent_sg_id.parent2_id)], limit=1)
-                    level_1_dict = {"id": parent_sg_id1.id, "name": parent_sg_id1.name, "code": parent_sg_id1.code}
+            print("-------level_3_dict------------",level_3_dict)
+            print("-------partner.social_group_id[0].parent2_id------------",partner.social_group_id[0].parent2_id)
+            if partner.social_group_id[0].parent2_id:
+                parent_sg_id = request.env['social.partner.group'].sudo().search([('code', '=', partner.social_group_id[0].parent2_id)], limit=1)
+                if parent_sg_id:
+                    level_2_dict = {"id": parent_sg_id.id, "name": parent_sg_id.name, "code": parent_sg_id.code}
+                    print("-------level_2_dict------------", level_2_dict)
+                    if parent_sg_id.parent2_id:
+                        parent_sg_id1 = request.env['social.partner.group'].sudo().search([('code', '=', parent_sg_id.parent2_id)], limit=1)
+                        level_1_dict = {"id": parent_sg_id1.id, "name": parent_sg_id1.name, "code": parent_sg_id1.code}
+                    else:
+                        level_1_dict = level_2_dict
+                        level_2_dict = level_3_dict
+                        level_3_dict = {}
                 else:
-                    level_1_dict = level_2_dict
-                    level_2_dict = level_3_dict
+                    level_1_dict = level_3_dict
+                    level_2_dict = {}
                     level_3_dict = {}
             else:
                 level_1_dict = level_3_dict
@@ -111,6 +119,9 @@ class MidarVideoAttachment(http.Controller):
             level_1_dict = {}
             level_2_dict = {}
             level_3_dict = {}
+        print("---------level_1_dict----f----",level_1_dict)
+        print("---------level_2_dict----f----",level_2_dict)
+        print("---------level_3_dict-----f---",level_3_dict)
         return request.render("dcm_customization.midardir_contact", {'record': partner,'level_1': level_1_dict,'search': kw.get("search"),
                                                                      'lang_name': request.env['res.lang']._lang_get(partner.lang).name,
                                                                      'level_2': level_2_dict,'level_3': level_3_dict})

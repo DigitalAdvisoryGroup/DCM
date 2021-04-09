@@ -15,6 +15,7 @@
     <template id="assets_frontend" inherit_id="website.assets_frontend">
         <xpath expr="." position="inside">
             <script type="text/javascript" src="/dcm_customization/static/src/js/portal.js"/>
+            <script type="text/javascript" src="/dcm_customization/static/src/js/website_search.js"/>
         </xpath>
     </template>
 
