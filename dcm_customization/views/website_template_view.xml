@@ -277,12 +277,12 @@
                                                 <strong>Organisationseinheit 1:</strong>
                                             </td>
                                             <td>
-                                                <span>
+                                                <a t-att-href="'/midardir/socialgroup/%s?search=%s' % (level_1.get('id'),search)">
                                                     <t t-if="level_1.get('name')">
                                                         <t t-esc="level_1['name']"/>
                                                         (<t t-esc="level_1['code']"/>)
                                                     </t>
-                                                </span>
+                                                </a>
                                             </td>
                                         </tr>
                                         <tr>
@@ -290,12 +290,12 @@
                                                 <strong>Organisationseinheit 2:</strong>
                                             </td>
                                             <td>
-                                                <span>
+                                                <a t-att-href="'/midardir/socialgroup/%s?search=%s' % (level_2.get('id'),search)">
                                                     <t t-if="level_2.get('name')">
                                                         <t t-esc="level_2['name']"/>
                                                         (<t t-esc="level_2['code']"/>)
                                                     </t>
-                                                </span>
+                                                </a>
                                             </td>
                                         </tr>
                                         <tr>
@@ -303,12 +303,12 @@
                                                 <strong>Organisationseinheit 3:</strong>
                                             </td>
                                             <td>
-                                                <span>
+                                                <a t-att-href="'/midardir/socialgroup/%s?search=%s' % (level_3.get('id'),search)">
                                                     <t t-if="level_3.get('name')">
                                                         <t t-esc="level_3['name']"/>
                                                         (<t t-esc="level_3['code']"/>)
                                                     </t>
-                                                </span>
+                                                </a>
                                             </td>
                                         </tr>
                                         <tr>
@@ -335,12 +335,13 @@
                                             </td>
                                             <td>
                                                 <span>
-<!--                                                    <t t-esc="record.category_skill_id_name"/>-->
+                                                    <t t-if="record.category_skill_id_name">
                                                     <t t-foreach="record['category_skill_id_name'].split(',')" t-as="cat_skill">
                                                         <a t-att-href="'/midardir/res/contact/%s?search=%s' % (cat_skill.split(':')[1],search)">
                                                             ,<span t-esc="cat_skill.split(':')[0]"/>
                                                         </a>
                                                 </t>
+                                                    </t>
                                                 </span>
                                             </td>
                                         </tr>
@@ -350,11 +351,12 @@
                                             </td>
                                             <td>
                                                 <span>
-<!--                                                    <t t-esc="record.category_res_id_name"/>-->
+                                                    <t t-if="record.category_skill_id_name">
                                                     <t t-foreach="record['category_res_id_name'].split(',')" t-as="cat_res">
                                                         <a t-att-href="'/midardir/res/contact/%s?search=%s' % (cat_res.split(':')[1],search)">
                                                             <span t-esc="cat_res.split(':')[0]"/>
                                                         </a>
+                                                    </t>
                                                     </t>
                                                 </span>
                                             </td>
