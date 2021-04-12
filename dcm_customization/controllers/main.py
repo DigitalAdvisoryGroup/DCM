@@ -122,13 +122,26 @@ class MidarVideoAttachment(http.Controller):
         print("---------level_1_dict----f----",level_1_dict)
         print("---------level_2_dict----f----",level_2_dict)
         print("---------level_3_dict-----f---",level_3_dict)
-        return request.render("dcm_customization.midardir_contact", {'record': partner,'level_1': level_1_dict,'search': kw.get("search"),
+        prevpath = request.httprequest.referrer
+        parent = kw.get('parent')
+        return request.render("dcm_customization.midardir_contact", {'record': partner,
+                                                                     'level_1': level_1_dict,
+                                                                     'search': kw.get("search"),
                                                                      'lang_name': request.env['res.lang']._lang_get(partner.lang).name,
-                                                                     'level_2': level_2_dict,'level_3': level_3_dict})
+                                                                     'level_2': level_2_dict,
+                                                                     'level_3': level_3_dict,
+                                                                     'parent': parent,
+                                                                     'prevpath': prevpath,
+                                                                     })
 
     @http.route('/midardir/socialgroup/<model("social.partner.group"):social_group>', type='http', auth='user', website=True, csrf=False)
     def midardir_social_group(self, social_group, **kw):
-        return request.render("dcm_customization.midardir_social_group", {'record': social_group, 'search': kw.get("search")
+        prevpath = request.httprequest.referrer
+        parent = kw.get('parent')
+        return request.render("dcm_customization.midardir_social_group", {'record': social_group,
+                                                                          'search': kw.get("search"),
+                                                                          'parent': parent,
+                                                                          'prevpath': prevpath,
                                                                      })
 
     @http.route('/midardir/res/contact/<model("res.partner.category"):partner_category>', type='http', auth='user', website=True, csrf=False)

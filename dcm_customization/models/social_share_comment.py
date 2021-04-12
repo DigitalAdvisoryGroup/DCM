@@ -6,7 +6,7 @@ from werkzeug.urls import url_join
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
 import os
 import tempfile
-import cv2
+# import cv2
 from subprocess import Popen, PIPE
 import logging
 
