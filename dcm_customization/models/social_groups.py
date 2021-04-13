@@ -6,6 +6,16 @@ from odoo import models, fields, api
 from odoo.modules.module import get_module_resource
 import base64
 
+
+class SocialPartnerGroupsType(models.Model):
+    _name = 'social.partner.group.type'
+    _description = "Social Groups Type"
+    _rec_name = "name"
+
+    name = fields.Char("Name", required=True,translate=True)
+    type = fields.Selection([('normal', 'Normal'), ('functional', 'Functional')], string="Type", default="normal")
+
+
 class SocialPartnerGroups(models.Model):
     _name = 'social.partner.group'
     _inherit = ['image.mixin']
@@ -19,7 +29,8 @@ class SocialPartnerGroups(models.Model):
 
     image_1920 = fields.Image(default=_default_image)
     name = fields.Char("Name",required=True)
-    type = fields.Selection([('normal','Normal'),('functional','Functional')], string="Type", default="normal")
+    type_id = fields.Many2one("social.partner.group.type",string="Type")
+    type = fields.Selection(related="type_id.type", string="Type", store=True)
     partner_ids = fields.Many2many('res.partner','social_group_partner_rel','social_group_id','partner_id',string="Partner")
     fun_partner_ids = fields.Many2many('res.partner','social_group_fun_partner_rel','social_group_id','partner_id',string="Partner")
     parent_id = fields.Many2one("social.partner.group",string="Parent")

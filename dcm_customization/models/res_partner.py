@@ -312,6 +312,7 @@ class ResPartnerToken(models.Model):
 
 class PartnerMlevel(models.Model):
     _name = "partner.mlevel"
+    _description = "Mlevel"
 
     name = fields.Char("Name")
     code = fields.Char("Code")

@@ -4,14 +4,14 @@
     <template id="midardir_cat_res_contacts" name="MidarDir Responsibility">
         <t t-call="website.layout">
             <div class="oe_structure"/>
-            <div class="container clearfix">
+            <!--<div class="container clearfix">
                 <a t-att-href="'/midardir?search=%s'%(search)" class="btn btn-primary float-left mb32"
                    style="position: relative; overflow: hidden;">
                     <span class="graph-ripple"
                           style="height: 121.717px; width: 121.717px; top: -50.8585px; left: -15.8585px;"/>
                     Back To Search
                 </a>
-            </div>
+            </div>-->
             <div class="container">
                 <div class="row">
                     <div class="col-md-6" style="padding: 0;">
@@ -92,14 +92,14 @@
     <template id="midardir_social_group" name="MidarDir Social Group">
         <t t-call="website.layout">
             <div class="oe_structure"/>
-            <div class="container clearfix">
+            <!--<div class="container clearfix">
                 <a t-att-href="'/midardir?search=%s'%(search)" class="btn btn-primary float-left mb32"
                    style="position: relative; overflow: hidden;">
                     <span class="graph-ripple"
                           style="height: 121.717px; width: 121.717px; top: -50.8585px; left: -15.8585px;"/>
                     Back To Search
                 </a>
-            </div>
+            </div>-->
             <div class="container">
                 <div class="row">
                     <div class="col-md-6" style="padding: 0;">
@@ -217,14 +217,14 @@
                     </div>
                 </section>
                 <section>
-                    <div class="container clearfix">
+                    <!--<div class="container clearfix">
                         <a t-att-href="'/midardir?search=%s'%(search)" class="btn btn-primary float-left mb32"
                            style="position: relative; overflow: hidden;">
                             <span class="graph-ripple"
                                   style="height: 121.717px; width: 121.717px; top: -50.8585px; left: -15.8585px;"/>
                             Back To Search
                         </a>
-                    </div>
+                    </div>-->
                 </section>
                 <div class="container">
                     <div class="row">
@@ -471,71 +471,6 @@
         </t>
     </template>
 
-    <!--    <template id="midardir_search_result" name="MidarDir Result">-->
-    <!--        <t t-set="additional_title">MidarDir Result</t>-->
-    <!--        <div class="container">-->
-    <!--            <div class="row " t-att-data-res_model="model">-->
-    <!--                <t t-foreach="search_models" t-as="model">-->
-    <!--                    <div class="col-md-6 pb16">-->
-    <!--                        <div class="" t-att-data-res_model="model" t-att-data-count="records[model]['count']" t-att-data-res_header="records[model]['header']"-->
-    <!--                        >-->
-    <!--                            <strong>-->
-    <!--                                <t t-esc="records[model]['header']"/>-->
-    <!--                                (<t t-esc="records[model]['count']"/>)-->
-    <!--                            </strong>-->
-    <!--                            <t t-set="is_display_more" t-value="records[model]['count']"/>-->
-    <!--                        </div>-->
-    <!--                        <t t-foreach="records[model]['data']" t-as="record">-->
-    <!--                            <t t-if="model == 'company'" t-set="model" t-value="'res.partner'"/>-->
-    <!--                            <div class="pl-2" t-att-data-res_model="model" t-att-data-res_header="records[model]['header']" t-att-data-res_id="record['id']"-->
-    <!--                            >-->
-    <!--                                <div class="">-->
-    <!--                                    <span class="o_record_name" t-att-id="record.get('id')" t-att-data-res_category="record.get('display_name')">-->
-
-    <!--                                        <t t-if="'display_name' in record and 'name' not in record" t-esc="record['display_name']"/>-->
-    <!--                                        <t t-if="'name' in record">-->
-    <!--                                            <a t-att-href="'/midardir/contact/%s?search=%s' % (record.get('id'),search)">-->
-    <!--                                                <t t-esc="record['name']"/>-->
-    <!--                                            </a>-->
-    <!--                                            <t t-if="record['category_res_id_name'] and search.lower() in record['category_res_id_name'].lower()">,-->
-    <!--                                                <t t-foreach="record['category_res_id_name'].split(',')" t-as="cat_res">-->
-    <!--                                                    <t t-if="search.lower() in cat_res.lower()">-->
-    <!--                                                        <a t-att-href="'/midardir/res/contact/%s?search=%s' % (cat_res.split(':')[1],search)">-->
-    <!--                                                            <span t-esc="cat_res.split(':')[0]"/>-->
-    <!--                                                        </a>-->
-    <!--                                                    </t>-->
-    <!--                                                </t>-->
-    <!--                                            </t>-->
-    <!--                                            <t t-if="record['category_skill_id_name'] and search.lower() in record['category_skill_id_name'].lower()">,-->
-    <!--                                                <t t-foreach="record['category_skill_id_name'].split(',')" t-as="cat_skill">-->
-    <!--                                                    <t t-if="search.lower() in cat_skill.lower()">-->
-    <!--                                                        <a t-att-href="'/midardir/res/contact/%s?search=%s' % (cat_skill.split(':')[1],search)">-->
-    <!--                                                            <span t-esc="cat_skill.split(':')[0]"/>-->
-    <!--                                                        </a>-->
-    <!--                                                    </t>-->
-    <!--                                                </t>-->
-    <!--                                            </t>-->
-    <!--                                            <t t-if="record['category_social_id_name']">,-->
-    <!--                                                <a t-att-href="'/midardir/socialgroup/%s?search=%s' % (record['category_social_id_name'].split(':')[1],search)">-->
-    <!--                                                    <t t-esc="record['category_social_id_name'].split(':')[0]"/>-->
-    <!--                                                </a>-->
-    <!--                                            </t>-->
-    <!--                                        </t>-->
-    <!--                                        <t t-if="'display_name' not in record and 'utm_campaign_id' in record" t-esc="record['utm_campaign_id'][1]"/>-->
-    <!--                                    </span>-->
-    <!--                                </div>-->
-    <!--                            </div>-->
-    <!--                        </t>-->
-    <!--                        <t t-if="is_display_more > 5">-->
-    <!--                            <span class="show-more">Show more</span>-->
-    <!--                        </t>-->
-    <!--                    </div>-->
-    <!--                </t>-->
-    <!--            </div>-->
-    <!--        </div>-->
-    <!--    </template>-->
-
-
     <template id="midardir_search_result" name="MidarDir Result">
         <t t-set="additional_title">MidarDir Result</t>
         <div class="container">
@@ -551,10 +486,12 @@
                             <t t-set="is_display_more" t-value="records[model]['count']"/>
                         </div>
                         <t t-set="record_display" t-value="1"></t>
+                        <t t-set="normal" t-value="False"/>
+                        <t t-set="functional" t-value="False"/>
                         <t t-foreach="records[model]['data']" t-as="record">
                             <t t-set="record_display" t-value="record_display+1"/>
                             <t t-if="model == 'company'" t-set="model" t-value="'res.partner'"/>
-                            <div t-att-class="'pl-2 d-none' if record_display > 6 else 'pl-2 d-block'"
+                            <div t-att-class="'pl-2 d-none' if record_display > 11 else 'pl-2 d-block'"
                                  t-att-data-res_model="model" t-att-data-res_header="records[model]['header']"
                                  t-att-data-res_id="record['id']">
                                 <span class="o_record_name" t-att-id="record.get('id')"
@@ -591,17 +528,39 @@
                                             </a>
                                         </t>
                                     </t>
+
                                     <t t-if="model == 'social.partner.group'">
-                                        <a t-att-href="'/midardir/socialgroup/%s?search=%s' % (record['id'],search)">
-                                            <t t-esc="record['display_name']"/>
-                                        </a>
+                                        <t t-if="record['type'] == 'normal' and normal == False">
+                                            <span><strong>Normal</strong></span>
+                                            <br/>
+                                        </t>
+                                        <t t-if="record['type'] == 'normal'">
+                                             <a class="pl-2" t-att-href="'/midardir/socialgroup/%s?search=%s' % (record['id'],search)">
+                                                <t t-esc="record['display_name']"/>
+                                            </a>
+                                            <t t-set="normal" t-value="True"/>
+                                        </t>
+                                        <t t-if="record['type'] != 'normal' and functional == False">
+                                            <span><strong>Functional</strong></span>
+                                            <br/>
+                                        </t>
+                                        <t t-if="record['type'] != 'normal'">
+                                             <a class="pl-2" t-att-href="'/midardir/socialgroup/%s?search=%s' % (record['id'],search)">
+                                                <t t-esc="record['display_name']"/>
+                                            </a>
+                                            <t t-set="functional" t-value="True"/>
+                                        </t>
                                     </t>
-                                    <t t-if="'display_name' not in record and 'utm_campaign_id' in record and record['utm_campaign_id']"
-                                       t-esc="record['utm_campaign_id'][1]"/>
+                                    <t t-if="'display_name' not in record and 'utm_campaign_id' in record and record['utm_campaign_id']">
+<!--                                       <t t-esc="record['message']" />(-->
+                                        <t t-esc="record['utm_campaign_id'][1]" />
+<!--                                        )-->
+                                    </t>
                                 </span>
                             </div>
                         </t>
-                        <t t-if="is_display_more > 5">
+
+                        <t t-if="is_display_more > 10">
                             <div class="pl-2 show-more">
                                 <a href="#">Show more</a>
                             </div>

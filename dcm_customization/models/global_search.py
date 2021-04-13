@@ -82,7 +82,9 @@ class GlobalSearch(models.Model):
     def get_field_list(self, model):
         field_list = ['display_name']
         if model == "social.post":
-            field_list = ["utm_campaign_id"]
+            field_list = ["utm_campaign_id","message"]
+        if model == "social.partner.group":
+            field_list.append("type")
         if model == "res.partner":
             field_list.append("category_id_name")
             field_list.append("category_skill_id_name")

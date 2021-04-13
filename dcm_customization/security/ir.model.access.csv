@@ -5,3 +5,4 @@ access_social_visitor_designer,access_website_visitor_social,website.model_websi
 access_res_partner_token,access_res_partner_token,model_res_partner_token,base.group_user,1,1,1,1
 access_global_search,access_global_search,model_global_search,,1,1,1,1
 access_partner_mlevel,access_partner_mlevel,model_partner_mlevel,base.group_user,1,1,1,1
+access_social_partner_group_type,access_social_partner_group_type,model_social_partner_group_type,base.group_user,1,1,1,1
