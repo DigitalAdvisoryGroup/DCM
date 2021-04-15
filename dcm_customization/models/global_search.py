@@ -20,18 +20,18 @@ class GlobalSearch(models.Model):
             action_id = self.env.ref('dcm_customization.social_partner_group_action').id
             datas[res_model]['menu_id'] = menu_id
             datas[res_model]['action_id'] = action_id
-        if res_model == 'social.bit.comments':
-            datas[res_model] = {}
-            menu_id = self.env.ref('dcm_customization.menu_midar_statistics_eng').id
-            action_id = self.env.ref('dcm_customization.comments_model_name_action').id
-            datas[res_model]['menu_id'] = menu_id
-            datas[res_model]['action_id'] = action_id
-        if res_model == 'social.post':
-            datas[res_model] = {}
-            menu_id = self.env.ref('social.menu_social_post').id
-            action_id = self.env.ref('social.action_social_post').id
-            datas[res_model]['menu_id'] = menu_id
-            datas[res_model]['action_id'] = action_id
+        # if res_model == 'social.bit.comments':
+        #     datas[res_model] = {}
+        #     menu_id = self.env.ref('dcm_customization.menu_midar_statistics_eng').id
+        #     action_id = self.env.ref('dcm_customization.comments_model_name_action').id
+        #     datas[res_model]['menu_id'] = menu_id
+        #     datas[res_model]['action_id'] = action_id
+        # if res_model == 'social.post':
+        #     datas[res_model] = {}
+        #     menu_id = self.env.ref('social.menu_social_post').id
+        #     action_id = self.env.ref('social.action_social_post').id
+        #     datas[res_model]['menu_id'] = menu_id
+        #     datas[res_model]['action_id'] = action_id
         return datas
         
     @api.model
@@ -50,8 +50,8 @@ class GlobalSearch(models.Model):
     @api.model
     def get_domains(self, data):
         domains = {
-            'social.bit.comments': {'domain': ['|','|',('partner_id','ilike',data),('comment','ilike',data),('comment','ilike',data)]},
-            'social.post': {'domain': ['|', '|', '|', '|',('message','ilike',data),('utm_campaign_id','ilike',data),('social_partner_ids.name','ilike',data),('social_groups_ids.name','ilike',data),('social_groups_ids.partner_ids.name','ilike',data)]},
+            # 'social.bit.comments': {'domain': ['|','|',('partner_id','ilike',data),('comment','ilike',data),('comment','ilike',data)]},
+            # 'social.post': {'domain': ['|', '|', '|', '|',('message','ilike',data),('utm_campaign_id','ilike',data),('social_partner_ids.name','ilike',data),('social_groups_ids.name','ilike',data),('social_groups_ids.partner_ids.name','ilike',data)]},
             'social.partner.group': {'domain': ['|', '|', '|',('name', 'ilike', data), ('parent_id', 'ilike', data), ('partner_ids.name', 'ilike', data),('code','ilike',data)]},
             'res.partner': {
                 'domain': ['|', '|', '|', '|', '|', '|', '|', '|', '|', '|',  '|','|','|','|' ,'|',('social_group_id.code','ilike',data),('category_res_ids.name','ilike',data),('category_skill_ids.name','ilike',data),('category_id.name','ilike',data),('name', 'ilike', data), ('email', 'ilike', data), ('phone', 'ilike', data), ('ref', 'ilike', data), ('website', 'ilike', data), ('parent_id', 'ilike', data), ('street', 'ilike', data), ('street2', 'ilike', data), ('city', 'ilike', data), ('zip', 'ilike', data), ('state_id', 'ilike', data), ('country_id', 'ilike', data),('parent_id','!=',False)]}
@@ -61,14 +61,17 @@ class GlobalSearch(models.Model):
         
     @api.model
     def get_models(self):
-        models = {'res.partner': _('Contacts'),'social.partner.group': _('Social Groups'),'social.bit.comments': _('Engagements'),'social.post': _('Posts')}
+        models = {
+            'res.partner': _('Contacts'),'social.partner.group': _('Social Groups'),
+                  # 'social.bit.comments': _('Engagements'),'social.post': _('Posts')
+                  }
         return models
 
     @api.model
     def get_model_domains(self, data):
         domains = {
-            'social.bit.comments': ['|','|',('partner_id','ilike',data),('comment','ilike',data),('comment','ilike',data)],
-                   'social.post': ['|', '|', '|', '|',('message','ilike',data),('utm_campaign_id','ilike',data),('social_partner_ids.name','ilike',data),('social_groups_ids.name','ilike',data),('social_groups_ids.partner_ids.name','ilike',data)],
+            # 'social.bit.comments': ['|','|',('partner_id','ilike',data),('comment','ilike',data),('comment','ilike',data)],
+            #        'social.post': ['|', '|', '|', '|',('message','ilike',data),('utm_campaign_id','ilike',data),('social_partner_ids.name','ilike',data),('social_groups_ids.name','ilike',data),('social_groups_ids.partner_ids.name','ilike',data)],
                    'social.partner.group':['|','|','|',('name','ilike',data),('parent_id','ilike',data),('partner_ids.name','ilike',data),('code','ilike',data)],
                    'res.partner': ['|', '|', '|', '|', '|', '|', '|', '|', '|', '|', '|', '|', '|', '|', '|','|',('social_group_id.code','ilike',data),('category_res_ids.name','ilike',data),('category_skill_ids.name','ilike',data),('social_group_id.name','ilike',data),('category_id.name','ilike',data),('name', 'ilike', data), ('email', 'ilike', data), ('phone', 'ilike', data), ('ref', 'ilike', data), ('website', 'ilike', data), ('parent_id', 'child_of', data), ('street', 'ilike', data), ('street2', 'ilike', data), ('city', 'ilike', data), ('zip', 'ilike', data), ('state_id', 'ilike', data), ('country_id', 'ilike', data),('parent_id','!=',False)]}
         return domains
@@ -81,10 +84,11 @@ class GlobalSearch(models.Model):
     @api.model
     def get_field_list(self, model):
         field_list = ['display_name']
-        if model == "social.post":
-            field_list = ["utm_campaign_id","message"]
+        # if model == "social.post":
+        #     field_list = ["utm_campaign_id","message"]
         if model == "social.partner.group":
-            field_list.append("type")
+            # field_list.append("type")
+            field_list.append("type_id")
         if model == "res.partner":
             field_list.append("category_id_name")
             field_list.append("category_skill_id_name")
@@ -108,13 +112,60 @@ class GlobalSearch(models.Model):
                         # Get Total Records Count
                         count = self.env[model.split('-')[0]].search_count(domains[model])
                         field_list = self.get_field_list(model)
-                        # Search First 5 Records
+                        if model.split('-')[0] == 'social.partner.group':
+                            results = self.env['social.partner.group'].sudo().read_group(domains[model], ['name'], ['type_id'])
+                            results = {m['type_id'] and m['type_id'][1] or 'Unknown': self.env['social.partner.group'].sudo().search_read(m['__domain'], field_list) for m in results}
+                            if results:
+                                global_data[model] = {'header': models[model], 'count': count}
+                                global_data[model].update(self.get_global_data(model))
+                                # Update Search Results
+                                global_data[model].update({
+                                    'data': [results]
+                                })
+                        else:
+                            results = self.env[model.split('-')[0]].search_read(domains[model], field_list)
+                            if model == "res.partner" and results:
+                                all_parent_ids = list(set([x['parent_id'][0] for x in results if x.get("parent_id")]))
+                                if all_parent_ids:
+                                    parent_results = self.env[model.split('-')[0]].search_read([('id','in',all_parent_ids)], field_list)
+                                    parent_results += self.env[model.split('-')[0]].search_read([('parent_id','=',False),('name','ilike',data)], field_list)
+                                    model = "company"
+                                    global_data[model] = {'header': _("Companies"), 'count': len(all_parent_ids)}
+                                    global_data[model].update(self.get_global_data(model))
+                                    # Update Search Results
+                                    global_data[model].update({
+                                        'data': parent_results
+                                    })
+                                    model = "res.partner"
+                            if results:
+                                global_data[model] = {'header': models[model], 'count': count}
+                                global_data[model].update(self.get_global_data(model))
+                                # Update Search Results
+                                global_data[model].update({
+                                    'data': results
+                                })
+            else:
+                for model in models.keys():
+                    # Get Total Records Count
+                    count = self.env[model.split('-')[0]].search_count(domains[model])
+                    field_list = self.get_field_list(model)
+                    if model.split('-')[0] == 'social.partner.group':
+                        results = self.env['social.partner.group'].sudo().read_group(domains[model], ['name'], ['type_id'])
+                        results = {m['type_id'] and m['type_id'][1] or 'Unknown': self.env['social.partner.group'].sudo().search_read(m['__domain'],field_list) for m in results}
+                        if results:
+                            global_data[model] = {'header': models[model], 'count': count}
+                            global_data[model].update(self.get_global_data(model))
+                            # Update Search Results
+                            global_data[model].update({
+                                'data': [results]
+                            })
+                    else:
                         results = self.env[model.split('-')[0]].search_read(domains[model], field_list)
                         if model == "res.partner" and results:
                             all_parent_ids = list(set([x['parent_id'][0] for x in results if x.get("parent_id")]))
                             if all_parent_ids:
-                                parent_results = self.env[model.split('-')[0]].search_read([('id','in',all_parent_ids)], field_list)
-                                parent_results += self.env[model.split('-')[0]].search_read([('parent_id','=',False),('name','ilike',data)], field_list)
+                                parent_results = self.env[model.split('-')[0]].search_read([('id', 'in', all_parent_ids)], field_list)
+                                parent_results += self.env[model.split('-')[0]].search_read([('parent_id', '=', False), ('name', 'ilike', data)], field_list)
                                 model = "company"
                                 global_data[model] = {'header': _("Companies"), 'count': len(all_parent_ids)}
                                 global_data[model].update(self.get_global_data(model))
@@ -130,33 +181,5 @@ class GlobalSearch(models.Model):
                             global_data[model].update({
                                 'data': results
                             })
-            else:
-                for model in models.keys():
-                    # Get Total Records Count
-                    count = self.env[model.split('-')[0]].search_count(domains[model])
-                    field_list = self.get_field_list(model)
-                    # Search First 5 Records
-
-                    results = self.env[model.split('-')[0]].search_read(domains[model], field_list)
-                    if model == "res.partner" and results:
-                        all_parent_ids = list(set([x['parent_id'][0] for x in results if x.get("parent_id")]))
-                        if all_parent_ids:
-                            parent_results = self.env[model.split('-')[0]].search_read([('id', 'in', all_parent_ids)], field_list)
-                            parent_results += self.env[model.split('-')[0]].search_read([('parent_id', '=', False), ('name', 'ilike', data)], field_list)
-                            model = "company"
-                            global_data[model] = {'header': _("Companies"), 'count': len(all_parent_ids)}
-                            global_data[model].update(self.get_global_data(model))
-                            # Update Search Results
-                            global_data[model].update({
-                                'data': parent_results
-                            })
-                            model = "res.partner"
-                    if results:
-                        global_data[model] = {'header': models[model], 'count': count}
-                        global_data[model].update(self.get_global_data(model))
-                        # Update Search Results
-                        global_data[model].update({
-                            'data': results
-                        })
         print("-----------global_data-------------",global_data)
         return global_data

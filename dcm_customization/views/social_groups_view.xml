@@ -39,9 +39,9 @@
                         <field name="id" invisible="1"/>
                         <field name="parent_id" domain="[('parent_id','=',False),('id','!=',id)]"/>
                         <field name="type_id" required="1"/>
-                        <field name="type" invisible="1"/>
-                        <field name="partner_ids" attrs="{'invisible': [('type','=','functional')]}"/>
-                        <field name="fun_partner_ids" attrs="{'invisible': [('type','!=','functional')]}"/>
+<!--                        <field name="type" invisible="1"/>-->
+                        <field name="partner_ids" />
+<!--                        <field name="fun_partner_ids" attrs="{'invisible': [('type','!=','functional')]}"/>-->
                         <field name="child_ids" invisible="1"/>
                         <field name="parent_id" invisible="1"/>
                     </group>
@@ -73,7 +73,6 @@
         <field name="arch" type="xml">
             <tree string="Social Group Type">
                 <field name="name" />
-                <field name="type"/>
             </tree>
         </field>
     </record>
@@ -87,7 +86,6 @@
                 <sheet>
                     <group>
                         <field name="name"/>
-                        <field name="type"/>
                     </group>
                 </sheet>
             </form>

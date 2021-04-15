@@ -138,7 +138,12 @@ class MidarVideoAttachment(http.Controller):
     def midardir_social_group(self, social_group, **kw):
         prevpath = request.httprequest.referrer
         parent = kw.get('parent')
+        parent_sg_id = False
+        if social_group:
+            if social_group.parent2_id:
+                parent_sg_id = request.env['social.partner.group'].sudo().search([('code', '=', social_group.parent2_id)], limit=1)
         return request.render("dcm_customization.midardir_social_group", {'record': social_group,
+                                                                          'parent_sg_id': parent_sg_id and parent_sg_id.id or False,
                                                                           'search': kw.get("search"),
                                                                           'parent': parent,
                                                                           'prevpath': prevpath,

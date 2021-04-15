@@ -150,7 +150,24 @@
                                 </td>
                                 <td>
                                     <span>
-                                        <t t-esc="record.parent2_id"/>
+                                        <t t-if="parent_sg_id != False">
+                                            <a t-att-href="'/midardir/socialgroup/%s?search=%s' % (parent_sg_id,search)">
+                                                <t t-esc="record.parent2_id"/>
+                                            </a>
+                                        </t>
+                                        <t t-if="parent_sg_id == False">
+                                            <t t-esc="record.parent2_id"/>
+                                        </t>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr class="">
+                                <td>
+                                    <strong>Total Contacts:</strong>
+                                </td>
+                                <td>
+                                    <span>
+                                        <t t-esc="record.total_count"/>
                                     </span>
                                 </td>
                             </tr>
@@ -169,6 +186,12 @@
                                                 <td>
                                                     <strong>Email:</strong>
                                                 </td>
+                                                <td>
+                                                    <strong>Responsbility:</strong>
+                                                </td>
+                                                <td>
+                                                    <strong>Skills:</strong>
+                                                </td>
                                             </tr>
                                         </thead>
                                         <t t-foreach="record.partner_ids" t-as="part">
@@ -186,6 +209,30 @@
                                                             <a t-att-href="'mailto:%s' % part.email">
                                                                 <t t-esc="part.email"/>
                                                             </a>
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <span>
+                                                            <t t-if="part.category_res_id_name">
+                                                                <t t-foreach="(part.category_res_id_name).split(',')"
+                                                                   t-as="cat_res">
+                                                                    <a t-att-href="'/midardir/res/contact/%s?search=%s&amp;parent=%s' % (cat_res.split(':')[1],search,record.name)">
+                                                                        <span t-esc="cat_res.split(':')[0]"/>
+                                                                    </a>
+                                                                </t>
+                                                            </t>
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <span>
+                                                            <t t-if="part.category_skill_id_name">
+                                                                <t t-foreach="(part.category_skill_id_name).split(',')"
+                                                                   t-as="cat_skill">
+                                                                    <a t-att-href="'/midardir/res/contact/%s?search=%s&amp;parent=%s' % (cat_skill.split(':')[1],search,record.name)">
+                                                                        <span t-esc="cat_skill.split(':')[0]"/>
+                                                                    </a>
+                                                                </t>
+                                                            </t>
                                                         </span>
                                                     </td>
                                                 </tr>
@@ -421,7 +468,7 @@
                                             </td>
                                             <td>
                                                 <span>
-                                                    <t t-if="record.category_skill_id_name">
+                                                    <t t-if="record.category_res_id_name">
                                                         <t t-foreach="record['category_res_id_name'].split(',')"
                                                            t-as="cat_res">
                                                             <a t-att-href="'/midardir/res/contact/%s?search=%s&amp;parent=%s' % (cat_res.split(':')[1],search,record.name)">
@@ -486,15 +533,13 @@
                             <t t-set="is_display_more" t-value="records[model]['count']"/>
                         </div>
                         <t t-set="record_display" t-value="1"></t>
-                        <t t-set="normal" t-value="False"/>
-                        <t t-set="functional" t-value="False"/>
                         <t t-foreach="records[model]['data']" t-as="record">
                             <t t-set="record_display" t-value="record_display+1"/>
                             <t t-if="model == 'company'" t-set="model" t-value="'res.partner'"/>
                             <div t-att-class="'pl-2 d-none' if record_display > 11 else 'pl-2 d-block'"
                                  t-att-data-res_model="model" t-att-data-res_header="records[model]['header']"
-                                 t-att-data-res_id="record['id']">
-                                <span class="o_record_name" t-att-id="record.get('id')"
+                            >
+                                <span class="o_record_name"
                                       t-att-data-res_category="record.get('display_name')">
                                     <t t-if="'display_name' in record and 'name' not in record and model != 'social.partner.group'"
                                        t-esc="record['display_name']"/>
@@ -527,34 +572,24 @@
                                                 <t t-esc="record['category_social_id_name'].split(':')[0]"/>
                                             </a>
                                         </t>
+<!--                                        <t t-if="record['category_social_id_name']">-->
+<!--                                            ,-->
+<!--                                            <t t-foreach="record['category_social_id_name'].split(',')" t-as="soc">-->
+<!--                                                <a t-att-href="'/midardir/socialgroup/%s?search=%s' % (soc.split(':')[1],search)">-->
+<!--                                                    <span t-esc="soc.split(':')[0]"/>-->
+<!--                                                </a>,-->
+<!--                                            </t>-->
+<!--                                        </t>-->
                                     </t>
-
                                     <t t-if="model == 'social.partner.group'">
-                                        <t t-if="record['type'] == 'normal' and normal == False">
-                                            <span><strong>Normal</strong></span>
-                                            <br/>
+                                        <t t-foreach="list(record.keys())" t-as="rec_type">
+                                        <strong><t t-esc="rec_type"/></strong><br/>
+                                            <t t-foreach="record.get(rec_type)" t-as="rec">
+                                                <a class="pl-2" t-att-href="'/midardir/socialgroup/%s?search=%s' % (rec['id'],search)">
+                                                    <t t-esc="rec['display_name']"/>
+                                                </a><br/>
+                                            </t>
                                         </t>
-                                        <t t-if="record['type'] == 'normal'">
-                                             <a class="pl-2" t-att-href="'/midardir/socialgroup/%s?search=%s' % (record['id'],search)">
-                                                <t t-esc="record['display_name']"/>
-                                            </a>
-                                            <t t-set="normal" t-value="True"/>
-                                        </t>
-                                        <t t-if="record['type'] != 'normal' and functional == False">
-                                            <span><strong>Functional</strong></span>
-                                            <br/>
-                                        </t>
-                                        <t t-if="record['type'] != 'normal'">
-                                             <a class="pl-2" t-att-href="'/midardir/socialgroup/%s?search=%s' % (record['id'],search)">
-                                                <t t-esc="record['display_name']"/>
-                                            </a>
-                                            <t t-set="functional" t-value="True"/>
-                                        </t>
-                                    </t>
-                                    <t t-if="'display_name' not in record and 'utm_campaign_id' in record and record['utm_campaign_id']">
-<!--                                       <t t-esc="record['message']" />(-->
-                                        <t t-esc="record['utm_campaign_id'][1]" />
-<!--                                        )-->
                                     </t>
                                 </span>
                             </div>
