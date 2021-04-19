@@ -114,7 +114,7 @@ class GlobalSearch(models.Model):
                         field_list = self.get_field_list(model)
                         if model.split('-')[0] == 'social.partner.group':
                             results = self.env['social.partner.group'].sudo().read_group(domains[model], ['name'], ['type_id'])
-                            results = {m['type_id'] and m['type_id'][1] or 'Unknown': self.env['social.partner.group'].sudo().search_read(m['__domain'], field_list) for m in results}
+                            results = {m['type_id'] and str(m['type_id'][1]) or 'Unknown': self.env['social.partner.group'].sudo().search_read(m['__domain'], field_list) for m in results}
                             if results:
                                 global_data[model] = {'header': models[model], 'count': count}
                                 global_data[model].update(self.get_global_data(model))
@@ -151,7 +151,7 @@ class GlobalSearch(models.Model):
                     field_list = self.get_field_list(model)
                     if model.split('-')[0] == 'social.partner.group':
                         results = self.env['social.partner.group'].sudo().read_group(domains[model], ['name'], ['type_id'])
-                        results = {m['type_id'] and m['type_id'][1] or 'Unknown': self.env['social.partner.group'].sudo().search_read(m['__domain'],field_list) for m in results}
+                        results = {m['type_id'] and str(m['type_id'][1]) or 'Unknown': self.env['social.partner.group'].sudo().search_read(m['__domain'],field_list) for m in results}
                         if results:
                             global_data[model] = {'header': models[model], 'count': count}
                             global_data[model].update(self.get_global_data(model))
