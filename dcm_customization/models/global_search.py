@@ -181,5 +181,4 @@ class GlobalSearch(models.Model):
                             global_data[model].update({
                                 'data': results
                             })
-        print("-----------global_data-------------",global_data)
         return global_data

@@ -582,15 +582,17 @@
 <!--                                        </t>-->
                                     </t>
                                     <t t-if="model == 'social.partner.group'">
-                                        <t t-foreach="list(record.keys())" t-as="rec_type">
-                                        <strong><t t-esc="rec_type"/></strong><br/>
-                                            <t t-foreach="record.get(rec_type)" t-as="rec">
-                                                <a class="pl-2" t-att-href="'/midardir/socialgroup/%s?search=%s' % (rec['id'],search)">
-                                                    <t t-esc="rec['display_name']"/>
-                                                </a><br/>
-                                            </t>
-                                        </t>
-                                    </t>
+                                    	<div class="social_group_hierarchy">
+<!-- 	                                        <t t-foreach="list(record.keys())" t-as="rec_type"> -->
+<!-- 	                                        	<strong><t t-esc="rec_type"/></strong><br/> -->
+<!-- 	                                            <t t-foreach="record.get(rec_type)" t-as="rec"> -->
+<!-- 	                                                <a class="pl-2" t-att-href="'/midardir/socialgroup/%s?search=%s' % (rec['id'],search)"> -->
+<!-- 	                                                    <t t-esc="rec['display_name']"/> -->
+<!-- 	                                                </a><br/> -->
+<!-- 	                                            </t> -->
+<!-- 	                                        </t> -->
+                                    	</div>
+                                   </t>
                                 </span>
                             </div>
                         </t>
