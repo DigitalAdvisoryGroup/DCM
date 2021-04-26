@@ -51,25 +51,18 @@ class ResPartner(models.Model):
     category_skill_id_name = fields.Char("Skill Name", compute="_set_category_skill_ids_name", store=True)
     category_res_id_name = fields.Char("Responsbility Name", compute="_set_category_res_ids_name", store=True)
 
-    # ao1_id = fields.Char("AO 1")
-    # ao2_id = fields.Char("AO 2")
-    # ao3_id = fields.Char("AO 3")
-    # ao_key = fields.Char("AO-Key")
     fu1_id = fields.Char("FU 1")
     fu2_id = fields.Char("FU 2")
     fu3_id = fields.Char("FU 3")
     fu_key = fields.Char("Func Unit Key")
-    # hlevel = fields.Char("Hierarchy Level")
-    # hlevel_id = fields.Char("Hierarchy Level")
     mlevel_id = fields.Many2one("partner.mlevel","Management level")
-    # oe1_id = fields.Char("OE 1")
-    # oe2_id = fields.Char("OE 2")
-    # oe3_id = fields.Char("OE 3")
-    # oe_key = fields.Char("OE-Key")
-    # ou1_id = fields.Char("OU 1")
-    # ou2_id = fields.Char("OU 2")
-    # ou3_id = fields.Char("OU 3")
-    # ou_key = fields.Char("Org Unit Key")
+
+    app_basic_info = fields.Selection([('view','View'),('edit','Edit'),('not_display','Not Display')], string="Basic Information", default="view")
+    app_extended_info = fields.Selection([('view','View'),('edit','Edit'),('not_display','Not Display')], string="Extended Information", default="view")
+    empl_number = fields.Char("Employee Number")
+    firstname = fields.Char("First Name")
+    familyname = fields.Char("Family Name")
+
 
 
     def update_store_fields(self):
@@ -220,9 +213,54 @@ class ResPartner(models.Model):
                 'zip': self.zip,
                 'image_1920': image_url,
                 'change_connection': self.change_connection,
-                'lang': LANG_CODE_APP.get(self.lang)
+                'lang': LANG_CODE_APP.get(self.lang),
+                #extra parameters
+                'app_basic_info' : self.app_basic_info,
+                'app_extended_info': self.app_extended_info,
+                'function': self.function,
+                'responsbility' : ",".join([x.name for x in self.category_res_ids]),
+                'org_data': self.get_all_heirarchy_data()
             })
         return {'data': data}
+
+    def get_all_heirarchy_data(self):
+
+        results = self.env['social.partner.group'].sudo().read_group([('id','in',self.social_group_id.ids)], ['name'], ['type_id'])
+        results = {m['type_id'] and str(m['type_id'][1]) or 'Unknown': self.env['social.partner.group'].sudo().search_read(m['__domain'], ['type_id']) for m in results}
+        hierarchy_dict = []
+        for s_key, s_group in results.items():
+            hierarchy_data = []
+            temp_dict = {'name': s_key,'children': []}
+            for main_data in s_group:
+                hierarchy_parent_data = self.get_heirarchy_data(main_data.get('id'))
+                hierarchy_data.append(hierarchy_parent_data)
+                temp_dict['children'].append(hierarchy_parent_data)
+            hierarchy_dict.append(temp_dict)
+        _logger.info("0-------------hierarchy_parents------------%s-",hierarchy_dict)
+        return hierarchy_dict
+
+    def get_heirarchy_data(self, group_id):
+        sc_groups = self.env['social.partner.group'].sudo().browse(group_id)
+        group_data = {'id': sc_groups.id, 'name': sc_groups.name, 'children': []}
+        hierarchy_parents = self.get_parent_data(group_id, group_data)
+        return hierarchy_parents
+
+    def get_parent_data(self,group_id,group_data):
+        sc_groups = self.env['social.partner.group'].sudo().browse(group_id)
+        if sc_groups:
+            parent_sg_id = self.env['social.partner.group'].sudo().search([('code', '=', sc_groups.parent2_id)], limit=1)
+            if parent_sg_id.parent2_id:
+                if group_data:
+                    pr_group_data = {'id' : parent_sg_id.id,'name' :parent_sg_id.name,'children' : [group_data]}
+                    return self.get_parent_data(parent_sg_id.id,pr_group_data)
+                else:
+                    group_data = {'id' : parent_sg_id.id,'name' :parent_sg_id.name,'children' : []}
+                    return self.get_parent_data(parent_sg_id.id,group_data)
+            else:
+                if group_data:
+                    return {'id' : parent_sg_id.id,'name' :parent_sg_id.name,'children' : [group_data]}
+                else:
+                    return {'id' : parent_sg_id.id,'name' :parent_sg_id.name,'children' : []}
 
     def set_partner_language(self,lang_code):
         if self and LANG_CODE_ODOO.get(lang_code,False):

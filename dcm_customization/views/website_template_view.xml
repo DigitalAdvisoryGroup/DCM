@@ -189,9 +189,9 @@
                                                 <td>
                                                     <strong>Responsbility:</strong>
                                                 </td>
-                                                <td>
-                                                    <strong>Skills:</strong>
-                                                </td>
+<!--                                                <td>-->
+<!--                                                    <strong>Skills:</strong>-->
+<!--                                                </td>-->
                                             </tr>
                                         </thead>
                                         <t t-foreach="record.partner_ids" t-as="part">
@@ -223,18 +223,18 @@
                                                             </t>
                                                         </span>
                                                     </td>
-                                                    <td>
-                                                        <span>
-                                                            <t t-if="part.category_skill_id_name">
-                                                                <t t-foreach="(part.category_skill_id_name).split(',')"
-                                                                   t-as="cat_skill">
-                                                                    <a t-att-href="'/midardir/res/contact/%s?search=%s&amp;parent=%s' % (cat_skill.split(':')[1],search,record.name)">
-                                                                        <span t-esc="cat_skill.split(':')[0]"/>
-                                                                    </a>
-                                                                </t>
-                                                            </t>
-                                                        </span>
-                                                    </td>
+<!--                                                    <td>-->
+<!--                                                        <span>-->
+<!--                                                            <t t-if="part.category_skill_id_name">-->
+<!--                                                                <t t-foreach="(part.category_skill_id_name).split(',')"-->
+<!--                                                                   t-as="cat_skill">-->
+<!--                                                                    <a t-att-href="'/midardir/res/contact/%s?search=%s&amp;parent=%s' % (cat_skill.split(':')[1],search,record.name)">-->
+<!--                                                                        <span t-esc="cat_skill.split(':')[0]"/>-->
+<!--                                                                    </a>-->
+<!--                                                                </t>-->
+<!--                                                            </t>-->
+<!--                                                        </span>-->
+<!--                                                    </td>-->
                                                 </tr>
                                             </tbody>
                                         </t>
@@ -444,24 +444,24 @@
                                                 </span>
                                             </td>
                                         </tr>
-                                        <tr>
-                                            <td>
-                                                <strong>Fachliche Kompetenzen:</strong>
-                                            </td>
-                                            <td>
-                                                <span>
-                                                    <t t-if="record.category_skill_id_name">
-                                                        <t t-foreach="record['category_skill_id_name'].split(',')"
-                                                           t-as="cat_skill">
-                                                            <a t-att-href="'/midardir/res/contact/%s?search=%s&amp;parent=%s' % (cat_skill.split(':')[1],search,record.name)">
-                                                                ,
-                                                                <span t-esc="cat_skill.split(':')[0]"/>
-                                                            </a>
-                                                        </t>
-                                                    </t>
-                                                </span>
-                                            </td>
-                                        </tr>
+<!--                                        <tr>-->
+<!--                                            <td>-->
+<!--                                                <strong>Fachliche Kompetenzen:</strong>-->
+<!--                                            </td>-->
+<!--                                            <td>-->
+<!--                                                <span>-->
+<!--                                                    <t t-if="record.category_skill_id_name">-->
+<!--                                                        <t t-foreach="record['category_skill_id_name'].split(',')"-->
+<!--                                                           t-as="cat_skill">-->
+<!--                                                            <a t-att-href="'/midardir/res/contact/%s?search=%s&amp;parent=%s' % (cat_skill.split(':')[1],search,record.name)">-->
+<!--                                                                ,-->
+<!--                                                                <span t-esc="cat_skill.split(':')[0]"/>-->
+<!--                                                            </a>-->
+<!--                                                        </t>-->
+<!--                                                    </t>-->
+<!--                                                </span>-->
+<!--                                            </td>-->
+<!--                                        </tr>-->
                                         <tr>
                                             <td>
                                                 <strong>Zuständigkeiten:</strong>
@@ -557,40 +557,24 @@
                                                 </t>
                                             </t>
                                         </t>
-                                        <t t-if="record['category_skill_id_name'] and search.lower() in record['category_skill_id_name'].lower()">
-                                            ,
-                                            <t t-foreach="record['category_skill_id_name'].split(',')" t-as="cat_skill">
-                                                <t t-if="search.lower() in cat_skill.lower()">
-                                                    <a t-att-href="'/midardir/res/contact/%s?search=%s' % (cat_skill.split(':')[1],search)">
-                                                        <span t-esc="cat_skill.split(':')[0]"/>
-                                                    </a>
-                                                </t>
-                                            </t>
-                                        </t>
+<!--                                        <t t-if="record['category_skill_id_name'] and search.lower() in record['category_skill_id_name'].lower()">-->
+<!--                                            ,-->
+<!--                                            <t t-foreach="record['category_skill_id_name'].split(',')" t-as="cat_skill">-->
+<!--                                                <t t-if="search.lower() in cat_skill.lower()">-->
+<!--                                                    <a t-att-href="'/midardir/res/contact/%s?search=%s' % (cat_skill.split(':')[1],search)">-->
+<!--                                                        <span t-esc="cat_skill.split(':')[0]"/>-->
+<!--                                                    </a>-->
+<!--                                                </t>-->
+<!--                                            </t>-->
+<!--                                        </t>-->
                                         <t t-if="record['category_social_id_name']">,
                                             <a t-att-href="'/midardir/socialgroup/%s?search=%s' % (record['category_social_id_name'].split(':')[1],search)">
                                                 <t t-esc="record['category_social_id_name'].split(':')[0]"/>
                                             </a>
                                         </t>
-<!--                                        <t t-if="record['category_social_id_name']">-->
-<!--                                            ,-->
-<!--                                            <t t-foreach="record['category_social_id_name'].split(',')" t-as="soc">-->
-<!--                                                <a t-att-href="'/midardir/socialgroup/%s?search=%s' % (soc.split(':')[1],search)">-->
-<!--                                                    <span t-esc="soc.split(':')[0]"/>-->
-<!--                                                </a>,-->
-<!--                                            </t>-->
-<!--                                        </t>-->
                                     </t>
                                     <t t-if="model == 'social.partner.group'">
                                     	<div class="social_group_hierarchy">
-<!-- 	                                        <t t-foreach="list(record.keys())" t-as="rec_type"> -->
-<!-- 	                                        	<strong><t t-esc="rec_type"/></strong><br/> -->
-<!-- 	                                            <t t-foreach="record.get(rec_type)" t-as="rec"> -->
-<!-- 	                                                <a class="pl-2" t-att-href="'/midardir/socialgroup/%s?search=%s' % (rec['id'],search)"> -->
-<!-- 	                                                    <t t-esc="rec['display_name']"/> -->
-<!-- 	                                                </a><br/> -->
-<!-- 	                                            </t> -->
-<!-- 	                                        </t> -->
                                     	</div>
                                    </t>
                                 </span>
