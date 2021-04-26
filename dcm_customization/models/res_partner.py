@@ -62,8 +62,10 @@ class ResPartner(models.Model):
     empl_number = fields.Char("Employee Number")
     firstname = fields.Char("First Name")
     familyname = fields.Char("Family Name")
-
-
+    id_code = fields.Char("Identification Code")
+    fax = fields.Char("Telefax Number")
+    skype = fields.Char("Skype Number")
+    room_number = fields.Char("Room Number")
 
     def update_store_fields(self):
         for part in self:

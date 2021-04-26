@@ -61,6 +61,14 @@
 
                         </div>
                     </page>
+                    <page name="expertise" string="Expertise">
+
+                    <group name="row_1_right">
+                      <field name="category_skill_ids" string="Skills" widget="many2many_tags"/>
+                      <field name="category_res_ids" string="Responsibilities" widget="many2many_tags"/>
+                    </group>
+
+                  </page>
                     <page name="midarapp_setting" string="MidarApp Settings">
                         <group name="row_1">
 
