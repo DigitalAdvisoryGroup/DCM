@@ -54,7 +54,8 @@ class GlobalSearch(models.Model):
             # 'social.post': {'domain': ['|', '|', '|', '|',('message','ilike',data),('utm_campaign_id','ilike',data),('social_partner_ids.name','ilike',data),('social_groups_ids.name','ilike',data),('social_groups_ids.partner_ids.name','ilike',data)]},
             'social.partner.group': {'domain': ['|', '|', '|',('name', 'ilike', data), ('parent_id', 'ilike', data), ('partner_ids.name', 'ilike', data),('code','ilike',data)]},
             'res.partner': {
-                'domain': ['|', '|', '|', '|', '|', '|', '|', '|', '|', '|',  '|','|','|','|' ,'|',('social_group_id.code','ilike',data),('category_res_ids.name','ilike',data),('category_skill_ids.name','ilike',data),('category_id.name','ilike',data),('name', 'ilike', data), ('email', 'ilike', data), ('phone', 'ilike', data), ('ref', 'ilike', data), ('website', 'ilike', data), ('parent_id', 'ilike', data), ('street', 'ilike', data), ('street2', 'ilike', data), ('city', 'ilike', data), ('zip', 'ilike', data), ('state_id', 'ilike', data), ('country_id', 'ilike', data),('parent_id','!=',False)]}
+                'domain': ['|', '|', '|', '|', '|', '|', '|', '|', '|', '|',  '|','|','|','|' ,'|',('social_group_id.code','ilike',data),('category_res_ids.name','ilike',data),('category_skill_ids.name','ilike',data),('category_id.name','ilike',data),('name', 'ilike', data), ('email', 'ilike', data), ('phone', 'ilike', data), ('ref', 'ilike', data), ('website', 'ilike', data), ('parent_id', 'ilike', data), ('street', 'ilike', data), ('street2', 'ilike', data), ('city', 'ilike', data), ('zip', 'ilike', data), ('state_id', 'ilike', data), ('country_id', 'ilike', data),('parent_id','!=',False)]},
+            'res.partner.category': {'domain': [('name', 'ilike', data)]},
         }
 
         return domains
@@ -62,8 +63,11 @@ class GlobalSearch(models.Model):
     @api.model
     def get_models(self):
         models = {
-            'res.partner': _('Contacts'),'social.partner.group': _('Social Groups'),
-                  # 'social.bit.comments': _('Engagements'),'social.post': _('Posts')
+            'res.partner': _('Persons'),
+            'social.partner.group': _('Social Groups'),
+            'res.partner.category': _('Responsibilities')
+                  # 'social.bit.comments': _('Engagements'),
+            # 'social.post': _('Posts')
                   }
         return models
 
@@ -73,7 +77,9 @@ class GlobalSearch(models.Model):
             # 'social.bit.comments': ['|','|',('partner_id','ilike',data),('comment','ilike',data),('comment','ilike',data)],
             #        'social.post': ['|', '|', '|', '|',('message','ilike',data),('utm_campaign_id','ilike',data),('social_partner_ids.name','ilike',data),('social_groups_ids.name','ilike',data),('social_groups_ids.partner_ids.name','ilike',data)],
                    'social.partner.group':['|','|','|',('name','ilike',data),('parent_id','ilike',data),('partner_ids.name','ilike',data),('code','ilike',data)],
-                   'res.partner': ['|', '|', '|', '|', '|', '|', '|', '|', '|', '|', '|', '|', '|', '|', '|','|',('social_group_id.code','ilike',data),('category_res_ids.name','ilike',data),('category_skill_ids.name','ilike',data),('social_group_id.name','ilike',data),('category_id.name','ilike',data),('name', 'ilike', data), ('email', 'ilike', data), ('phone', 'ilike', data), ('ref', 'ilike', data), ('website', 'ilike', data), ('parent_id', 'child_of', data), ('street', 'ilike', data), ('street2', 'ilike', data), ('city', 'ilike', data), ('zip', 'ilike', data), ('state_id', 'ilike', data), ('country_id', 'ilike', data),('parent_id','!=',False)]}
+                   'res.partner': ['|', '|', '|', '|', '|', '|', '|', '|', '|', '|', '|', '|', '|', '|', '|','|',('social_group_id.code','ilike',data),('category_res_ids.name','ilike',data),('category_skill_ids.name','ilike',data),('social_group_id.name','ilike',data),('category_id.name','ilike',data),('name', 'ilike', data), ('email', 'ilike', data), ('phone', 'ilike', data), ('ref', 'ilike', data), ('website', 'ilike', data), ('parent_id', 'child_of', data), ('street', 'ilike', data), ('street2', 'ilike', data), ('city', 'ilike', data), ('zip', 'ilike', data), ('state_id', 'ilike', data), ('country_id', 'ilike', data),('parent_id','!=',False)],
+                   'res.partner.category': [('name','ilike',data)]
+        }
         return domains
 
     @api.model

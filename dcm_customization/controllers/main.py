@@ -93,13 +93,10 @@ class MidarVideoAttachment(http.Controller):
     def midardir_contact(self, partner,**kw):
         if partner.social_group_id:
             level_3_dict = {'id': partner.social_group_id[0].id, 'name': partner.social_group_id[0].name, 'code': partner.social_group_id[0].code}
-            print("-------level_3_dict------------",level_3_dict)
-            print("-------partner.social_group_id[0].parent2_id------------",partner.social_group_id[0].parent2_id)
             if partner.social_group_id[0].parent2_id:
                 parent_sg_id = request.env['social.partner.group'].sudo().search([('code', '=', partner.social_group_id[0].parent2_id)], limit=1)
                 if parent_sg_id:
                     level_2_dict = {"id": parent_sg_id.id, "name": parent_sg_id.name, "code": parent_sg_id.code}
-                    print("-------level_2_dict------------", level_2_dict)
                     if parent_sg_id.parent2_id:
                         parent_sg_id1 = request.env['social.partner.group'].sudo().search([('code', '=', parent_sg_id.parent2_id)], limit=1)
                         level_1_dict = {"id": parent_sg_id1.id, "name": parent_sg_id1.name, "code": parent_sg_id1.code}
@@ -119,9 +116,6 @@ class MidarVideoAttachment(http.Controller):
             level_1_dict = {}
             level_2_dict = {}
             level_3_dict = {}
-        print("---------level_1_dict----f----",level_1_dict)
-        print("---------level_2_dict----f----",level_2_dict)
-        print("---------level_3_dict-----f---",level_3_dict)
         prevpath = request.httprequest.referrer
         parent = kw.get('parent')
         return request.render("dcm_customization.midardir_contact", {'record': partner,
@@ -151,10 +145,16 @@ class MidarVideoAttachment(http.Controller):
 
     @http.route('/midardir/res/contact/<model("res.partner.category"):partner_category>', type='http', auth='user', website=True, csrf=False)
     def midardir_cat_res(self, partner_category, **kw):
+        prevpath = request.httprequest.referrer
+        parent = kw.get('parent')
         parnter_ids = request.env['res.partner'].sudo()
         if partner_category:
             parnter_ids = request.env['res.partner'].sudo().search([('category_res_ids','in',partner_category.ids)])
-        return request.render("dcm_customization.midardir_cat_res_contacts", {'partners': parnter_ids, 'partner_category':partner_category,'search': kw.get("search")
+        return request.render("dcm_customization.midardir_cat_res_contacts", {'partners': parnter_ids,
+                                                                              'partner_category':partner_category,
+                                                                              'search': kw.get("search"),
+                                                                              'parent': parent,
+                                                                              'prevpath': prevpath,
                                                                           })
 
     def get_parent_data(self,group_id,group_data,search):
@@ -210,7 +210,6 @@ class MidarVideoAttachment(http.Controller):
     def get_hierarchy_details(self,**kw):
         if kw.get('search_query'):
             data = request.env['global.search'].sudo().get_records(kw['search_query'])
-            print("Data---",data)
             hierarchy_dict = {}
             for key,dt in data.items():
                 if key == 'social.partner.group':

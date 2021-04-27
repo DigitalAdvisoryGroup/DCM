@@ -522,16 +522,23 @@
         <t t-set="additional_title">MidarDir Result</t>
         <div class="container">
             <div class="row " t-att-data-res_model="model">
+                <t t-if="search != None and records == {}">
+                    <li class="text-center">
+                        <span><strong>No results found.</strong></span>
+                    </li>
+                </t>
                 <t t-foreach="search_models" t-as="model">
                     <div class="col-md-6 pb16 res-mode-cls" id="res-mode-cls">
-                        <div t-att-data-res_model="model" t-att-data-count="records[model]['count']"
-                             t-att-data-res_header="records[model]['header']">
-                            <strong>
-                                <t t-esc="records[model]['header']"/>
-                                (<t t-esc="records[model]['count']"/>)
-                            </strong>
-                            <t t-set="is_display_more" t-value="records[model]['count']"/>
-                        </div>
+                        <t t-if="model != 'social.partner.group'">
+                            <div t-att-data-res_model="model" t-att-data-count="records[model]['count']"
+                                 t-att-data-res_header="records[model]['header']">
+                                <strong>
+                                    <t t-esc="records[model]['header']"/>
+                                    (<t t-esc="records[model]['count']"/>)
+                                </strong>
+                                <t t-set="is_display_more" t-value="records[model]['count']"/>
+                            </div>
+                        </t>
                         <t t-set="record_display" t-value="1"></t>
                         <t t-foreach="records[model]['data']" t-as="record">
                             <t t-set="record_display" t-value="record_display+1"/>
@@ -541,8 +548,14 @@
                             >
                                 <span class="o_record_name"
                                       t-att-data-res_category="record.get('display_name')">
-                                    <t t-if="'display_name' in record and 'name' not in record and model != 'social.partner.group'"
+                                    <t t-if="'display_name' in record and 'name' not in record and model not in ('social.partner.group','res.partner.category')"
                                        t-esc="record['display_name']"/>
+                                    <t t-if="'display_name' in record and 'name' not in record and model == 'res.partner.category'">
+                                        <a t-att-href="'/midardir/res/contact/%s?search=%s' % (record['id'],search)">
+                                            <span t-esc="record['display_name']"/>
+                                        </a>
+                                    </t>
+<!--                                       t-esc="record['display_name']"/>-->
                                     <t t-if="'name' in record">
                                         <a t-att-href="'/midardir/contact/%s?search=%s' % (record.get('id'),search)">
                                             <t t-esc="record['name']"/>
