@@ -276,7 +276,8 @@ class WebController(Binary):
                 filename=filename,
                 filename_field=filename_field, download=download,
                 mimetype=mimetype, access_token=access_token)
-            if status not in (200,206):
+
+            if status not in (200, 206):
                 return request.env['ir.http']._response_by_status(status,
                                                                   headers,
                                                                   content)

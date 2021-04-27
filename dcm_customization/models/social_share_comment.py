@@ -6,7 +6,7 @@ from werkzeug.urls import url_join
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
 import os
 import tempfile
-# import cv2
+import cv2
 from subprocess import Popen, PIPE
 import logging
 
@@ -56,7 +56,6 @@ class SocialBitComments(models.Model):
                 new_video_file_path = tempfile.gettempdir() + "/new-" + filename
                 cmds = [module_path+"/ffmpeg_lib/ffmpeg", '-i', current_video_file_path, '-max_muxing_queue_size', '500', '-acodec', 'aac', '-ac', '2', '-strict', 'experimental', '-vcodec', 'libx264',
                         '-pix_fmt', 'yuv420p', '-profile:v', 'baseline', '-sn', '-f', 'mp4', '-y', new_video_file_path]
-
                 p = Popen(cmds, shell=False, stdin=PIPE, stdout=PIPE, stderr=PIPE, close_fds=True)
                 while True:
                     ret = p.stderr.read(10)
@@ -256,8 +255,6 @@ class SocialBitComments(models.Model):
                     {'post_id': self.post_id.id, 'partner_id': int(partner_id),
                      "parent_id": self.id,
                      'record_type': "com_dislike"})
-            return True
-
             return True
         return False
 
