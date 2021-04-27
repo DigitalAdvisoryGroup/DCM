@@ -4,7 +4,7 @@
 import os
 import tempfile
 
-import cv2
+# import cv2
 import requests
 import base64
 import json
