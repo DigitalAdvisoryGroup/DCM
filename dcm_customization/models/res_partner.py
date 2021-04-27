@@ -34,6 +34,11 @@ LANG_CODE_APP = {
 }
 
 class ResPartner(models.Model):
+    _inherit = 'res.partner.category'
+
+    partner_id = fields.Many2one("res.partner", "Company")
+
+class ResPartner(models.Model):
     _inherit = 'res.partner'
 
     otp_token = fields.Char("OTP Token", copy=False)

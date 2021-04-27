@@ -1,6 +1,19 @@
 <?xml version='1.0' encoding='utf-8'?>
 <odoo>
     <data>
+
+        <record id="view_partner_category_form_dcm" model="ir.ui.view">
+            <field name="name">res.partner.category.inherit.view.form</field>
+            <field name="model">res.partner.category</field>
+            <field name="inherit_id" ref="base.view_partner_category_form"/>
+            <field name="arch" type="xml">
+                <field name="parent_id" position="after">
+                    <field name="partner_id" domain="[('is_company', '=', True)]"/>
+                </field>
+            </field>
+        </record>
+
+
         <!-- res.partner inherit form view -->
         <record id="view_partner_form_dcm_inehrit" model="ir.ui.view">
             <field name="name">res.partner.inherit.view.form</field>
