@@ -6,3 +6,7 @@ access_res_partner_token,access_res_partner_token,model_res_partner_token,base.g
 access_global_search,access_global_search,model_global_search,,1,1,1,1
 access_partner_mlevel,access_partner_mlevel,model_partner_mlevel,base.group_user,1,1,1,1
 access_social_partner_group_type,access_social_partner_group_type,model_social_partner_group_type,base.group_user,1,1,1,1
+access_partner_extended_tag,access_partner_extended_tag,model_partner_extended_tag,base.group_user,1,1,1,1
+access_partner_extended_tag_type,access_partner_extended_tag_type,model_partner_extended_tag_type,base.group_user,1,1,1,1
+access_extended_tag_level,access_extended_tag_level,model_extended_tag_level,base.group_user,1,1,1,1
+access_partner_extended_tag_level,access_partner_extended_tag_level,model_partner_extended_tag_level,base.group_user,1,1,1,1

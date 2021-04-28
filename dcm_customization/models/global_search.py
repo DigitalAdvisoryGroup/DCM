@@ -105,10 +105,36 @@ class GlobalSearch(models.Model):
         return field_list
 
     @api.model
-    def get_records(self, data):
+    def get_records(self, data, type=False):
         global_data = {}
-        models = self.get_models()
-        domains = self.get_model_domains(data)
+        if type == "contact":
+            models = {
+                'res.partner': _('Persons'),
+                # 'social.partner.group': _('Social Groups'),
+                # 'res.partner.category': _('Responsibilities')
+                # 'social.bit.comments': _('Engagements'),
+                # 'social.post': _('Posts')
+            }
+            domains = {
+                'res.partner': ['|', '|', '|', '|', '|', '|', '|', '|', '|', '|', '|', '|', '|', '|', '|', '|', ('social_group_id.code', 'ilike', data), ('category_res_ids.name', 'ilike', data),
+                                ('category_skill_ids.name', 'ilike', data), ('social_group_id.name', 'ilike', data), ('category_id.name', 'ilike', data), ('name', 'ilike', data),
+                                ('email', 'ilike', data), ('phone', 'ilike', data), ('ref', 'ilike', data), ('website', 'ilike', data), ('parent_id', 'child_of', data), ('street', 'ilike', data),
+                                ('street2', 'ilike', data), ('city', 'ilike', data), ('zip', 'ilike', data), ('state_id', 'ilike', data), ('country_id', 'ilike', data), ('parent_id', '!=', False)],
+            }
+        elif type == "post":
+            models = {
+                # 'res.partner': _('Persons'),
+                # 'social.partner.group': _('Social Groups'),
+                # 'res.partner.category': _('Responsibilities')
+                # 'social.bit.comments': _('Engagements'),
+                'social.post': _('Posts')
+            }
+            domains = {
+                       'social.post': ['|', '|', '|', '|',('message','ilike',data),('utm_campaign_id','ilike',data),('social_partner_ids.name','ilike',data),('social_groups_ids.name','ilike',data),('social_groups_ids.partner_ids.name','ilike',data)],
+            }
+        else:
+            models = self.get_models()
+            domains = self.get_model_domains(data)
         if data:
             new_data = data.split(" ")
             if len(new_data) > 1:
