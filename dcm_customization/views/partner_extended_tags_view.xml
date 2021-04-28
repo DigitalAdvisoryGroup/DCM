@@ -1,0 +1,230 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+
+        <menuitem id="menu_extended_tags_root" name="Extended Tags" parent="contacts.res_partner_menu_config"
+                  sequence="100"/>
+
+        <record id="extended_tag_level_view_tree" model="ir.ui.view">
+            <field name="name">extended.tag.level.view.tree</field>
+            <field name="model">extended.tag.level</field>
+            <field name="arch" type="xml">
+                <tree string="Levels">
+                    <field name="name" />
+                    <field name="tag_type_id" />
+                </tree>
+            </field>
+        </record>
+
+        <record id="extended_tag_level_view_form" model="ir.ui.view">
+            <field name="name">extended.tag.level.view.form</field>
+            <field name="model">extended.tag.level</field>
+            <field name="arch" type="xml">
+                <form string="Levels">
+                    <sheet>
+                        <group>
+                            <field name="name" />
+                            <field name="tag_type_id" />
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="extended_tag_level_view_search" model="ir.ui.view">
+            <field name="name">extended.tag.level.view.search</field>
+            <field name="model">extended.tag.level</field>
+            <field name="arch" type="xml">
+                <search string="Levels">
+                    <field name="name" />
+                    <field name="tag_type_id" />
+                </search>
+            </field>
+        </record>
+
+        <record id="extended_tag_level_action" model="ir.actions.act_window">
+            <field name="name">Levels</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">extended.tag.level</field>
+            <field name="view_mode">tree,form,graph,pivot</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    <!-- Add Text Here -->
+                </p><p>
+                    <!-- More details about what a user can do with this object will be OK -->
+                </p>
+            </field>
+        </record>
+
+        <menuitem id="menu_act_extended_tag_level" name="Levels" parent="menu_extended_tags_root"
+                  action="extended_tag_level_action" sequence="100"/>
+
+
+        <record id="partner_extended_tag_type_view_tree" model="ir.ui.view">
+            <field name="name">partner.extended.tag.type.view.tree</field>
+            <field name="model">partner.extended.tag.type</field>
+            <field name="arch" type="xml">
+                <tree string="Types">
+                    <field name="name" />
+                    <field name="is_display_mobile" />
+                </tree>
+            </field>
+        </record>
+
+        <record id="partner_extended_tag_type_view_form" model="ir.ui.view">
+            <field name="name">partner.extended.tag.type.view.form</field>
+            <field name="model">partner.extended.tag.type</field>
+            <field name="arch" type="xml">
+                <form string="Types">
+                    <sheet>
+                        <group>
+                            <field name="name" />
+                            <field name="is_display_mobile" />
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="partner_extended_tag_type_view_search" model="ir.ui.view">
+            <field name="name">partner.extended.tag.type.view.search</field>
+            <field name="model">partner.extended.tag.type</field>
+            <field name="arch" type="xml">
+                <search string="Types">
+                    <field name="name" />
+                    <field name="is_display_mobile" />
+                </search>
+            </field>
+        </record>
+
+        <record id="partner_extended_tag_type_action" model="ir.actions.act_window">
+            <field name="name">Types</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">partner.extended.tag.type</field>
+            <field name="view_mode">tree,form,graph,pivot</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    <!-- Add Text Here -->
+                </p><p>
+                    <!-- More details about what a user can do with this object will be OK -->
+                </p>
+            </field>
+        </record>
+
+        <menuitem id="menu_act_partner_extended_tag_type" name="Types" parent="menu_extended_tags_root"
+                  action="partner_extended_tag_type_action" sequence="90"/>
+
+        <record id="partner_extended_tag_view_tree" model="ir.ui.view">
+            <field name="name">partner.extended.tag.view.tree</field>
+            <field name="model">partner.extended.tag</field>
+            <field name="arch" type="xml">
+                <tree string="Tags">
+                    <field name="name" />
+                    <field name="tag_type_id" />
+                </tree>
+            </field>
+        </record>
+
+        <record id="partner_extended_tag_view_form" model="ir.ui.view">
+            <field name="name">partner.extended.tag.view.form</field>
+            <field name="model">partner.extended.tag</field>
+            <field name="arch" type="xml">
+                <form string="Tags">
+                    <sheet>
+                        <group>
+                            <field name="name" />
+                            <field name="tag_type_id" />
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="partner_extended_tag_view_search" model="ir.ui.view">
+            <field name="name">partner.extended.tag.view.search</field>
+            <field name="model">partner.extended.tag</field>
+            <field name="arch" type="xml">
+                <search string="Tags">
+                    <field name="name" />
+                    <field name="tag_type_id" />
+                </search>
+            </field>
+        </record>
+
+        <record id="partner_extended_tag_action" model="ir.actions.act_window">
+            <field name="name">Types</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">partner.extended.tag</field>
+            <field name="view_mode">tree,form,graph,pivot</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    <!-- Add Text Here -->
+                </p><p>
+                    <!-- More details about what a user can do with this object will be OK -->
+                </p>
+            </field>
+        </record>
+
+        <menuitem id="menu_act_partner_extended_tag" name="Tags" parent="menu_extended_tags_root"
+                  action="partner_extended_tag_action" sequence="80"/>
+
+        <record id="partner_extended_tag_level_view_tree" model="ir.ui.view">
+            <field name="name">partner.extended.tag.level.view.tree</field>
+            <field name="model">partner.extended.tag.level</field>
+            <field name="arch" type="xml">
+                <tree string="Partner Levels">
+                    <field name="partner_id" />
+                    <field name="tag_id" />
+                    <field name="tag_type_id" />
+                    <field name="level_id" />
+                </tree>
+            </field>
+        </record>
+
+        <record id="partner_extended_tag_level_view_form" model="ir.ui.view">
+            <field name="name">partner.extended.tag.level.view.form</field>
+            <field name="model">partner.extended.tag.level</field>
+            <field name="arch" type="xml">
+                <form string="Partner Levels">
+                    <sheet>
+                        <group>
+                            <field name="partner_id" />
+                            <field name="tag_id" />
+                            <field name="tag_type_id" />
+                            <field name="level_id" />
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="partner_extended_tag_level_view_search" model="ir.ui.view">
+            <field name="name">partner.extended.tag.level.view.search</field>
+            <field name="model">partner.extended.tag.level</field>
+            <field name="arch" type="xml">
+                <search string="Partner Levels">
+                    <field name="partner_id" />
+                    <field name="tag_id" />
+                    <field name="tag_type_id" />
+                    <field name="level_id" />
+                </search>
+            </field>
+        </record>
+
+        <record id="partner_extended_tag_level_action" model="ir.actions.act_window">
+            <field name="name">Partner Extended Tags</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">partner.extended.tag.level</field>
+            <field name="view_mode">tree,form,graph,pivot</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    <!-- Add Text Here -->
+                </p><p>
+                    <!-- More details about what a user can do with this object will be OK -->
+                </p>
+            </field>
+        </record>
+
+        <menuitem id="menu_act_partner_extended_tag_level" name="Partner Extended Tags" parent="menu_extended_tags_root"
+                  action="partner_extended_tag_level_action" sequence="110"/>
+
+</odoo>

@@ -32,6 +32,7 @@ Description
         "views/social_bit_templates.xml",
         "views/social_post_views.xml",
         "views/social_stream_post_views.xml",
+        "views/partner_extended_tags_view.xml",
         "views/res_partner.xml",
         "views/res_partner_token.xml",
         "views/social_groups_view.xml",
@@ -42,6 +43,7 @@ Description
         "views/campaign.xml",
         "views/assets.xml",
         "views/website_template_view.xml",
+
     ],
     'demo': [
     ],

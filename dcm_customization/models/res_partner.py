@@ -33,7 +33,7 @@ LANG_CODE_APP = {
             "ro_RO": "rm-CH"
 }
 
-class ResPartner(models.Model):
+class ResPartnerCategory(models.Model):
     _inherit = 'res.partner.category'
 
     partner_id = fields.Many2one("res.partner", "Company")
@@ -71,6 +71,8 @@ class ResPartner(models.Model):
     fax = fields.Char("Telefax Number")
     skype = fields.Char("Skype Number")
     room_number = fields.Char("Room Number")
+
+    ext_tag_lines = fields.One2many("partner.extended.tag.level", "partner_id", string="Extended Tags")
 
     def update_store_fields(self):
         for part in self:
