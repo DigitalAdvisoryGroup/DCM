@@ -1,4 +1,32 @@
-from odoo import api, models, _
+from odoo import api, models, fields, _
+import logging
+_logger = logging.getLogger(__name__)
+
+
+class GlobalSearchConfig(models.Model):
+    _name = 'global.search.config'
+    _order = 'sequence asc'
+    _description  = 'Global Search Configuration'
+
+
+    name = fields.Char("Name", translate=True)
+    sequence = fields.Integer(help="Used to order the note stages")
+    model_id = fields.Many2one("ir.model", string="Model")
+    page = fields.Selection([('profile','Profile'),('group','Group'),('post','Post Detail')], string="Page Redirect", required=True)
+    active = fields.Boolean("Active", default=True)
+
+    def get_global_search_configuration_data(self):
+        data = []
+        recs = self.search([])
+        if recs:
+            for rec in recs:
+                data.append({
+                    "name": rec.name,
+                    "type": rec.model_id.model,
+                    "page": rec.page,
+                })
+        _logger.info("----------global-data---config-------%s", data)
+        return {"data": data}
 
 
 class GlobalSearch(models.Model):
@@ -107,13 +135,9 @@ class GlobalSearch(models.Model):
     @api.model
     def get_records(self, data, type=False):
         global_data = {}
-        if type == "contact":
+        if type == "res.partner":
             models = {
                 'res.partner': _('Persons'),
-                # 'social.partner.group': _('Social Groups'),
-                # 'res.partner.category': _('Responsibilities')
-                # 'social.bit.comments': _('Engagements'),
-                # 'social.post': _('Posts')
             }
             domains = {
                 'res.partner': ['|', '|', '|', '|', '|', '|', '|', '|', '|', '|', '|', '|', '|', '|', '|', '|', ('social_group_id.code', 'ilike', data), ('category_res_ids.name', 'ilike', data),
@@ -121,16 +145,19 @@ class GlobalSearch(models.Model):
                                 ('email', 'ilike', data), ('phone', 'ilike', data), ('ref', 'ilike', data), ('website', 'ilike', data), ('parent_id', 'child_of', data), ('street', 'ilike', data),
                                 ('street2', 'ilike', data), ('city', 'ilike', data), ('zip', 'ilike', data), ('state_id', 'ilike', data), ('country_id', 'ilike', data), ('parent_id', '!=', False)],
             }
-        elif type == "post":
+        elif type == "social.post":
             models = {
-                # 'res.partner': _('Persons'),
-                # 'social.partner.group': _('Social Groups'),
-                # 'res.partner.category': _('Responsibilities')
-                # 'social.bit.comments': _('Engagements'),
                 'social.post': _('Posts')
             }
             domains = {
-                       'social.post': ['|', '|', '|', '|',('message','ilike',data),('utm_campaign_id','ilike',data),('social_partner_ids.name','ilike',data),('social_groups_ids.name','ilike',data),('social_groups_ids.partner_ids.name','ilike',data)],
+                       'social.post': ['|', '|', '|', '|',('message','ilike',data),('utm_campaign_id','ilike',data),('social_partner_ids.name','ilike',data),('social_groups_ids.name','ilike',data),('social_groups_ids.partner_ids.name','ilike',data),('state','=','posted')],
+            }
+        elif type == "social.partner.group":
+            models = {
+                'social.partner.group': _('Social Groups'),
+            }
+            domains = {
+                'social.partner.group': ['|', '|', '|', ('name', 'ilike', data), ('parent_id', 'ilike', data), ('partner_ids.name', 'ilike', data), ('code', 'ilike', data)],
             }
         else:
             models = self.get_models()
@@ -144,7 +171,7 @@ class GlobalSearch(models.Model):
                         # Get Total Records Count
                         count = self.env[model.split('-')[0]].search_count(domains[model])
                         field_list = self.get_field_list(model)
-                        if model.split('-')[0] == 'social.partner.group':
+                        if model.split('-')[0] == 'social.partner.group' and not type:
                             results = self.env['social.partner.group'].sudo().read_group(domains[model], ['name'], ['type_id'])
                             results = {m['type_id'] and str(m['type_id'][1]) or 'Unknown': self.env['social.partner.group'].sudo().search_read(m['__domain'], field_list) for m in results}
                             if results:
@@ -181,7 +208,7 @@ class GlobalSearch(models.Model):
                     # Get Total Records Count
                     count = self.env[model.split('-')[0]].search_count(domains[model])
                     field_list = self.get_field_list(model)
-                    if model.split('-')[0] == 'social.partner.group':
+                    if model.split('-')[0] == 'social.partner.group' and not type:
                         results = self.env['social.partner.group'].sudo().read_group(domains[model], ['name'], ['type_id'])
                         results = {m['type_id'] and str(m['type_id'][1]) or 'Unknown': self.env['social.partner.group'].sudo().search_read(m['__domain'],field_list) for m in results}
                         if results:
@@ -213,4 +240,5 @@ class GlobalSearch(models.Model):
                             global_data[model].update({
                                 'data': results
                             })
+        _logger.info("----------global-data----------%s", global_data)
         return global_data
