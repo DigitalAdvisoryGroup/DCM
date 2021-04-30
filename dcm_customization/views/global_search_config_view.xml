@@ -1,66 +1,85 @@
 <?xml version='1.0' encoding='utf-8'?>
 <odoo>
 
-        <record id="global_search_config_view_tree" model="ir.ui.view">
-            <field name="name">global.search.config.view.tree</field>
-            <field name="model">global.search.config</field>
-            <field name="arch" type="xml">
-                <tree string="Global Search Configuration">
-                    <field name="sequence" widget="handle" />
-                    <field name="name" />
-                    <field name="model_id" />
-                    <field name="page" />
-                    <field name="active" />
-                </tree>
-            </field>
-        </record>
+    <record id="global_search_config_view_tree" model="ir.ui.view">
+        <field name="name">global.search.config.view.tree</field>
+        <field name="model">global.search.config</field>
+        <field name="arch" type="xml">
+            <tree string="Global Search Configuration">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="model_id"/>
+                <field name="page"/>
+                <field name="active"/>
+            </tree>
+        </field>
+    </record>
 
-        <record id="global_search_config_view_form" model="ir.ui.view">
-            <field name="name">global.search.config.view.form</field>
-            <field name="model">global.search.config</field>
-            <field name="arch" type="xml">
-                <form string="Global Search Configuration">
-                    <sheet>
-                        <group>
-                            <field name="name" />
-                    <field name="model_id" />
-                    <field name="page" />
-                    <field name="active" />
-                        </group>
-                    </sheet>
-                </form>
-            </field>
-        </record>
+    <record id="global_search_config_view_form" model="ir.ui.view">
+        <field name="name">global.search.config.view.form</field>
+        <field name="model">global.search.config</field>
+        <field name="arch" type="xml">
+            <form string="Global Search Configuration">
+                <sheet>
+                    <group col="4">
+                        <field name="name"/>
+                        <field name="model_id"/>
+                        <field name="page"/>
+                        <field name="active"/>
+                    </group>
+                    <group col="4">
+                        <field name="search_fields_lines" domain="[('model_id','=',model_id),('ttype','in',('char','text'))]" required="1">
+                            <tree string="Search Fields" editable="bottom">
+                                <field name="name"/>
+                                <field name="field_description"/>
+                            </tree>
+                        </field>
+                        <field name="result_fields_lines" domain="[('model_id','=',model_id),('ttype','in',('char','text'))]" required="1">
+                            <tree string="Result Fields" editable="bottom">
+                                <field name="name"/>
+                                <field name="field_description"/>
+                            </tree>
+                        </field>
+                    </group>
+                    <group>
+                        <field name="global_search_model_real" invisible="1"/>
+                        <field name="global_search_domain" widget="domain" options="{'model': 'global_search_model_real'}"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
 
-        <record id="global_search_config_view_search" model="ir.ui.view">
-            <field name="name">global.search.config.view.search</field>
-            <field name="model">global.search.config</field>
-            <field name="arch" type="xml">
-                <search string="Global Search Configuration">
-                    <field name="name" />
-                    <field name="model_id" />
-                    <field name="page" />
-                    <field name="active" />
-                </search>
-            </field>
-        </record>
+    <record id="global_search_config_view_search" model="ir.ui.view">
+        <field name="name">global.search.config.view.search</field>
+        <field name="model">global.search.config</field>
+        <field name="arch" type="xml">
+            <search string="Global Search Configuration">
+                <field name="name"/>
+                <field name="model_id"/>
+                <field name="page"/>
+                <field name="active"/>
+            </search>
+        </field>
+    </record>
 
-        <record id="global_search_config_action" model="ir.actions.act_window">
-            <field name="name">Global Search Configuration</field>
-            <field name="type">ir.actions.act_window</field>
-            <field name="res_model">global.search.config</field>
-            <field name="view_mode">tree,form,graph,pivot</field>
-            <field name="help" type="html">
-                <p class="oe_view_nocontent_create">
-                    <!-- Add Text Here -->
-                </p><p>
-                    <!-- More details about what a user can do with this object will be OK -->
-                </p>
-            </field>
-        </record>
+    <record id="global_search_config_action" model="ir.actions.act_window">
+        <field name="name">Global Search Configuration</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">global.search.config</field>
+        <field name="view_mode">tree,form,graph,pivot</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                <!-- Add Text Here -->
+            </p>
+            <p>
+                <!-- More details about what a user can do with this object will be OK -->
+            </p>
+        </field>
+    </record>
 
-        <menuitem id="menu_act_global_search_config" name="Global Search Configuration" parent="social.menu_social_configuration"
-                  action="global_search_config_action" sequence="110"/>
+    <menuitem id="menu_act_global_search_config" name="Global Search Configuration" parent="social.menu_social_configuration"
+              action="global_search_config_action" sequence="110"/>
 
 
 </odoo>

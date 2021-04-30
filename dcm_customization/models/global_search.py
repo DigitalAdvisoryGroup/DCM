@@ -1,4 +1,5 @@
 from odoo import api, models, fields, _
+from ast import literal_eval
 import logging
 _logger = logging.getLogger(__name__)
 
@@ -15,18 +16,66 @@ class GlobalSearchConfig(models.Model):
     page = fields.Selection([('profile','Profile'),('group','Group'),('post','Post Detail')], string="Page Redirect", required=True)
     active = fields.Boolean("Active", default=True)
 
+    search_fields_lines = fields.Many2many("ir.model.fields", "rel_fields_global_search", "global_search_id","field_search_id", string="Fields to be searched")
+    result_fields_lines = fields.Many2many("ir.model.fields", "rel_fields_global_search_result", "global_search_result_id","field_search_result_id", string="Fields to be shown in result")
+    global_search_model_real = fields.Char(compute='_compute_model', string='Recipients Real Model', default='mailing.contact', required=True)
+    global_search_domain = fields.Char(string='Model clause', default=[])
+
+
+    @api.depends('model_id')
+    def _compute_model(self):
+        for record in self:
+            record.global_search_model_real = record.model_id.model or 'res.partner'
+
+
     def get_global_search_configuration_data(self):
         data = []
         recs = self.search([])
         if recs:
             for rec in recs:
                 data.append({
+                    "id": rec.id,
                     "name": rec.name,
                     "type": rec.model_id.model,
                     "page": rec.page,
+                    "result_fields": ",".join([x.name for x in rec.result_fields_lines])
                 })
         _logger.info("----------global-data---config-------%s", data)
         return {"data": data}
+
+    def get_models(self):
+        return {self.global_search_model_real: _(self.name)}
+
+    def get_model_domains(self, data):
+        domain = []
+        for i in range(1,len(self.search_fields_lines)):
+            domain.append('|')
+        for f in self.search_fields_lines:
+            domain.append([f.name,'ilike',data])
+        extra_domain = literal_eval(self.global_search_domain) if self.global_search_domain else []
+        return {self.global_search_model_real: domain+extra_domain}
+
+    def get_records(self, data):
+        global_data = {}
+        if data:
+            models = self.get_models()
+            domains = self.get_model_domains(data)
+            _logger.info("-------models--------%s",models)
+            _logger.info("-------domains---------%s",domains)
+            for model in models.keys():
+                results = self.env[model.split('-')[0]].search_read(domains[model], self.result_fields_lines.mapped("name"))
+                if results:
+                    global_data[model] = {
+                        'header': models[model],
+                        'count': self.env[model.split('-')[0]].search_count(domains[model]),
+                        'data': results
+                    }
+        _logger.info("----------global-data---new-------%s", global_data)
+        return global_data
+
+
+
+
 
 
 class GlobalSearch(models.Model):
