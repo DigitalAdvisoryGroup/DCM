@@ -64,13 +64,20 @@ class ResPartner(models.Model):
 
     app_basic_info = fields.Selection([('view','View'),('edit','Edit'),('not_display','Not Display')], string="Basic Information", default="view")
     app_extended_info = fields.Selection([('view','View'),('edit','Edit'),('not_display','Not Display')], string="Extended Information", default="view")
-    empl_number = fields.Char("Employee Number")
     firstname = fields.Char("First Name")
     familyname = fields.Char("Family Name")
     id_code = fields.Char("Identification Code")
+
+
+    empl_number = fields.Char("Employee Number")
+    room_number = fields.Char("Room Number")
+    phone2 = fields.Char("Private Number")
+    linkedin = fields.Char("Linkedin Profile")
+    msteams = fields.Char("MS Teams ID")
     fax = fields.Char("Telefax Number")
     skype = fields.Char("Skype Number")
-    room_number = fields.Char("Room Number")
+    xing = fields.Char("Xing Profile")
+
 
     ext_tag_lines = fields.One2many("partner.extended.tag.level", "partner_id", string="Extended Tags")
 
@@ -201,6 +208,58 @@ class ResPartner(models.Model):
             return True
         return False
 
+    def get_responsbility_company_data(self):
+        data = []
+        if self:
+            base_url = self.env['ir.config_parameter'].sudo().get_param(
+                'web.base.url')
+            image_url = url_join(base_url,
+                                 '/web/myimage/res.partner/%s/image_128/?%s' % (self.id, self.file_name_custom))
+            data.append({
+                "id": self.id,
+                "name": self.name,
+                'phone': self.phone or '',
+                'fax': self.fax or '',
+                'mobile': self.mobile or '',
+                'phone2': self.phone2 or '',
+
+                'email': self.email or '',
+                'linkedin': self.linkedin or '',
+                'msteams': self.msteams or '',
+                'skype': self.skype or '',
+
+                'street': self.street or '',
+                'street2': self.street2 or '',
+                'zip': self.zip or '',
+                'city': self.city or '',
+                'empl_number': self.empl_number or '',
+                'room_number': self.room_number or '',
+
+                'xing': self.xing or '',
+
+                'state_id': self.state_id and self.state_id.name or '',
+                'country_id': self.country_id and self.country_id.name or '',
+
+                'image_1920': image_url,
+                'lang': LANG_CODE_APP.get(self.lang),
+                'resp_members': self.self.get_resp_members_data(),
+            })
+        return {'data': data}
+
+    def get_resp_members_data(self):
+        data = []
+        if self.id_code:
+            contacts = self.search([('is_company','=',False),('category_res_ids','in',self.category_res_ids.ids)])
+            if contacts:
+                for part in contacts:
+                    data.append({
+                        "id" : part.id,
+                        "name": part.name,
+                        "function": part.function
+                    })
+        return data
+
+
 
     def get_partner_profile_data(self):
         data = []
@@ -212,25 +271,61 @@ class ResPartner(models.Model):
             data.append({
                 'id': self.id,
                 'name': self.name,
-                'email': self.email,
-                'street': self.street,
-                'street2': self.street2,
-                'mobile': self.mobile,
-                'city': self.city,
+                'function': self.function or '',
+                #first slide
+                'phone': self.phone or '',
+                'fax': self.fax or '',
+                'mobile': self.mobile or '',
+                'phone2': self.phone2 or '',
+                #second slide
+
+                'email': self.email or '',
+                'linkedin' : self.linkedin or '',
+                'msteams': self.msteams or '',
+                'skype': self.skype or '',
+                #third slide
+                'street': self.street or '',
+                'street2': self.street2 or '',
+                'zip': self.zip or '',
+                'city': self.city or '',
+                'empl_number': self.empl_number or '',
+                'room_number': self.room_number or '',
+
+                'xing': self.xing or '',
+
                 'state_id': self.state_id and self.state_id.name or '',
                 'country_id': self.country_id and self.country_id.name or '',
-                'zip': self.zip,
+
                 'image_1920': image_url,
                 'change_connection': self.change_connection,
                 'lang': LANG_CODE_APP.get(self.lang),
                 #extra parameters
                 'app_basic_info' : self.app_basic_info,
                 'app_extended_info': self.app_extended_info,
-                'function': self.function,
-                'responsbility' : ",".join([x.name for x in self.category_res_ids]),
-                'org_data': self.get_all_heirarchy_data()
+                'responsbility': ",".join([x.name for x in self.category_res_ids]),
+                # 'responsbility' : [{"name": x.name, "id": x.id} for x in self.category_res_ids],
+                'org_data': self.get_all_heirarchy_data(),
+                'ext_tags': self.get_extended_tags_data(),
             })
         return {'data': data}
+
+    def get_extended_tags_data(self):
+        data = []
+        if self.ext_tag_lines:
+            for line in self.ext_tag_lines:
+
+                if data and  line.tag_type_id.name in [x['type'] for x in data]:
+                    for l in data:
+                        if line.tag_type_id.name == l['type']:
+                            l['lines'].append({"name": line.tag_id.name,"level": line.level_id.name})
+                else:
+                    data.append({
+                        "type": line.tag_type_id.name,
+                        "lines": [{"name": line.tag_id.name,"level": line.level_id.name}]
+                    })
+        _logger.info("------------------ext-tags---------%s",data)
+        return data
+
 
     def get_all_heirarchy_data(self):
 

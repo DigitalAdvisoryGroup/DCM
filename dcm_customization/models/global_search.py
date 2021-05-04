@@ -1,11 +1,42 @@
-from odoo import api, models, fields, _
+from odoo import api, models, fields, _, tools
 from ast import literal_eval
+from werkzeug.urls import url_join
+from odoo.tools.translate import html_translate
 import logging
 _logger = logging.getLogger(__name__)
 
 
+
+class GlobalSearchHistory(models.Model):
+    _name = 'global.search.history'
+    _description = 'Global Search History'
+    _rec_name = "partner_id"
+
+    partner_id = fields.Many2one("res.partner","Partner")
+    search_string = fields.Char("Search String")
+    date = fields.Datetime("Search Time", default=lambda self: fields.Datetime.now())
+    device_type = fields.Selection([("ios","Apple"),("android","Android"),('web','Web')],string="Device Type", default="web")
+
+    global_search_config_id = fields.Many2one("global.search.config", "Search Configuraiton")
+    model_id = fields.Many2one("ir.model", related="global_search_config_id.model_id", string="Model", store=True)
+    page = fields.Selection(related="global_search_config_id.page", string="Page Redirect", store=True)
+
+
+
+    def get_partner_history_data(self, partner_id=False):
+        data_list = []
+        if partner_id:
+            history_rec_id = self.search([('partner_id','=',partner_id)])
+            if history_rec_id:
+                for rec in history_rec_id:
+                    data_list.append(rec.search_string)
+        return {"search_history_data": data_list}
+
+
+
 class GlobalSearchConfig(models.Model):
     _name = 'global.search.config'
+    _inherit = ['image.mixin']
     _order = 'sequence asc'
     _description  = 'Global Search Configuration'
 
@@ -13,13 +44,15 @@ class GlobalSearchConfig(models.Model):
     name = fields.Char("Name", translate=True)
     sequence = fields.Integer(help="Used to order the note stages")
     model_id = fields.Many2one("ir.model", string="Model")
-    page = fields.Selection([('profile','Profile'),('group','Group'),('post','Post Detail')], string="Page Redirect", required=True)
+    page = fields.Selection([('profile','Profile'),('group','Group'),('post','Post Detail'),('responsbility','Responsbility')], string="Page Redirect", required=True)
     active = fields.Boolean("Active", default=True)
 
     search_fields_lines = fields.Many2many("ir.model.fields", "rel_fields_global_search", "global_search_id","field_search_id", string="Fields to be searched")
     result_fields_lines = fields.Many2many("ir.model.fields", "rel_fields_global_search_result", "global_search_result_id","field_search_result_id", string="Fields to be shown in result")
     global_search_model_real = fields.Char(compute='_compute_model', string='Recipients Real Model', default='mailing.contact', required=True)
     global_search_domain = fields.Char(string='Model clause', default=[])
+    search_description = fields.Html('Search description', translate=html_translate)
+    search_sort_order = fields.Char("Fields sort order")
 
 
     @api.depends('model_id')
@@ -28,18 +61,47 @@ class GlobalSearchConfig(models.Model):
             record.global_search_model_real = record.model_id.model or 'res.partner'
 
 
-    def get_global_search_configuration_data(self):
-        data = []
+    def get_global_search_help(self):
         recs = self.search([])
+        desc_string = ""
         if recs:
             for rec in recs:
-                data.append({
-                    "id": rec.id,
-                    "name": rec.name,
-                    "type": rec.model_id.model,
-                    "page": rec.page,
-                    "result_fields": ",".join([x.name for x in rec.result_fields_lines])
-                })
+                if rec.search_description:
+                    desc_string += tools.html_sanitize(rec.search_description)+"\n"
+        _logger.info("-------desc_string-----------%s",desc_string)
+        return {"data": desc_string}
+
+    def get_global_search_configuration_data(self, search_string, partner_id=False, device_type="web"):
+        data = []
+        if search_string:
+            recs = self.search([])
+            if recs:
+                for rec in recs:
+                    models = rec.get_models()
+                    domains = rec.get_model_domains(search_string)
+                    for model in models.keys():
+                        base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+                        image_url = url_join(base_url, '/web/myimage/global.search.config/%s/image_512' % (rec.id))
+                        data.append({
+                            "id": rec.id,
+                            "name": rec.name,
+                            "type": rec.model_id.model,
+                            "page": rec.page,
+                            # "result_fields": ",".join([x.name for x in rec.result_fields_lines]),
+                            "result_fields": rec.search_sort_order,
+                            "count": self.env[model.split('-')[0]].search_count(domains[model]),
+                            "image": image_url,
+                            "description": tools.html_sanitize(rec.search_description)
+                        })
+            history_id = self.env['global.search.history'].search([('search_string','=',search_string)])
+            if not history_id:
+                search_history_vals = {
+                    "partner_id": int(partner_id),
+                    # "global_search_config_id": self.id,
+                    "search_string": search_string,
+                    "device_type": device_type
+                }
+                self.env['global.search.history'].sudo().create(search_history_vals)
         _logger.info("----------global-data---config-------%s", data)
         return {"data": data}
 
@@ -55,7 +117,7 @@ class GlobalSearchConfig(models.Model):
         extra_domain = literal_eval(self.global_search_domain) if self.global_search_domain else []
         return {self.global_search_model_real: domain+extra_domain}
 
-    def get_records(self, data):
+    def get_records(self, data, partner_id=False, device_type="web"):
         global_data = {}
         if data:
             models = self.get_models()
@@ -70,11 +132,15 @@ class GlobalSearchConfig(models.Model):
                         'count': self.env[model.split('-')[0]].search_count(domains[model]),
                         'data': results
                     }
+            # search_history_vals = {
+            #     "partner_id": int(partner_id),
+            #     "global_search_config_id": self.id,
+            #     "search_string": data,
+            #     "device_type": device_type
+            # }
+            # self.env['global.search.history'].sudo().create(search_history_vals)
         _logger.info("----------global-data---new-------%s", global_data)
         return global_data
-
-
-
 
 
 
