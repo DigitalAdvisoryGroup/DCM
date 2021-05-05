@@ -4,6 +4,7 @@ from werkzeug.urls import url_join
 from odoo.tools.translate import html_translate
 import logging
 _logger = logging.getLogger(__name__)
+import time
 
 IMAGE_FIELDS = {
     "res.partner": "image_128",
@@ -86,7 +87,7 @@ class GlobalSearchConfig(models.Model):
                         res_count = self.env[model.split('-')[0]].search_count(domains[model])
                         if res_count > 0:
                             base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
-                            image_url = url_join(base_url, '/web/myimage/global.search.config/%s/image_512' % (rec.id))
+                            image_url = url_join(base_url, '/web/myimage/global.search.config/%s/image_512/?%s' % (rec.id,str(int(time.time() * 100000))[-15:]))
                             data.append({
                                 "id": rec.id,
                                 "name": rec.name,
@@ -137,7 +138,7 @@ class GlobalSearchConfig(models.Model):
                         base_url = self.env['ir.config_parameter'].sudo().get_param(
                             'web.base.url')
                         if IMAGE_FIELDS.get(model):
-                            image_url = url_join(base_url, '/web/myimage/%s/%s/%s/' % (model,r['id'],IMAGE_FIELDS[model]))
+                            image_url = url_join(base_url, '/web/myimage/%s/%s/%s/?%s' % (model,r['id'],IMAGE_FIELDS[model],str(int(time.time() * 100000))[-15:]))
                         else:
                             image_url = url_join(base_url, '/logo.png')
                         r.update({"image_url": image_url})
