@@ -80,19 +80,21 @@ class GlobalSearchConfig(models.Model):
                     models = rec.get_models()
                     domains = rec.get_model_domains(search_string)
                     for model in models.keys():
-                        base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
-                        image_url = url_join(base_url, '/web/myimage/global.search.config/%s/image_512' % (rec.id))
-                        data.append({
-                            "id": rec.id,
-                            "name": rec.name,
-                            "type": rec.model_id.model,
-                            "page": rec.page,
-                            # "result_fields": ",".join([x.name for x in rec.result_fields_lines]),
-                            "result_fields": rec.search_sort_order,
-                            "count": self.env[model.split('-')[0]].search_count(domains[model]),
-                            "image": image_url,
-                            "description": tools.html_sanitize(rec.search_description)
-                        })
+                        res_count = self.env[model.split('-')[0]].search_count(domains[model])
+                        if res_count > 0:
+                            base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+                            image_url = url_join(base_url, '/web/myimage/global.search.config/%s/image_512' % (rec.id))
+                            data.append({
+                                "id": rec.id,
+                                "name": rec.name,
+                                "type": rec.model_id.model,
+                                "page": rec.page,
+                                # "result_fields": ",".join([x.name for x in rec.result_fields_lines]),
+                                "result_fields": rec.search_sort_order,
+                                "count": res_count,
+                                "image": image_url,
+                                "description": tools.html_sanitize(rec.search_description)
+                            })
             history_id = self.env['global.search.history'].search([('search_string','=',search_string)])
             if not history_id:
                 search_history_vals = {
