@@ -117,7 +117,7 @@
                                     <group name="row_1_right">
 
                                         <field name="function" string="Function"/>
-                                        <field name="x_mlevel_id" string="Management level"/>
+                                        <field name="mlevel_id" string="Management level"/>
 
                                     </group>
                                 </group>

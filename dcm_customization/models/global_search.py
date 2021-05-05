@@ -5,7 +5,10 @@ from odoo.tools.translate import html_translate
 import logging
 _logger = logging.getLogger(__name__)
 
-
+IMAGE_FIELDS = {
+    "res.partner": "image_128",
+    "social.partner.group": "image_128",
+}
 
 class GlobalSearchHistory(models.Model):
     _name = 'global.search.history'
@@ -127,8 +130,17 @@ class GlobalSearchConfig(models.Model):
             _logger.info("-------models--------%s",models)
             _logger.info("-------domains---------%s",domains)
             for model in models.keys():
+                print("-------model----------",model)
                 results = self.env[model.split('-')[0]].search_read(domains[model], self.result_fields_lines.mapped("name"))
                 if results:
+                    for r in results:
+                        base_url = self.env['ir.config_parameter'].sudo().get_param(
+                            'web.base.url')
+                        if IMAGE_FIELDS.get(model):
+                            image_url = url_join(base_url, '/web/myimage/%s/%s/%s/' % (model,r['id'],IMAGE_FIELDS[model]))
+                        else:
+                            image_url = url_join(base_url, '/logo.png')
+                        r.update({"image_url": image_url})
                     global_data[model] = {
                         'header': models[model],
                         'count': self.env[model.split('-')[0]].search_count(domains[model]),
