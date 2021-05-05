@@ -84,10 +84,16 @@ class MidarVideoAttachment(http.Controller):
 
     @http.route('/midardir', type='http', auth='user', website=True, csrf=False)
     def midardir_search(self, **kw):
+        print("---------kw-------------",kw)
         data = {}
         if kw and kw.get("search"):
             data = request.env['global.search'].sudo().get_records(kw['search'])
-        return request.render("dcm_customization.midardir_search", {'search_models': data.keys(),'records': data,'search': kw.get("search")})
+        global_search_config = request.env['global.search.config'].sudo().search([])
+        print("----------global_search_config--------------",global_search_config)
+        return request.render("dcm_customization.midardir_search", {'search_models': data.keys(),'records': data,
+                                                                    'search': kw.get("search"),
+                                                                    'global_search_config': global_search_config
+                                                                    })
 
     @http.route('/midardir/contact/<model("res.partner"):partner>', type='http', auth='user', website=True, csrf=False)
     def midardir_contact(self, partner,**kw):

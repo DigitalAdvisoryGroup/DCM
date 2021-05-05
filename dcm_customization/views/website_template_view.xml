@@ -515,10 +515,19 @@
                             <input type="text" name="search" class="search-query form-control oe_search_box"
                                    placeholder="Search..." t-att-value="search"/>
                             <div class="input-group-append">
-                                <button type="submit" class="btn btn-primary oe_search_button" aria-label="Search"
-                                        title="Search">
-                                    <i class="fa fa-search"/>
-                                </button>
+                                <t t-foreach="global_search_config" t-as="gsc">
+<!--                                    <button type="submit" class="btn btn-primary oe_search_button" aria-label="Search"-->
+<!--                                            title="Search">-->
+<!--                                        <i class="fa fa-search"/>-->
+<!--                                        </button>    -->
+                                        <button type="submit"
+                                            t-att-title="gsc.name"
+                                            t-att-name="gsc.id"
+                                            t-att-string="gsc.name"
+                                            t-att-record_id="gsc.id">
+                                        </button>
+
+                                </t>
                             </div>
                         </div>
                     </form>

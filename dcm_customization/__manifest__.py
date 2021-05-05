@@ -43,6 +43,7 @@ Description
         "views/campaign.xml",
         "views/assets.xml",
         "views/website_template_view.xml",
+        "views/global_search_config_view.xml",
 
     ],
     'demo': [
