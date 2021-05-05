@@ -53,6 +53,9 @@
 
                         <group>
                             <group>
+                                <field name="lang" invisible="1"/>
+                                <field name="user_ids" invisible="1"/>
+                                <field name="active_lang_count" invisible="1"/>
                                 <field name="type" groups="base.group_no_one" attrs="{'invisible': [('is_company','=', True)], 'readonly': [('user_ids', '!=', [])]}"/>
                                 <label for="" name="address_name">
                                     <b attrs="{'invisible': [('type', '!=', 'contact')]}">Company Address</b>
@@ -94,9 +97,6 @@
                                       <button type="action" name="55" class="btn-sm btn-link mb4 fa fa-globe" aria-label="More languages" groups="base.group_system" title="More languages"/>
                                   </div>
                                 -->
-                                <field name="lang" invisible="1"/>
-                                <field name="user_ids" invisible="1"/>
-                                <field name="active_lang_count" invisible="1"/>
 
                                 <field name="category_id" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}" placeholder="Tags..."/>
                             </group>
