@@ -1,0 +1,205 @@
+$gray-base:              #000;
+$gray-lighter: lighten($gray-base, 93.5%); // #eee
+$gray-lighter-dark: #E5E5E5;
+$gray-lighter-darker: #d9d7d7;
+$odoo-main-text-color: #4c4c4c;
+$odoo-main-color-muted: #a8a8a8;
+$odoo-brand-optional: #7c7bad;
+
+//== Media queries breakpoints
+//
+//## Define the breakpoints at which your layout will change, adapting to different screen sizes.
+
+// Extra small screen / phone
+//** Deprecated `@screen-xs` as of v3.0.1
+$screen-xs:                  480px;
+//** Deprecated `@screen-xs-min` as of v3.2.0
+$screen-xs-min:              $screen-xs;
+//** Deprecated `@screen-phone` as of v3.0.1
+$screen-phone:               $screen-xs-min;
+
+// Small screen / tablet
+//** Deprecated `@screen-sm` as of v3.0.1
+$screen-sm:                  768px;
+$screen-sm-min:              $screen-sm;
+//** Deprecated `@screen-tablet` as of v3.0.1
+$screen-tablet:              $screen-sm-min;
+
+// Medium screen / desktop
+//** Deprecated `@screen-md` as of v3.0.1
+$screen-md:                  992px;
+$screen-md-min:              $screen-md;
+//** Deprecated `@screen-desktop` as of v3.0.1
+$screen-desktop:             $screen-md-min;
+
+// Large screen / wide desktop
+//** Deprecated `@screen-lg` as of v3.0.1
+$screen-lg:                  1200px;
+$screen-lg-min:              $screen-lg;
+//** Deprecated `@screen-lg-desktop` as of v3.0.1
+$screen-lg-desktop:          $screen-lg-min;
+
+$screen-xs-max:              ($screen-sm-min - 1);
+$screen-sm-max:              ($screen-md-min - 1);
+$screen-md-max:              ($screen-lg-min - 1);
+
+.o_list_label_btn{
+    cursor: pointer;
+}
+// Global Search Filter Header
+.o_list_label {
+    text-align: center;
+    font-size: 15px;
+    color: darkgray;
+    font-weight: bolder;
+    font-family: Roboto;
+    line-height: 35px;
+    padding-top: 15px;
+}
+
+.global_search_modal_header {
+    padding-top: 0px!important;
+}
+
+.o_category_header {
+    text-align: center;
+    font-size: 15px;
+    color: darkgray;
+    font-weight: bolder;
+    cursor: pointer;
+    padding: 10px;
+    min-height: 40px;
+}
+
+// Global Search Detailed View
+.o_view_detailed_search {
+    text-align: left;
+    color: darkgray;
+    font-weight: bolder;
+    cursor: pointer;
+    text-transform: uppercase;
+}
+.o_cart_products {
+    display: block;
+}
+.o_record_name {
+    font-weight: 500;
+}
+.o_hide_cart_products {
+    display: none;
+}
+.o_global_search_preview {
+    //@include o-flex-display();
+    background-color: $gray-lighter;
+    color: $odoo-main-text-color;
+    cursor: pointer;
+    overflow: hidden;
+    position: relative;
+    &:hover {
+        background-color: $gray-lighter-dark;
+        .o_channel_name {
+            color: $headings-color;
+        }
+    }
+    &:not(:last-child) {
+        border-bottom: 1px solid $gray-lighter-darker;
+    }
+    .o_mail_channel_image {
+        //@include o-flex(0, 0, auto);
+        position: relative;
+        > img {
+            //@include square(100%);
+            border-radius: 50%;
+        }
+        &.o_mail_channel_app > img {
+            border-radius: 2px;
+        }
+        .o_mail_user_status {
+            //@include o-position-absolute($bottom: 0px, $right: 0px);
+        }
+    }
+    .o_channel_info {
+        //@include o-flex(1, 1, 100%);
+        overflow: hidden;
+        .o_channel_title {
+            //@include o-flex-display();
+            .o_channel_name {
+                //@include o-flex(0, 1, auto);
+                //@include o-text-overflow();
+            }
+            .o_channel_counter {
+                //@include o-flex(1, 1, auto);
+            }
+            .o_last_message_date {
+                //@include o-flex(0, 0, auto);
+                color: $odoo-main-color-muted;
+                font-weight: 500;
+            }
+        }
+        .o_last_message_preview {
+            width: 100%;
+            max-height: 20px;
+            color: $odoo-main-color-muted;
+            //@include o-text-overflow();
+        }
+    }
+    &.o_channel_unread {
+        background-color: transparent;
+        &:hover {
+            background-color: $gray-lighter;
+        }
+        .o_channel_info {
+            .o_channel_title {
+                .o_channel_name, .o_channel_counter {
+                    font-weight: 700;
+                }
+                .o_last_message_date {
+                    color: $odoo-brand-optional;
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: $screen-xs-max) {
+    $o-mail-chatter-mobile-gap: 2%;
+    .o_global_search_preview {
+        padding: $o-mail-chatter-mobile-gap;
+
+        .o_mail_channel_image:not(img) {
+            width: $o-mail-chatter-mobile-gap*6;
+        }
+
+        .o_channel_info, .o_last_message_date {
+            margin-left: $o-mail-chatter-mobile-gap;
+        }
+
+        .o_channel_name {
+            font-size: 1.1em;
+        }
+
+        .o_last_message_date {
+            font-size: 0.9em;
+        }
+
+        .o_last_message_preview {
+            margin-top: $o-mail-chatter-mobile-gap*0.5;
+        }
+    }
+}
+
+// Global Search dropdown
+.o_global_search_systray {
+    .o_mail_navbar_global_dropdown {
+        left: auto !important;
+        right: 0 !important;
+    }
+    .dropdown-toggle {
+        &:after {
+            content: none !important;
+        }
+    }
+}
+.o_global_preview{
+    display:inline-block;
+}

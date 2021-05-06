@@ -7,6 +7,8 @@
         <field name="arch" type="xml">
             <tree>
                 <field name="name" />
+                <field name="code"/>
+                <field name="parent2_id"/>
                 <field name="partner_ids" />
             </tree>
         </field>
@@ -28,10 +30,21 @@
                         </button>
                     </div>
                     <group>
-                        <field name="name" />
+                        <field name="image_1920" widget="image" class="oe_avatar" options="{&quot;zoom&quot;: true, &quot;preview_image&quot;:&quot;image_128&quot;}"/>
+                    </group>
+                    <group>
+                        <field name="name"/>
+
+                        <field name="group_owner_id"/>
+
+
+                        <field name="code"/>
+                        <field name="parent2_id"/>
                         <field name="id" invisible="1"/>
                         <field name="parent_id" domain="[('parent_id','=',False),('id','!=',id)]"/>
-                        <field name="partner_ids" />
+                        <field name="type_id" required="1"/>
+                        <field name="is_org_unit" />
+                        <field name="partner_ids"/>
                         <field name="child_ids" invisible="1"/>
                         <field name="parent_id" invisible="1"/>
                     </group>
@@ -55,5 +68,48 @@
 
     <!-- This Menu Item must have a parent and an action -->
     <menuitem id="social_partner_group_menu_act" name="Social Groups" parent="social.menu_social_configuration" action="social_partner_group_action" sequence="20"/>
+
+    <!-- social.partner.group tree view -->
+    <record id="social_partner_group_type_view_tree" model="ir.ui.view">
+        <field name="name">social.partner.group.type.view.tree</field>
+        <field name="model">social.partner.group.type</field>
+        <field name="arch" type="xml">
+            <tree string="Social Group Type">
+                <field name="name" />
+            </tree>
+        </field>
+    </record>
+
+    <!-- social.partner.group form view -->
+    <record id="social_partner_group_type_view_form" model="ir.ui.view">
+        <field name="name">social.partner.group.type.view.form</field>
+        <field name="model">social.partner.group.type</field>
+        <field name="arch" type="xml">
+            <form string="Social Group Type">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- social.partner.group action window -->
+    <record id="social_partner_group_type_action" model="ir.actions.act_window">
+        <field name="name">Social Groups Type</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">social.partner.group.type</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+            </p><p>
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="social_partner_group_type_menu_act" name="Social Groups Type"
+              parent="social.menu_social_configuration" action="social_partner_group_type_action" sequence="30"/>
+
 </data>
 </odoo>

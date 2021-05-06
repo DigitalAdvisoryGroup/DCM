@@ -33,39 +33,86 @@ LANG_CODE_APP = {
             "ro_RO": "rm-CH"
 }
 
+class ResPartnerCategory(models.Model):
+    _inherit = 'res.partner.category'
+
+    partner_id = fields.Many2one("res.partner", "Company")
+
 class ResPartner(models.Model):
     _inherit = 'res.partner'
 
     otp_token = fields.Char("OTP Token", copy=False)
     social_group_id = fields.Many2many('social.partner.group','social_group_partner_rel','partner_id','social_group_id',string="Social Group")
+    social_group_fun_id = fields.Many2many('social.partner.group','social_group_fun_partner_rel','partner_id','social_group_id',string="Functional Social Group")
     change_connection = fields.Boolean("Change Connection")
     partner_token_lines = fields.One2many("res.partner.token","partner_id", string="Token Lines")
     is_token_available = fields.Boolean("Is Token Available?", compute="_get_token_available", store=True)
     file_name_custom = fields.Char("Filename")
-    category_id_name = fields.Char("Tags Name", compute="_set_category_name", store=True)
     category_skill_ids = fields.Many2many("res.partner.category", "rel_parnter_category_skill","skill_partner_id","skill_category_id", string="Skills")
-    category_skill_id_name = fields.Char("Skill Name", compute="_set_category_skill_ids_name", store=True)
     category_res_ids = fields.Many2many("res.partner.category", "rel_parnter_category_res","res_partner_id","res_category_id",string="Responsbilities")
+
+    category_social_id_name = fields.Char("Social Name", compute="_set_category_social_ids_name", store=True)
+    category_id_name = fields.Char("Tags Name", compute="_set_category_name", store=True)
+    category_skill_id_name = fields.Char("Skill Name", compute="_set_category_skill_ids_name", store=True)
     category_res_id_name = fields.Char("Responsbility Name", compute="_set_category_res_ids_name", store=True)
+
+    fu1_id = fields.Char("FU 1")
+    fu2_id = fields.Char("FU 2")
+    fu3_id = fields.Char("FU 3")
+    fu_key = fields.Char("Func Unit Key")
+    mlevel_id = fields.Many2one("partner.mlevel","Management level")
+
+    app_basic_info = fields.Selection([('view','View'),('edit','Edit'),('not_display','Not Display')], string="Basic Information", default="view")
+    app_extended_info = fields.Selection([('view','View'),('edit','Edit'),('not_display','Not Display')], string="Extended Information", default="view")
+    firstname = fields.Char("First Name")
+    familyname = fields.Char("Family Name")
+    id_code = fields.Char("Identification Code")
+
+
+    empl_number = fields.Char("Employee Number")
+    room_number = fields.Char("Room Number")
+    phone2 = fields.Char("Private Number")
+    linkedin = fields.Char("Linkedin Profile")
+    msteams = fields.Char("MS Teams ID")
+    fax = fields.Char("Telefax Number")
+    skype = fields.Char("Skype Number")
+    xing = fields.Char("Xing Profile")
+
+
+    ext_tag_lines = fields.One2many("partner.extended.tag.level", "partner_id", string="Extended Tags")
+
+    def update_store_fields(self):
+        for part in self:
+            part._set_category_name()
+            part._set_category_skill_ids_name()
+            part._set_category_res_ids_name()
+            part._set_category_social_ids_name()
+        return True
 
 
     @api.depends("category_id")
     def _set_category_name(self):
         for part in self:
             if part.category_id:
-                part.category_id_name = ",".join([x.name for x in part.category_id])
+                part.category_id_name = ",".join([x.name+":"+str(x.id) for x in part.category_id])
 
     @api.depends("category_skill_ids")
     def _set_category_skill_ids_name(self):
         for part in self:
             if part.category_skill_ids:
-                part.category_skill_id_name = ",".join([x.name for x in part.category_skill_ids])
+                part.category_skill_id_name = ",".join([x.name+":"+str(x.id) for x in part.category_skill_ids])
+
+    @api.depends("social_group_id")
+    def _set_category_social_ids_name(self):
+        for part in self:
+            if part.social_group_id:
+                part.category_social_id_name = ",".join([x.name+":"+str(x.id) for x in part.social_group_id])
 
     @api.depends("category_res_ids")
     def _set_category_res_ids_name(self):
         for part in self:
             if part.category_res_ids:
-                part.category_res_id_name = ",".join([x.name for x in part.category_res_ids])
+                part.category_res_id_name = ",".join([x.name+":"+str(x.id) for x in part.category_res_ids])
 
     @api.depends("partner_token_lines")
     def _get_token_available(self):
@@ -161,6 +208,58 @@ class ResPartner(models.Model):
             return True
         return False
 
+    def get_responsbility_company_data(self):
+        data = []
+        if self:
+            base_url = self.env['ir.config_parameter'].sudo().get_param(
+                'web.base.url')
+            image_url = url_join(base_url,
+                                 '/web/myimage/res.partner/%s/image_128/?%s' % (self.id, self.file_name_custom))
+            data.append({
+                "id": self.id,
+                "name": self.name,
+                'phone': self.phone or '',
+                'fax': self.fax or '',
+                'mobile': self.mobile or '',
+                'phone2': self.phone2 or '',
+
+                'email': self.email or '',
+                'linkedin': self.linkedin or '',
+                'msteams': self.msteams or '',
+                'skype': self.skype or '',
+
+                'street': self.street or '',
+                'street2': self.street2 or '',
+                'zip': self.zip or '',
+                'city': self.city or '',
+                'empl_number': self.empl_number or '',
+                'room_number': self.room_number or '',
+
+                'xing': self.xing or '',
+
+                'state_id': self.state_id and self.state_id.name or '',
+                'country_id': self.country_id and self.country_id.name or '',
+
+                'image_1920': image_url,
+                'lang': LANG_CODE_APP.get(self.lang),
+                'resp_members': self.self.get_resp_members_data(),
+            })
+        return {'data': data}
+
+    def get_resp_members_data(self):
+        data = []
+        if self.id_code:
+            contacts = self.search([('is_company','=',False),('category_res_ids','in',self.category_res_ids.ids)])
+            if contacts:
+                for part in contacts:
+                    data.append({
+                        "id" : part.id,
+                        "name": part.name,
+                        "function": part.function
+                    })
+        return data
+
+
 
     def get_partner_profile_data(self):
         data = []
@@ -172,19 +271,100 @@ class ResPartner(models.Model):
             data.append({
                 'id': self.id,
                 'name': self.name,
-                'email': self.email,
-                'street': self.street,
-                'street2': self.street2,
-                'mobile': self.mobile,
-                'city': self.city,
+                'function': self.function or '',
+                #first slide
+                'phone': self.phone or '',
+                'fax': self.fax or '',
+                'mobile': self.mobile or '',
+                'phone2': self.phone2 or '',
+                #second slide
+
+                'email': self.email or '',
+                'linkedin' : self.linkedin or '',
+                'msteams': self.msteams or '',
+                'skype': self.skype or '',
+                #third slide
+                'street': self.street or '',
+                'street2': self.street2 or '',
+                'zip': self.zip or '',
+                'city': self.city or '',
+                'empl_number': self.empl_number or '',
+                'room_number': self.room_number or '',
+
+                'xing': self.xing or '',
+
                 'state_id': self.state_id and self.state_id.name or '',
                 'country_id': self.country_id and self.country_id.name or '',
-                'zip': self.zip,
+
                 'image_1920': image_url,
                 'change_connection': self.change_connection,
-                'lang': LANG_CODE_APP.get(self.lang)
+                'lang': LANG_CODE_APP.get(self.lang),
+                #extra parameters
+                'app_basic_info' : self.app_basic_info,
+                'app_extended_info': self.app_extended_info,
+                'responsbility': ",".join([x.name for x in self.category_res_ids]),
+                # 'responsbility' : [{"name": x.name, "id": x.id} for x in self.category_res_ids],
+                'org_data': self.get_all_heirarchy_data(),
+                'ext_tags': self.get_extended_tags_data(),
             })
         return {'data': data}
+
+    def get_extended_tags_data(self):
+        data = []
+        if self.ext_tag_lines:
+            for line in self.ext_tag_lines:
+
+                if data and  line.tag_type_id.name in [x['type'] for x in data]:
+                    for l in data:
+                        if line.tag_type_id.name == l['type']:
+                            l['lines'].append({"name": line.tag_id.name,"level": line.level_id.name})
+                else:
+                    data.append({
+                        "type": line.tag_type_id.name,
+                        "lines": [{"name": line.tag_id.name,"level": line.level_id.name}]
+                    })
+        _logger.info("------------------ext-tags---------%s",data)
+        return data
+
+
+    def get_all_heirarchy_data(self):
+
+        results = self.env['social.partner.group'].sudo().read_group([('id','in',self.social_group_id.ids)], ['name'], ['type_id'])
+        results = {m['type_id'] and str(m['type_id'][1]) or 'Unknown': self.env['social.partner.group'].sudo().search_read(m['__domain'], ['type_id']) for m in results}
+        hierarchy_dict = []
+        for s_key, s_group in results.items():
+            hierarchy_data = []
+            temp_dict = {'name': s_key,'children': []}
+            for main_data in s_group:
+                hierarchy_parent_data = self.get_heirarchy_data(main_data.get('id'))
+                hierarchy_data.append(hierarchy_parent_data)
+                temp_dict['children'].append(hierarchy_parent_data)
+            hierarchy_dict.append(temp_dict)
+        _logger.info("0-------------hierarchy_parents------------%s-",hierarchy_dict)
+        return hierarchy_dict
+
+    def get_heirarchy_data(self, group_id):
+        sc_groups = self.env['social.partner.group'].sudo().browse(group_id)
+        group_data = {'id': sc_groups.id, 'name': sc_groups.name, 'children': []}
+        hierarchy_parents = self.get_parent_data(group_id, group_data)
+        return hierarchy_parents
+
+    def get_parent_data(self,group_id,group_data):
+        sc_groups = self.env['social.partner.group'].sudo().browse(group_id)
+        if sc_groups:
+            parent_sg_id = self.env['social.partner.group'].sudo().search([('code', '=', sc_groups.parent2_id)], limit=1)
+            if parent_sg_id.parent2_id:
+                if group_data:
+                    pr_group_data = {'id' : parent_sg_id.id,'name' :parent_sg_id.name,'children' : [group_data]}
+                    return self.get_parent_data(parent_sg_id.id,pr_group_data)
+                else:
+                    group_data = {'id' : parent_sg_id.id,'name' :parent_sg_id.name,'children' : []}
+                    return self.get_parent_data(parent_sg_id.id,group_data)
+            else:
+                if group_data:
+                    return {'id' : parent_sg_id.id,'name' :parent_sg_id.name,'children' : [group_data]}
+                else:
+                    return {'id' : parent_sg_id.id,'name' :parent_sg_id.name,'children' : []}
 
     def set_partner_language(self,lang_code):
         if self and LANG_CODE_ODOO.get(lang_code,False):
@@ -198,7 +378,6 @@ class ResPartner(models.Model):
             new_partner_ids = self.search([('create_date','>=',current_date)]).ids
         if new_partner_ids:
             for part in new_partner_ids:
-                _logger.info("--------part---------------%s", part)
                 post_ids = self.env['social.post'].search([('utm_campaign_id.stage_id.is_active','=',True),('state','=','posted'),('utm_campaign_id.is_public_campaign','=',True)])
                 if post_ids:
                     for post in post_ids:
@@ -272,3 +451,10 @@ class ResPartnerToken(models.Model):
                     final_list.append(i)
                     final_list.append(android_dict)
         return final_list
+
+class PartnerMlevel(models.Model):
+    _name = "partner.mlevel"
+    _description = "Mlevel"
+
+    name = fields.Char("Name")
+    code = fields.Char("Code")

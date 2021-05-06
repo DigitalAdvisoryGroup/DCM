@@ -27,10 +27,12 @@ Description
         'security/security.xml',
         "security/ir.model.access.csv",
         "data/bit_media_data.xml",
+        "data/bit_website_data.xml",
         "data/mail_template_data.xml",
         "views/social_bit_templates.xml",
         "views/social_post_views.xml",
         "views/social_stream_post_views.xml",
+        "views/partner_extended_tags_view.xml",
         "views/res_partner.xml",
         "views/res_partner_token.xml",
         "views/social_groups_view.xml",
@@ -40,6 +42,9 @@ Description
         "views/mass_mailing.xml",
         "views/campaign.xml",
         "views/assets.xml",
+        "views/website_template_view.xml",
+        "views/global_search_config_view.xml",
+
     ],
     'demo': [
     ],

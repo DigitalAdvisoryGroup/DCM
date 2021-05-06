@@ -14,7 +14,11 @@
 
     <template id="assets_frontend" inherit_id="website.assets_frontend">
         <xpath expr="." position="inside">
+        	<link rel="stylesheet" type="text/css" href="/dcm_customization/static/src/css/jqtree.css"/>
             <script type="text/javascript" src="/dcm_customization/static/src/js/portal.js"/>
+            <script type="text/javascript" src="/dcm_customization/static/src/js/website_search.js"/>
+            <script type="text/javascript" src="/dcm_customization/static/src/js/tree.jquery.js"/>
+            <script type="text/javascript" src="/dcm_customization/static/src/js/social_group_heirarchy.js"/>
         </xpath>
     </template>
 
@@ -23,6 +27,18 @@
         <xpath expr="." position="inside">
             <link rel="stylesheet" type="text/scss"
                   href="/dcm_customization/static/src/scss/social.scss"/>
+            <script type="text/javascript" src="/dcm_customization/static/src/js/dialog.js"></script>
+            <script type="text/javascript" src="/dcm_customization/static/src/js/global_search.js"></script>
+            <script type="text/javascript" src="/dcm_customization/static/src/js/menu.js"></script>
+            <script type="text/javascript" src="/dcm_customization/static/src/js/view_dialogs.js"></script>
+            <link rel="stylesheet"
+              type="text/scss"
+              href="/dcm_customization/static/src/scss/global_search.scss"/>
+            <link rel="stylesheet"
+              type="text/scss"
+              href="/dcm_customization/static/src/scss/dialog.scss"/>
+            <script type="text/javascript" src="/dcm_customization/static/src/js/social_group_org_chart.js"></script>
+            <script type="text/javascript" src="/dcm_customization/static/src/js/social_group_fun_org_chart.js"></script>
         </xpath>
 
     </template>

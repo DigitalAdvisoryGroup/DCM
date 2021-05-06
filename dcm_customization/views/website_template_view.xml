@@ -1,0 +1,630 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="midardir_cat_res_contacts" name="MidarDir Responsibility">
+        <t t-call="website.layout">
+            <div class="oe_structure"/>
+            <!--<div class="container clearfix">
+                <a t-att-href="'/midardir?search=%s'%(search)" class="btn btn-primary float-left mb32"
+                   style="position: relative; overflow: hidden;">
+                    <span class="graph-ripple"
+                          style="height: 121.717px; width: 121.717px; top: -50.8585px; left: -15.8585px;"/>
+                    Back To Search
+                </a>
+            </div>-->
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6" style="padding: 0;">
+                        <ol class="breadcrumb mt8">
+                            <li class="breadcrumb-item">
+                                <a t-att-href="'/midardir?search=%s' % (search)">
+                                    <i class="fa fa-home" role="img" aria-label="Home" title="Home"/>
+                                </a>
+                            </li>
+                            <li t-if="parent" class="breadcrumb-item">
+                                <a t-att-href="'%s' % (prevpath)">
+                                    <t t-esc="parent"/>
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item active">
+                                <t t-esc="partner_category.name"/>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <table class="table w-50" style="background-color: lightgrey;">
+                        <tbody>
+                            <tr>
+                                <td colspan="2" class="btn-primary">
+                                    <span>
+                                        <strong>
+                                            <t t-esc="partner_category.name"/>
+                                        </strong>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span>Company Details: </span>
+                                </td>
+                                <td>
+                                    <span><strong><t t-esc="partner_category.partner_id.name"/></strong><br/>
+<!--                                    <span>Company Email:<t t-esc="partner_category.partner_id.email"/></span><br/>-->
+<!--                                    <span>Company Email:<t t-esc="company_id.email"/></span><br/>-->
+                                    <div t-field="partner_category.partner_id" t-options='{"widget": "contact", "fields": ["address","email","phone"], "phone_icons": True}'/>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <td>
+                                                    <strong>Name:</strong>
+                                                </td>
+                                                <td>
+                                                    <strong>Email:</strong>
+                                                </td>
+                                            </tr>
+                                        </thead>
+                                        <t t-foreach="partners" t-as="part">
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <span>
+                                                            <a t-att-href="'/midardir/contact/%s?search=%s&amp;parent=%s' % (part.id,search,partner_category.name)">
+                                                                <t t-esc="part.name"/>
+                                                            </a>
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <span>
+                                                            <a t-att-href="'mailto:%s' % part.email">
+                                                                <t t-esc="part.email"/>
+                                                            </a>
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </t>
+                                    </table>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="midardir_social_group" name="MidarDir Social Group">
+        <t t-call="website.layout">
+            <div class="oe_structure"/>
+            <!--<div class="container clearfix">
+                <a t-att-href="'/midardir?search=%s'%(search)" class="btn btn-primary float-left mb32"
+                   style="position: relative; overflow: hidden;">
+                    <span class="graph-ripple"
+                          style="height: 121.717px; width: 121.717px; top: -50.8585px; left: -15.8585px;"/>
+                    Back To Search
+                </a>
+            </div>-->
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6" style="padding: 0;">
+                        <ol class="breadcrumb mt8">
+                            <li class="breadcrumb-item">
+                                <a t-att-href="'/midardir?search=%s' % (search)">
+                                    <i class="fa fa-home" role="img" aria-label="Home" title="Home"/>
+                                </a>
+                            </li>
+                            <li t-if="parent" class="breadcrumb-item">
+                                <a t-att-href="'%s' % (prevpath)">
+                                    <t t-esc="parent"/>
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item active">
+                                <t t-esc="record.name"/>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <table class="table w-50" style="background-color: lightgrey;">
+                        <tbody>
+                            <tr>
+                                <td colspan="2" class="btn-primary">
+                                    <span>
+                                        <strong>
+                                            <t t-esc="record.name"/>
+                                        </strong>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr class="">
+                                <td>
+                                    <strong>Code:</strong>
+                                </td>
+                                <td>
+                                    <span>
+                                        <t t-esc="record.code"/>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr class="">
+                                <td>
+                                    <strong>Parent(New) Code:</strong>
+                                </td>
+                                <td>
+                                    <span>
+                                        <t t-if="parent_sg_id != False">
+                                            <a t-att-href="'/midardir/socialgroup/%s?search=%s' % (parent_sg_id,search)">
+                                                <t t-esc="record.parent2_id"/>
+                                            </a>
+                                        </t>
+                                        <t t-if="parent_sg_id == False">
+                                            <t t-esc="record.parent2_id"/>
+                                        </t>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr class="">
+                                <td>
+                                    <strong>Total Contacts:</strong>
+                                </td>
+                                <td>
+                                    <span>
+                                        <t t-esc="record.total_count"/>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr class="">
+                                <td>
+                                    <strong>Contacts:</strong>
+                                </td>
+
+                                <td>
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <td>
+                                                    <strong>Name:</strong>
+                                                </td>
+                                                <td>
+                                                    <strong>Email:</strong>
+                                                </td>
+                                                <td>
+                                                    <strong>Responsbility:</strong>
+                                                </td>
+<!--                                                <td>-->
+<!--                                                    <strong>Skills:</strong>-->
+<!--                                                </td>-->
+                                            </tr>
+                                        </thead>
+                                        <t t-foreach="record.partner_ids" t-as="part">
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <span>
+                                                            <a t-att-href="'/midardir/contact/%s?search=%s&amp;parent=%s' % (part.id,search,record.name)">
+                                                                <t t-esc="part.name"/>
+                                                            </a>
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <span>
+                                                            <a t-att-href="'mailto:%s' % part.email">
+                                                                <t t-esc="part.email"/>
+                                                            </a>
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <span>
+                                                            <t t-if="part.category_res_id_name">
+                                                                <t t-foreach="(part.category_res_id_name).split(',')"
+                                                                   t-as="cat_res">
+                                                                    <a t-att-href="'/midardir/res/contact/%s?search=%s&amp;parent=%s' % (cat_res.split(':')[1],search,record.name)">
+                                                                        <span t-esc="cat_res.split(':')[0]"/>
+                                                                    </a>
+                                                                </t>
+                                                            </t>
+                                                        </span>
+                                                    </td>
+<!--                                                    <td>-->
+<!--                                                        <span>-->
+<!--                                                            <t t-if="part.category_skill_id_name">-->
+<!--                                                                <t t-foreach="(part.category_skill_id_name).split(',')"-->
+<!--                                                                   t-as="cat_skill">-->
+<!--                                                                    <a t-att-href="'/midardir/res/contact/%s?search=%s&amp;parent=%s' % (cat_skill.split(':')[1],search,record.name)">-->
+<!--                                                                        <span t-esc="cat_skill.split(':')[0]"/>-->
+<!--                                                                    </a>-->
+<!--                                                                </t>-->
+<!--                                                            </t>-->
+<!--                                                        </span>-->
+<!--                                                    </td>-->
+                                                </tr>
+                                            </tbody>
+                                        </t>
+                                    </table>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="midardir_contact" name="MidarDir Contact">
+        <t t-call="website.layout">
+            <div class="oe_structure">
+                <section class="s_page_header pt32 pb32" style="background-color: rgb(239, 239, 239);"
+                         data-name="Page header">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-12 s_title pt8 pb16">
+                                <h1 class="s_title_default">
+                                    <font style="font-size: 62px;">Profil</font>
+                                </h1>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section>
+                    <!--<div class="container clearfix">
+                        <a t-att-href="'/midardir?search=%s'%(search)" class="btn btn-primary float-left mb32"
+                           style="position: relative; overflow: hidden;">
+                            <span class="graph-ripple"
+                                  style="height: 121.717px; width: 121.717px; top: -50.8585px; left: -15.8585px;"/>
+                            Back To Search
+                        </a>
+                    </div>-->
+                </section>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-6" style="padding: 0;">
+                            <ol class="breadcrumb mt8">
+                                <li class="breadcrumb-item">
+                                    <a t-att-href="'/midardir?search=%s' % (search)">
+                                        <i class="fa fa-home" role="img" aria-label="Home" title="Home"/>
+                                    </a>
+                                </li>
+                                <li t-if="parent" class="breadcrumb-item">
+                                    <a t-att-href="'%s' % (prevpath)">
+                                        <t t-esc="parent"/>
+                                    </a>
+                                </li>
+                                <li class="breadcrumb-item active">
+                                    <t t-esc="record.name"/>
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+                <section class="s_text_block pt32 pb32" data-name="Text block">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-12 pt32 pb32">
+                                <p class="lead">
+                                    <br/>
+                                </p>
+                                <table class="table w-50" style="background-color: lightgrey;">
+                                    <tbody>
+                                        <tr>
+                                            <td colspan="2" class="btn-primary">
+                                                <span>
+                                                    <strong>
+                                                        <t t-esc="record.name"/>
+                                                    </strong>
+                                                </span>
+                                            </td>
+                                            <td/>
+                                            <td rowspan="3" class="text-right oe-avatar">
+                                                <img class="rounded-circle" alt="Avatar"
+                                                     t-attf-src="/web/image/res.partner/#{record.id}/image_1920/100x100"/>
+                                            </td>
+                                        </tr>
+                                        <tr class="">
+                                            <td>
+                                                <strong>Anrede:</strong>
+                                            </td>
+                                            <td>
+                                                <span>
+                                                    <t t-esc="record.title.name"/>
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <strong>Email:</strong>
+                                            </td>
+                                            <td>
+                                                <span>
+                                                    <t t-esc="record.email"/>
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <strong>Telefon:</strong>
+                                            </td>
+                                            <td>
+                                                <span>
+                                                    <t t-esc="record.phone"/>
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <strong>Mobil:</strong>
+                                            </td>
+                                            <td>
+                                                <span>
+                                                    <t t-esc="record.mobile"/>
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <strong>Dienstadresse:</strong>
+                                            </td>
+                                            <td>
+                                                <span>
+                                                    <t t-esc="record.street"/>,
+                                                    <t t-esc="record.zip"/>
+                                                    <t t-esc="record.city"/>
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <strong>Sprache:</strong>
+                                            </td>
+                                            <td>
+                                                <span>
+                                                    <t t-esc="lang_name"/>
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <br/>
+                                            </td>
+                                            <td>
+                                                <br/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <strong>Organisationseinheit 1:</strong>
+                                            </td>
+                                            <td>
+                                                <a t-att-href="'/midardir/socialgroup/%s?search=%s&amp;parent=%s' % (level_1.get('id'),search,record.name)">
+                                                    <t t-if="level_1.get('name')">
+                                                        <t t-esc="level_1['name']"/>
+                                                        (<t t-esc="level_1['code']"/>)
+                                                    </t>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <strong>Organisationseinheit 2:</strong>
+                                            </td>
+                                            <td>
+                                                <a t-att-href="'/midardir/socialgroup/%s?search=%s&amp;parent=%s' % (level_2.get('id'),search,record.name)">
+                                                    <t t-if="level_2.get('name')">
+                                                        <t t-esc="level_2['name']"/>
+                                                        (<t t-esc="level_2['code']"/>)
+                                                    </t>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <strong>Organisationseinheit 3:</strong>
+                                            </td>
+                                            <td>
+                                                <a t-att-href="'/midardir/socialgroup/%s?search=%s&amp;parent=%s' % (level_3.get('id'),search,record.name)">
+                                                    <t t-if="level_3.get('name')">
+                                                        <t t-esc="level_3['name']"/>
+                                                        (<t t-esc="level_3['code']"/>)
+                                                    </t>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <br/>
+                                            </td>
+                                            <td>
+                                                <br/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <strong>Funktion:</strong>
+                                            </td>
+                                            <td>
+                                                <span>
+                                                    <t t-esc="record.function"/>
+                                                </span>
+                                            </td>
+                                        </tr>
+<!--                                        <tr>-->
+<!--                                            <td>-->
+<!--                                                <strong>Fachliche Kompetenzen:</strong>-->
+<!--                                            </td>-->
+<!--                                            <td>-->
+<!--                                                <span>-->
+<!--                                                    <t t-if="record.category_skill_id_name">-->
+<!--                                                        <t t-foreach="record['category_skill_id_name'].split(',')"-->
+<!--                                                           t-as="cat_skill">-->
+<!--                                                            <a t-att-href="'/midardir/res/contact/%s?search=%s&amp;parent=%s' % (cat_skill.split(':')[1],search,record.name)">-->
+<!--                                                                ,-->
+<!--                                                                <span t-esc="cat_skill.split(':')[0]"/>-->
+<!--                                                            </a>-->
+<!--                                                        </t>-->
+<!--                                                    </t>-->
+<!--                                                </span>-->
+<!--                                            </td>-->
+<!--                                        </tr>-->
+                                        <tr>
+                                            <td>
+                                                <strong>Zuständigkeiten:</strong>
+                                            </td>
+                                            <td>
+                                                <span>
+                                                    <t t-if="record.category_res_id_name">
+                                                        <t t-foreach="record['category_res_id_name'].split(',')"
+                                                           t-as="cat_res">
+                                                            <a t-att-href="'/midardir/res/contact/%s?search=%s&amp;parent=%s' % (cat_res.split(':')[1],search,record.name)">
+                                                                <span t-esc="cat_res.split(':')[0]"/>
+                                                            </a>
+                                                        </t>
+                                                    </t>
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <p class="lead">
+                                    <br/>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </t>
+    </template>
+
+    <template id="midardir_search" name="MidarDir">
+        <t t-call="website.layout">
+            <div class="oe_structure"/>
+            <div class="container">
+                <div class="row">
+                    <t t-set="additional_title">MidarDir</t>
+                    <form t-att-action="'/midardir'" method="get">
+                        <div t-attf-class="input-group #{_classes}" role="search">
+                            <input type="text" name="search" class="search-query form-control oe_search_box"
+                                   placeholder="Search..." t-att-value="search"/>
+                            <div class="input-group-append">
+                                <t t-foreach="global_search_config" t-as="gsc">
+<!--                                    <button type="submit" class="btn btn-primary oe_search_button" aria-label="Search"-->
+<!--                                            title="Search">-->
+<!--                                        <i class="fa fa-search"/>-->
+<!--                                        </button>    -->
+                                        <button type="submit"
+                                            t-att-title="gsc.name"
+                                            t-att-name="gsc.id"
+                                            t-att-string="gsc.name"
+                                            t-att-record_id="gsc.id">
+                                        </button>
+
+                                </t>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <br/>
+            <t t-call="dcm_customization.midardir_search_result"/>
+            <div class="oe_structure"/>
+        </t>
+    </template>
+
+    <template id="midardir_search_result" name="MidarDir Result">
+        <t t-set="additional_title">MidarDir Result</t>
+        <div class="container">
+            <div class="row " t-att-data-res_model="model">
+                <t t-if="search != None and records == {}">
+                    <li class="text-center">
+                        <span><strong>No results found.</strong></span>
+                    </li>
+                </t>
+                <t t-foreach="search_models" t-as="model">
+                    <div class="col-md-6 pb16 res-mode-cls" id="res-mode-cls">
+                        <t t-if="model != 'social.partner.group'">
+                            <div t-att-data-res_model="model" t-att-data-count="records[model]['count']"
+                                 t-att-data-res_header="records[model]['header']">
+                                <strong>
+                                    <t t-esc="records[model]['header']"/>
+                                    (<t t-esc="records[model]['count']"/>)
+                                </strong>
+                                <t t-set="is_display_more" t-value="records[model]['count']"/>
+                            </div>
+                        </t>
+                        <t t-set="record_display" t-value="1"></t>
+                        <t t-foreach="records[model]['data']" t-as="record">
+                            <t t-set="record_display" t-value="record_display+1"/>
+                            <t t-if="model == 'company'" t-set="model" t-value="'res.partner'"/>
+                            <div t-att-class="'pl-2 d-none' if record_display > 11 else 'pl-2 d-block'"
+                                 t-att-data-res_model="model" t-att-data-res_header="records[model]['header']"
+                            >
+                                <span class="o_record_name"
+                                      t-att-data-res_category="record.get('display_name')">
+                                    <t t-if="'display_name' in record and 'name' not in record and model not in ('social.partner.group','res.partner.category')"
+                                       t-esc="record['display_name']"/>
+                                    <t t-if="'display_name' in record and 'name' not in record and model == 'res.partner.category'">
+                                        <a t-att-href="'/midardir/res/contact/%s?search=%s' % (record['id'],search)">
+                                            <span t-esc="record['display_name']"/>
+                                        </a>
+                                    </t>
+<!--                                       t-esc="record['display_name']"/>-->
+                                    <t t-if="'name' in record">
+                                        <a t-att-href="'/midardir/contact/%s?search=%s' % (record.get('id'),search)">
+                                            <t t-esc="record['name']"/>
+                                        </a>
+                                        <t t-if="record['category_res_id_name'] and search.lower() in record['category_res_id_name'].lower()">
+                                            ,
+                                            <t t-foreach="record['category_res_id_name'].split(',')" t-as="cat_res">
+                                                <t t-if="search.lower() in cat_res.lower()">
+                                                    <a t-att-href="'/midardir/res/contact/%s?search=%s' % (cat_res.split(':')[1],search)">
+                                                        <span t-esc="cat_res.split(':')[0]"/>
+                                                    </a>
+                                                </t>
+                                            </t>
+                                        </t>
+<!--                                        <t t-if="record['category_skill_id_name'] and search.lower() in record['category_skill_id_name'].lower()">-->
+<!--                                            ,-->
+<!--                                            <t t-foreach="record['category_skill_id_name'].split(',')" t-as="cat_skill">-->
+<!--                                                <t t-if="search.lower() in cat_skill.lower()">-->
+<!--                                                    <a t-att-href="'/midardir/res/contact/%s?search=%s' % (cat_skill.split(':')[1],search)">-->
+<!--                                                        <span t-esc="cat_skill.split(':')[0]"/>-->
+<!--                                                    </a>-->
+<!--                                                </t>-->
+<!--                                            </t>-->
+<!--                                        </t>-->
+                                        <t t-if="record['category_social_id_name']">,
+                                            <a t-att-href="'/midardir/socialgroup/%s?search=%s' % (record['category_social_id_name'].split(':')[1],search)">
+                                                <t t-esc="record['category_social_id_name'].split(':')[0]"/>
+                                            </a>
+                                        </t>
+                                    </t>
+                                    <t t-if="model == 'social.partner.group'">
+                                    	<div class="social_group_hierarchy">
+                                    	</div>
+                                   </t>
+                                </span>
+                            </div>
+                        </t>
+
+                        <t t-if="is_display_more > 10">
+                            <div class="pl-2 show-more">
+                                <a href="#">Show more</a>
+                            </div>
+                        </t>
+                    </div>
+                </t>
+            </div>
+        </div>
+    </template>
+
+
+</odoo>
