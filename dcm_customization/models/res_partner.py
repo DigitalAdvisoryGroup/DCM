@@ -2,6 +2,7 @@
 # Part of Odoo Module Developed by Candidroot Solutions Pvt. Ltd.
 # See LICENSE file for full copyright and licensing details.
 import json
+import time
 
 from pyfcm import FCMNotification
 from odoo import models, fields, api
@@ -252,10 +253,14 @@ class ResPartner(models.Model):
             contacts = self.search([('is_company','=',False),('category_res_ids','in',self.category_res_ids.ids)])
             if contacts:
                 for part in contacts:
+                    base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+                    image_url = url_join(base_url,
+                                         '/web/myimage/res.partner/%s/image_128/?%s' % (part.id, part.file_name_custom))
                     data.append({
                         "id" : part.id,
                         "name": part.name,
-                        "function": part.function
+                        "function": part.function,
+                        "image_url": image_url
                     })
         return data
 
@@ -304,10 +309,30 @@ class ResPartner(models.Model):
                 'app_extended_info': self.app_extended_info,
                 'responsbility': ",".join([x.name for x in self.category_res_ids]),
                 # 'responsbility' : [{"name": x.name, "id": x.id} for x in self.category_res_ids],
-                'org_data': self.get_all_heirarchy_data(),
+                # 'org_data': self.get_all_heirarchy_data(),
+                'org_data': self.get_group_data(),
                 'ext_tags': self.get_extended_tags_data(),
             })
         return {'data': data}
+
+    def get_last_data(self, group):
+        parent_sg_id = self.env['social.partner.group'].sudo().search([('code', '=', group.parent2_id)], limit=1)
+        if parent_sg_id.parent2_id:
+            return self.get_last_data(parent_sg_id)
+        return parent_sg_id
+
+    def get_group_data(self):
+        final_data = []
+        for group in self.social_group_id:
+            parent_sg_id = self.get_last_data(group)
+            final_data.append({
+                "name": group.type_id and group.type_id.name or '',
+                "root_group": parent_sg_id.name,
+                "current_group": group.name,
+                "id": group.id
+            })
+        _logger.info("0-------------group--profile--data------------%s",final_data)
+        return final_data
 
     def get_extended_tags_data(self):
         data = []
@@ -327,44 +352,44 @@ class ResPartner(models.Model):
         return data
 
 
-    def get_all_heirarchy_data(self):
-
-        results = self.env['social.partner.group'].sudo().read_group([('id','in',self.social_group_id.ids)], ['name'], ['type_id'])
-        results = {m['type_id'] and str(m['type_id'][1]) or 'Unknown': self.env['social.partner.group'].sudo().search_read(m['__domain'], ['type_id']) for m in results}
-        hierarchy_dict = []
-        for s_key, s_group in results.items():
-            hierarchy_data = []
-            temp_dict = {'name': s_key,'children': []}
-            for main_data in s_group:
-                hierarchy_parent_data = self.get_heirarchy_data(main_data.get('id'))
-                hierarchy_data.append(hierarchy_parent_data)
-                temp_dict['children'].append(hierarchy_parent_data)
-            hierarchy_dict.append(temp_dict)
-        _logger.info("0-------------hierarchy_parents------------%s-",hierarchy_dict)
-        return hierarchy_dict
-
-    def get_heirarchy_data(self, group_id):
-        sc_groups = self.env['social.partner.group'].sudo().browse(group_id)
-        group_data = {'id': sc_groups.id, 'name': sc_groups.name, 'children': []}
-        hierarchy_parents = self.get_parent_data(group_id, group_data)
-        return hierarchy_parents
-
-    def get_parent_data(self,group_id,group_data):
-        sc_groups = self.env['social.partner.group'].sudo().browse(group_id)
-        if sc_groups:
-            parent_sg_id = self.env['social.partner.group'].sudo().search([('code', '=', sc_groups.parent2_id)], limit=1)
-            if parent_sg_id.parent2_id:
-                if group_data:
-                    pr_group_data = {'id' : parent_sg_id.id,'name' :parent_sg_id.name,'children' : [group_data]}
-                    return self.get_parent_data(parent_sg_id.id,pr_group_data)
-                else:
-                    group_data = {'id' : parent_sg_id.id,'name' :parent_sg_id.name,'children' : []}
-                    return self.get_parent_data(parent_sg_id.id,group_data)
-            else:
-                if group_data:
-                    return {'id' : parent_sg_id.id,'name' :parent_sg_id.name,'children' : [group_data]}
-                else:
-                    return {'id' : parent_sg_id.id,'name' :parent_sg_id.name,'children' : []}
+    # def get_all_heirarchy_data(self):
+    #
+    #     results = self.env['social.partner.group'].sudo().read_group([('id','in',self.social_group_id.ids)], ['name'], ['type_id'])
+    #     results = {m['type_id'] and str(m['type_id'][1]) or 'Unknown': self.env['social.partner.group'].sudo().search_read(m['__domain'], ['type_id']) for m in results}
+    #     hierarchy_dict = []
+    #     for s_key, s_group in results.items():
+    #         hierarchy_data = []
+    #         temp_dict = {'name': s_key,'children': []}
+    #         for main_data in s_group:
+    #             hierarchy_parent_data = self.get_heirarchy_data(main_data.get('id'))
+    #             hierarchy_data.append(hierarchy_parent_data)
+    #             temp_dict['children'].append(hierarchy_parent_data)
+    #         hierarchy_dict.append(temp_dict)
+    #     _logger.info("0-------------hierarchy_parents------------%s-",hierarchy_dict)
+    #     return hierarchy_dict
+    #
+    # def get_heirarchy_data(self, group_id):
+    #     sc_groups = self.env['social.partner.group'].sudo().browse(group_id)
+    #     group_data = {'id': sc_groups.id, 'name': sc_groups.name, 'children': []}
+    #     hierarchy_parents = self.get_parent_data(group_id, group_data)
+    #     return hierarchy_parents
+    #
+    # def get_parent_data(self,group_id,group_data):
+    #     sc_groups = self.env['social.partner.group'].sudo().browse(group_id)
+    #     if sc_groups:
+    #         parent_sg_id = self.env['social.partner.group'].sudo().search([('code', '=', sc_groups.parent2_id)], limit=1)
+    #         if parent_sg_id.parent2_id:
+    #             if group_data:
+    #                 pr_group_data = {'id' : parent_sg_id.id,'name' :parent_sg_id.name,'children' : [group_data]}
+    #                 return self.get_parent_data(parent_sg_id.id,pr_group_data)
+    #             else:
+    #                 group_data = {'id' : parent_sg_id.id,'name' :parent_sg_id.name,'children' : []}
+    #                 return self.get_parent_data(parent_sg_id.id,group_data)
+    #         else:
+    #             if group_data:
+    #                 return {'id' : parent_sg_id.id,'name' :parent_sg_id.name,'children' : [group_data]}
+    #             else:
+    #                 return {'id' : parent_sg_id.id,'name' :parent_sg_id.name,'children' : []}
 
     def set_partner_language(self,lang_code):
         if self and LANG_CODE_ODOO.get(lang_code,False):
