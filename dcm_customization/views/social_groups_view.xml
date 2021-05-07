@@ -76,6 +76,7 @@
         <field name="arch" type="xml">
             <tree string="Social Group Type">
                 <field name="name" />
+                <field name="is_org_unit" />
             </tree>
         </field>
     </record>
@@ -89,6 +90,7 @@
                 <sheet>
                     <group>
                         <field name="name"/>
+                        <field name="is_org_unit"/>
                     </group>
                 </sheet>
             </form>

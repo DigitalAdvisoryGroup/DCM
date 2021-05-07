@@ -165,8 +165,9 @@ class MidarVideoAttachment(http.Controller):
 
     def get_parent_data(self,group_id,group_data,search):
         sc_groups = request.env['social.partner.group'].sudo().browse(group_id)
+        print("--------sc_groups.name---------",sc_groups.name)
         if sc_groups:
-            parent_sg_id = request.env['social.partner.group'].sudo().search([('code', '=', sc_groups.parent2_id)], limit=1)
+            parent_sg_id = request.env['social.partner.group'].sudo().search([('is_org_unit','=',True),('code', '=', sc_groups.parent2_id)], limit=1)
             if parent_sg_id.parent2_id:
                 if group_data:
                     pr_group_data = {'id' : parent_sg_id.id,'label' :'<a href="/midardir/socialgroup/%d?search=%s">%s</a>' %(parent_sg_id.id,search,parent_sg_id.name),'children' : [group_data]}
@@ -179,7 +180,8 @@ class MidarVideoAttachment(http.Controller):
                     return {'id' : parent_sg_id.id,'label' :'<a href="/midardir/socialgroup/%d?search=%s">%s</a>' %(parent_sg_id.id,search,parent_sg_id.name),'children' : [group_data]}
                 else:
                     return {'id' : parent_sg_id.id,'label' :'<a href="/midardir/socialgroup/%d?search=%s">%s</a>' %(parent_sg_id.id,search,parent_sg_id.name),'children' : []}
-        
+
+
     def get_children_data(self,group_id,group_data,search):
         sc_groups = request.env['social.partner.group'].sudo().browse(group_id)
         
@@ -203,6 +205,8 @@ class MidarVideoAttachment(http.Controller):
     
     def get_heirarchy_data(self,group_id,search):
         sc_groups = request.env['social.partner.group'].sudo().browse(group_id)
+        if not sc_groups.parent2_id:
+            return {'id' : sc_groups.id,'label' :'<b><a href="/midardir/socialgroup/%d?search=%s" style="font-size:larger;">%s</a></b>' %(sc_groups.id,search,sc_groups.name),'children' : []}
         group_data = {'id' : sc_groups.id,'label' :'<b><a href="/midardir/socialgroup/%d?search=%s" style="font-size:larger;">%s</a></b>' %(sc_groups.id,search,sc_groups.name),'children' : []}
         
         # hierarchy_children = self.get_children_data(group_id,group_data,search)
@@ -226,6 +230,7 @@ class MidarVideoAttachment(http.Controller):
                                 hierarchy_parent_data = self.get_heirarchy_data(main_data.get('id'),kw['search_query'])
                                 hierarchy_data.append(hierarchy_parent_data)
                             hierarchy_dict.update({s_key : hierarchy_data})   
+            print("--------hierarchy_dict-----------iframe--",hierarchy_dict)
             return hierarchy_dict
         
 class PortalAccount(CustomerPortal):

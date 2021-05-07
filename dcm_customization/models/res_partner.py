@@ -166,7 +166,7 @@ class ResPartner(models.Model):
 
     def set_otp_partner(self):
         self.ensure_one()
-        if self.email == "hello@digitaladvisorygroup.io":
+        if self.email in ("hello@digitaladvisorygroup.io","hello@dag.io"):
             self.otp_token = "966718"
             return True
         digits = "0123456789"

@@ -15,6 +15,7 @@ class SocialPartnerGroupsType(models.Model):
     _rec_name = "name"
 
     name = fields.Char("Name", required=True,translate=True)
+    is_org_unit = fields.Boolean(string="Org Unit Flag")
     # type = fields.Selection([('normal', 'Normal'), ('functional', 'Functional')], string="Type", default="normal")
 
 
@@ -41,7 +42,7 @@ class SocialPartnerGroups(models.Model):
     child_total_count = fields.Integer("Child Subscribers",compute="compute_total_count")
 
     group_owner_id = fields.Many2one("res.partner", string="Group Owner")
-    is_org_unit = fields.Boolean("Org Unit Flag")
+    is_org_unit = fields.Boolean(related="type_id.is_org_unit", string="Org Unit Flag", store=True)
     # oe1_id = fields.Char("OE 1")
     # oe2_id = fields.Char("OE 2")
     # oe3_id = fields.Char("OE 3")
