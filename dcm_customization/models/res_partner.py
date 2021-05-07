@@ -316,7 +316,9 @@ class ResPartner(models.Model):
         return {'data': data}
 
     def get_last_data(self, group):
-        parent_sg_id = self.env['social.partner.group'].sudo().search([('code', '=', group.parent2_id)], limit=1)
+        # if not group.parent2_id:
+        #     return group
+        parent_sg_id = self.env['social.partner.group'].sudo().search([('is_org_unit','=',True),('code', '=', group.parent2_id)], limit=1)
         if parent_sg_id.parent2_id:
             return self.get_last_data(parent_sg_id)
         return parent_sg_id
@@ -324,10 +326,12 @@ class ResPartner(models.Model):
     def get_group_data(self):
         final_data = []
         for group in self.social_group_id:
-            parent_sg_id = self.get_last_data(group)
+            parent_sg_id = False
+            if group.parent2_id:
+                parent_sg_id = self.get_last_data(group)
             final_data.append({
                 "name": group.type_id and group.type_id.name or '',
-                "root_group": parent_sg_id.name,
+                "root_group": parent_sg_id and parent_sg_id.name or '',
                 "current_group": group.name,
                 "id": group.id
             })

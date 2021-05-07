@@ -109,6 +109,8 @@ class SocialPartnerGroups(models.Model):
 
     def get_heirarchy_data(self, group_id):
         sc_groups = self.env['social.partner.group'].sudo().browse(group_id)
+        if not sc_groups.parent2_id:
+            return {'id': sc_groups.id, 'name': sc_groups.name, 'children': []}
         group_data = {'id': sc_groups.id, 'name': sc_groups.name, 'children': []}
         hierarchy_parents = self.get_parent_data(group_id, group_data)
         return hierarchy_parents
@@ -116,7 +118,7 @@ class SocialPartnerGroups(models.Model):
     def get_parent_data(self,group_id,group_data):
         sc_groups = self.env['social.partner.group'].sudo().browse(group_id)
         if sc_groups:
-            parent_sg_id = self.env['social.partner.group'].sudo().search([('code', '=', sc_groups.parent2_id)], limit=1)
+            parent_sg_id = self.env['social.partner.group'].sudo().search([('is_org_unit','=',True),('code', '=', sc_groups.parent2_id)], limit=1)
             if parent_sg_id.parent2_id:
                 if group_data:
                     pr_group_data = {'id' : parent_sg_id.id,'name' :parent_sg_id.name,'children' : [group_data]}
