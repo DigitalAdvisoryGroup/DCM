@@ -99,7 +99,7 @@ class GlobalSearchConfig(models.Model):
                                 "image": image_url,
                                 "description": tools.html_sanitize(rec.search_description)
                             })
-            history_id = self.env['global.search.history'].search([('search_string','=',search_string)])
+            history_id = self.env['global.search.history'].search([('search_string','=',search_string),('partner_id','=',int(partner_id))])
             if not history_id:
                 search_history_vals = {
                     "partner_id": int(partner_id),
