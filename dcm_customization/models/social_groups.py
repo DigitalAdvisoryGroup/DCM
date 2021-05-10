@@ -5,6 +5,8 @@
 from odoo import models, fields, api
 from odoo.modules.module import get_module_resource
 import base64
+from werkzeug.urls import url_join
+import time
 import logging
 _logger = logging.getLogger(__name__)
 
@@ -75,14 +77,21 @@ class SocialPartnerGroups(models.Model):
             record.total_count = len(set(partner_ids+record.partner_ids.ids))
 
 
-    def get_social_group_details(self):
+    def get_social_group_details(self, config_id=False):
         self.ensure_one()
         data = []
         if self:
+            base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
             data.append({
+                "group_image": url_join(base_url, '/web/myimage/global.search.config/%s/image_512/?%s' % (config_id, str(int(time.time() * 100000))[-15:])),
                 "name": self.name,
                 "group_owner_name": self.group_owner_id and self.group_owner_id.name or '',
                 "group_owner_id": self.group_owner_id and self.group_owner_id.id or '',
+                "group_owner_function": self.group_owner_id and self.group_owner_id.function or '',
+                "group_owner_mlevel": self.group_owner_id and self.group_owner_id.mlevel_id and self.group_owner_id.mlevel_id.name or '',
+                "group_owner_id": self.group_owner_id and self.group_owner_id.id or '',
+                "group_owner_image_url": self.group_owner_id and url_join(base_url,
+                                 '/web/myimage/res.partner/%s/image_128/?%s' % (self.group_owner_id.id, self.group_owner_id.file_name_custom)) or '',
                 "total_count": len(self.partner_ids),
                 "code": self.code,
                 "members": [{"id": x.id,"name": x.name,"function": x.function} for x in self.partner_ids],

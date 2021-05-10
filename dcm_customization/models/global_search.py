@@ -5,10 +5,11 @@ from odoo.tools.translate import html_translate
 import logging
 _logger = logging.getLogger(__name__)
 import time
+from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
 
 IMAGE_FIELDS = {
     "res.partner": "image_128",
-    "social.partner.group": "image_128",
+    # "social.partner.group": "image_128",
 }
 
 class GlobalSearchHistory(models.Model):
@@ -139,8 +140,22 @@ class GlobalSearchConfig(models.Model):
                             'web.base.url')
                         if IMAGE_FIELDS.get(model):
                             image_url = url_join(base_url, '/web/myimage/%s/%s/%s/?%s' % (model,r['id'],IMAGE_FIELDS[model],str(int(time.time() * 100000))[-15:]))
+                        elif model == "social.post":
+                            post = self.env['social.post'].search(r['id'])
+                            image_url = url_join(base_url,'/web/image/utm.campaign/%s/image_128/%s'%(post.utm_campaign_id.id,post.utm_campaign_id.file_name))
+                            r.update({
+                                'name': post.utm_campaign_id.name or '',
+                                'date': post.published_date.strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                                'total_like_count': len(post.like_ids),
+                                'total_dislike_count': len(post.dislike_ids),
+                                'total_comment_count': len(post.comments_ids),
+                                'total_share_count': len(post.share_ids),
+                            })
                         else:
-                            image_url = url_join(base_url, '/logo.png')
+                            image_url = url_join(base_url, '/web/myimage/global.search.config/%s/image_512/?%s' % (self.id, str(int(time.time() * 100000))[-15:]))
+                        # else:
+                        #     image_url = url_join(base_url, '/logo.png')
+
                         r.update({"image_url": image_url})
                     global_data[model] = {
                         'header': models[model],
