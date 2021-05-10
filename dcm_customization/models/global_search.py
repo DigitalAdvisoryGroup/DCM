@@ -141,7 +141,7 @@ class GlobalSearchConfig(models.Model):
                         if IMAGE_FIELDS.get(model):
                             image_url = url_join(base_url, '/web/myimage/%s/%s/%s/?%s' % (model,r['id'],IMAGE_FIELDS[model],str(int(time.time() * 100000))[-15:]))
                         elif model == "social.post":
-                            post = self.env['social.post'].search(r['id'])
+                            post = self.env['social.post'].search([("id","=",r['id'])])
                             image_url = url_join(base_url,'/web/image/utm.campaign/%s/image_128/%s'%(post.utm_campaign_id.id,post.utm_campaign_id.file_name))
                             r.update({
                                 'name': post.utm_campaign_id.name or '',
