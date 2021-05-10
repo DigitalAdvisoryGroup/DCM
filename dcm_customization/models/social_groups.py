@@ -5,6 +5,8 @@
 from odoo import models, fields, api
 from odoo.modules.module import get_module_resource
 import base64
+from werkzeug.urls import url_join
+import time
 import logging
 _logger = logging.getLogger(__name__)
 
@@ -15,6 +17,7 @@ class SocialPartnerGroupsType(models.Model):
     _rec_name = "name"
 
     name = fields.Char("Name", required=True,translate=True)
+    is_org_unit = fields.Boolean(string="Org Unit Flag")
     # type = fields.Selection([('normal', 'Normal'), ('functional', 'Functional')], string="Type", default="normal")
 
 
@@ -41,7 +44,7 @@ class SocialPartnerGroups(models.Model):
     child_total_count = fields.Integer("Child Subscribers",compute="compute_total_count")
 
     group_owner_id = fields.Many2one("res.partner", string="Group Owner")
-    is_org_unit = fields.Boolean("Org Unit Flag")
+    is_org_unit = fields.Boolean(related="type_id.is_org_unit", string="Org Unit Flag", store=True)
     # oe1_id = fields.Char("OE 1")
     # oe2_id = fields.Char("OE 2")
     # oe3_id = fields.Char("OE 3")
@@ -74,14 +77,21 @@ class SocialPartnerGroups(models.Model):
             record.total_count = len(set(partner_ids+record.partner_ids.ids))
 
 
-    def get_social_group_details(self):
+    def get_social_group_details(self, config_id=False):
         self.ensure_one()
         data = []
         if self:
+            base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
             data.append({
+                "group_image": url_join(base_url, '/web/myimage/global.search.config/%s/image_512/?%s' % (config_id, str(int(time.time() * 100000))[-15:])),
                 "name": self.name,
                 "group_owner_name": self.group_owner_id and self.group_owner_id.name or '',
                 "group_owner_id": self.group_owner_id and self.group_owner_id.id or '',
+                "group_owner_function": self.group_owner_id and self.group_owner_id.function or '',
+                "group_owner_mlevel": self.group_owner_id and self.group_owner_id.mlevel_id and self.group_owner_id.mlevel_id.name or '',
+                "group_owner_id": self.group_owner_id and self.group_owner_id.id or '',
+                "group_owner_image_url": self.group_owner_id and url_join(base_url,
+                                 '/web/myimage/res.partner/%s/image_128/?%s' % (self.group_owner_id.id, self.group_owner_id.file_name_custom)) or '',
                 "total_count": len(self.partner_ids),
                 "code": self.code,
                 "members": [{"id": x.id,"name": x.name,"function": x.function} for x in self.partner_ids],
@@ -108,6 +118,8 @@ class SocialPartnerGroups(models.Model):
 
     def get_heirarchy_data(self, group_id):
         sc_groups = self.env['social.partner.group'].sudo().browse(group_id)
+        if not sc_groups.parent2_id:
+            return {'id': sc_groups.id, 'name': sc_groups.name, 'children': []}
         group_data = {'id': sc_groups.id, 'name': sc_groups.name, 'children': []}
         hierarchy_parents = self.get_parent_data(group_id, group_data)
         return hierarchy_parents
@@ -115,7 +127,7 @@ class SocialPartnerGroups(models.Model):
     def get_parent_data(self,group_id,group_data):
         sc_groups = self.env['social.partner.group'].sudo().browse(group_id)
         if sc_groups:
-            parent_sg_id = self.env['social.partner.group'].sudo().search([('code', '=', sc_groups.parent2_id)], limit=1)
+            parent_sg_id = self.env['social.partner.group'].sudo().search([('is_org_unit','=',True),('code', '=', sc_groups.parent2_id)], limit=1)
             if parent_sg_id.parent2_id:
                 if group_data:
                     pr_group_data = {'id' : parent_sg_id.id,'name' :parent_sg_id.name,'children' : [group_data]}
