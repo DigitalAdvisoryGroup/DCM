@@ -86,8 +86,10 @@ class MidarVideoAttachment(http.Controller):
     def midardir_search(self, **kw):
         print("---------kw-------------",kw)
         print("---------company------------",request.env.company.iframe_acess_token)
-        if kw.get("token") and request.env.company.iframe_acess_token != kw.get("token"):
+        if 'search' not in kw and request.env.company.iframe_acess_token != kw.get("token"):
             return request.render("http_routing.403", {})
+        # if (not kw.get("search") and not kw.get("token")) or :
+
         data = {}
         if kw and kw.get("search"):
             data = request.env['global.search.config'].sudo().get_global_search_configuration_data(kw['search'])
