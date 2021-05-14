@@ -127,6 +127,7 @@ class GlobalSearchConfig(models.Model):
 
     def get_records(self, data, partner_id=False, device_type="web"):
         global_data = {}
+        self = self.sudo()
         if data:
             models = self.get_models()
             domains = self.get_model_domains(data)
@@ -134,7 +135,7 @@ class GlobalSearchConfig(models.Model):
             _logger.info("-------domains---------%s",domains)
             for model in models.keys():
                 print("-------model----------",model)
-                results = self.env[model.split('-')[0]].search_read(domains[model], self.result_fields_lines.mapped("name"))
+                results = self.env[model.split('-')[0]].sudo().search_read(domains[model], self.result_fields_lines.mapped("name"))
                 if results:
                     for r in results:
                         base_url = self.env['ir.config_parameter'].sudo().get_param(
@@ -142,7 +143,7 @@ class GlobalSearchConfig(models.Model):
                         if IMAGE_FIELDS.get(model):
                             image_url = url_join(base_url, '/web/myimage/%s/%s/%s/?%s' % (model,r['id'],IMAGE_FIELDS[model],str(int(time.time() * 100000))[-15:]))
                         elif model == "social.post":
-                            post = self.env['social.post'].search([("id","=",r['id'])])
+                            post = self.env['social.post'].sudo().search([("id","=",r['id'])])
                             image_url = url_join(base_url,'/web/image/utm.campaign/%s/image_128/%s'%(post.utm_campaign_id.id,post.utm_campaign_id.file_name))
                             r.update({
                                 'name': post.utm_campaign_id.name or '',

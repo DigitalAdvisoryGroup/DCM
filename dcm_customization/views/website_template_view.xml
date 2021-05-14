@@ -558,9 +558,9 @@
                 </div>
                 
                 <br/>
-	    		<div class="row">
+	    		<div class="row" style="width: 30%;">
 	    			<t t-foreach="records.get('data')" t-as="record">
-	    				<div class="col-6 midardir_social_group_menu">
+	    				<div class="col-12 midardir_social_group_menu">
 	    					<a t-att-href="'/midardir/result?search=%s&amp;config=%s'%(search,record.get('id'))">
 	    						<img t-att-src="record.get('image')" class="img img-fluid midardir-img rounded-circle"/>
     							<span t-esc="record.get('count')"/> <span t-esc="record.get('name')"/> found
@@ -592,9 +592,9 @@
                     </form>
                 </div>
                 <br/>
-	    		<div class="row">
+	    		<div class="row" style="width: 30%;">
 	    			<t t-foreach="records.get('data')" t-as="record">
-	    				<div t-att-class="'col-5 mr-1 mb-2 midardir_social_group_menu active' if current_config == record.get('id') else 'col-5 mr-1 mb-2 midardir_social_group_menu'">
+	    				<div t-att-class="'col-12 mr-1 mb-2 midardir_social_group_menu active' if current_config == record.get('id') else 'col-12 mr-1 mb-2 midardir_social_group_menu'">
 	    					<a t-att-href="'/midardir/result?search=%s&amp;config=%s'%(search,record.get('id'))">
 	    						<img t-att-src="record.get('image')" class="img img-fluid midardir-img rounded-circle"/>
     							<span t-esc="record.get('count')"/> <span t-esc="record.get('name')"/> found
@@ -608,7 +608,28 @@
 	    				<t t-set="r_keys" t-value="result_fields.split(',')"/>
 	    				<div class="list-group" style="width:100%;">
 	    				<t t-foreach="results.get(model).get('data')" t-as="result">
-	   						<a href="#" class="row list-group-item list-group-item-action" style="display:flex;">
+	    					<t t-set="redirect_url" t-value="'#'"/>
+	    					<t t-set="r_label_count" t-value="0"/>
+	    					<t t-set="r_label" t-value="0"/>
+							<t t-foreach="r_keys" t-as="key">
+								<t t-if="r_label_count == 0">
+									<t t-set="r_label" t-value="result.get(key)"/>
+								</t>
+								<t t-set="r_label_count" t-value="r_label_count+1"/>
+							</t>
+	    					
+	    					<t t-if="page == 'profile'">
+	    						<t t-set="redirect_url" t-value="'/midardir/contact/%s?parent=%s&amp;search=%s'%(result.get('id'),r_label,search)"/>
+	    					</t>
+	    					
+	    					<t t-if="page == 'group'">
+	    						<t t-set="redirect_url" t-value="'/midardir/socialgroup/%s?parent=%s&amp;search=%s'%(result.get('id'),r_label,search)"/>
+	    					</t>
+	    					
+	    					<t t-if="page == 'responsibility'">
+	    						<t t-set="redirect_url" t-value="'/midardir/res/contact/%s?parent=%s&amp;search=%s'%(result.get('id'),r_label,search)"/>
+	    					</t>
+	   						<a t-att-href="redirect_url" class="row list-group-item list-group-item-action" style="display:flex;">
 	   							<div class="col-2">
 	   								<img t-att-src="result.get('image_url')" class="img img-fluid rounded-circle" style="width:5rem;"/>
   								</div>
