@@ -109,6 +109,7 @@ class GlobalSearchConfig(models.Model):
                     "device_type": device_type
                 }
                 self.env['global.search.history'].sudo().create(search_history_vals)
+        data = sorted(data, key = lambda i: i['count'],reverse=True)
         _logger.info("----------global-data---config-------%s", data)
         return {"data": data}
 

@@ -536,6 +536,103 @@
             <div class="oe_structure"/>
         </t>
     </template>
+    
+    <template id="midardir_search_main_menu" name="Midardir Social Groups">
+    	<t t-call="website.layout">
+    		<div class="oe_structure"/>
+            <div class="container">
+                <div class="row">
+                    <t t-set="additional_title">MidarDir</t>
+                    <form t-att-action="'/midardir'" method="get">
+                        <div t-attf-class="input-group #{_classes}" role="search">
+                            <input type="text" name="search" class="search-query form-control oe_search_box"
+                                   placeholder="Search..." t-att-value="search"/>
+                            <div class="input-group-append">
+                                    <button type="submit" class="btn btn-primary oe_search_button" aria-label="Search"
+                                            title="Search">
+                                        <i class="fa fa-search"/>
+                                        </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                
+                <br/>
+	    		<div class="row">
+	    			<t t-foreach="records.get('data')" t-as="record">
+	    				<div class="col-6 midardir_social_group_menu">
+	    					<a t-att-href="'/midardir/result?search=%s&amp;config=%s'%(search,record.get('id'))">
+	    						<img t-att-src="record.get('image')" class="img img-fluid midardir-img rounded-circle"/>
+    							<span t-esc="record.get('count')"/> <span t-esc="record.get('name')"/> found
+	    					</a>
+	    				</div>
+	    			</t>
+	    		</div>
+            </div>
+    	</t>
+    </template>
+    
+    <template id="midardir_search_menu_result" name="MidarDir Global Search Result">
+    	<t t-call="website.layout">
+    		<div class="oe_structure"/>
+            <div class="container">
+                <div class="row">
+                    <t t-set="additional_title">MidarDir</t>
+                    <form t-att-action="'/midardir'" method="get">
+                        <div t-attf-class="input-group #{_classes}" role="search">
+                            <input type="text" name="search" class="search-query form-control oe_search_box"
+                                   placeholder="Search..." t-att-value="search"/>
+                            <div class="input-group-append">
+                                    <button type="submit" class="btn btn-primary oe_search_button" aria-label="Search"
+                                            title="Search">
+                                        <i class="fa fa-search"/>
+                                        </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <br/>
+	    		<div class="row">
+	    			<t t-foreach="records.get('data')" t-as="record">
+	    				<div t-att-class="'col-5 mr-1 mb-2 midardir_social_group_menu active' if current_config == record.get('id') else 'col-5 mr-1 mb-2 midardir_social_group_menu'">
+	    					<a t-att-href="'/midardir/result?search=%s&amp;config=%s'%(search,record.get('id'))">
+	    						<img t-att-src="record.get('image')" class="img img-fluid midardir-img rounded-circle"/>
+    							<span t-esc="record.get('count')"/> <span t-esc="record.get('name')"/> found
+	    					</a>
+	    				</div>
+	    			</t>
+	    		</div>
+	    		<br/>
+	    		<div class="row" style="height:50vh;overflow:auto;">
+	    			<t t-if="result_fields">
+	    				<t t-set="r_keys" t-value="result_fields.split(',')"/>
+	    				<div class="list-group" style="width:100%;">
+	    				<t t-foreach="results.get(model).get('data')" t-as="result">
+	   						<a href="#" class="row list-group-item list-group-item-action" style="display:flex;">
+	   							<div class="col-2">
+	   								<img t-att-src="result.get('image_url')" class="img img-fluid rounded-circle" style="width:5rem;"/>
+  								</div>
+  								<div class="col-10">
+  									<t t-set="r_count" t-value="0"/>
+	  								<t t-foreach="r_keys" t-as="key">
+	  									<t t-if="r_count == 0">
+	  										<b><span t-esc="result.get(key)"/></b>
+	  									</t>
+	  									<t t-else="">
+	  										<span t-esc="result.get(key)"/>
+	  									</t>
+	  									<br/>
+	  									<t t-set="r_count" t-value="r_count+1"/>
+	  								</t>
+  								</div>
+	   						</a>
+   						</t>
+   						</div>
+	    			</t>
+	    		</div>
+            </div>
+    	</t>
+    </template>
 
     <template id="midardir_search_result" name="MidarDir Result">
         <t t-set="additional_title">MidarDir Result</t>

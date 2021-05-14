@@ -1,0 +1,27 @@
+.midardir_social_group_menu {
+	border : 1px solid white !important;
+	color : white !important;
+	background-color : $primary;
+	height: 3rem;
+    font-size: large;
+    line-height: 3rem;
+}
+.midardir_social_group_menu a{
+	color : white !important;
+}
+.midardir-img{
+	height : 3rem;
+	width : 3rem;
+}
+
+.midardir_social_group_menu.active {
+	border : 1px solid $primary !important;
+	color : $primary !important;
+	background-color : white;
+	height: 3rem;
+    font-size: large;
+    line-height: 3rem;
+}
+.midardir_social_group_menu.active a{
+	color : $primary !important;
+}

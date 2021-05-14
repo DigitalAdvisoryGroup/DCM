@@ -87,12 +87,45 @@ class MidarVideoAttachment(http.Controller):
         print("---------kw-------------",kw)
         data = {}
         if kw and kw.get("search"):
-            data = request.env['global.search'].sudo().get_records(kw['search'])
-        global_search_config = request.env['global.search.config'].sudo().search([])
-        print("----------global_search_config--------------",global_search_config)
-        return request.render("dcm_customization.midardir_search", {'search_models': data.keys(),'records': data,
+            # data = request.env['global.search'].sudo().get_records(kw['search'])
+            data = request.env['global.search.config'].sudo().get_global_search_configuration_data(kw['search'])
+            
+        # global_search_config = request.env['global.search.config'].sudo().search([])
+        print("----------global_search_config------------\n\n\n\n\--",data)
+        return request.render("dcm_customization.midardir_search_main_menu", {'search_models': data.keys(),'records': data,
                                                                     'search': kw.get("search"),
-                                                                    'global_search_config': global_search_config
+                                                                    # 'global_search_config': global_search_config
+                                                                    })
+        
+    @http.route('/midardir/result', type='http', auth='user', website=True, csrf=False)
+    def midardir_search_result(self, **kw):
+        print("---------kw-------------",kw)
+        data = {}
+        data_result = False
+        result_fields = False
+        model = False
+        if kw and kw.get("search"):
+            # data = request.env['global.search'].sudo().get_records(kw['search'])
+            data = request.env['global.search.config'].sudo().get_global_search_configuration_data(kw['search'])
+            
+        if kw and kw.get('config') and kw.get("search"):
+            global_search_config_id = request.env['global.search.config'].sudo().browse(int(kw.get('config')))
+            if global_search_config_id:
+                data_result = global_search_config_id.get_records(kw.get("search"))
+                result_fields = global_search_config_id.search_sort_order
+                model = global_search_config_id.model_id.model
+                page = global_search_config_id.page
+
+        # global_search_config = request.env['global.search.config'].sudo().search([])
+        print("----------global_search_config------------\n\n\n\n\--",data_result)
+        return request.render("dcm_customization.midardir_search_menu_result", {'search_models': data.keys(),'records': data,
+                                                                    'search': kw.get("search"),
+                                                                    'results' : data_result,
+                                                                    'current_config' : int(kw.get('config')),
+                                                                    'result_fields' : result_fields,
+                                                                    'model' : model,
+                                                                    'page': page,
+                                                                    # 'global_search_config': global_search_config
                                                                     })
 
     @http.route('/midardir/contact/<model("res.partner"):partner>', type='http', auth='user', website=True, csrf=False)

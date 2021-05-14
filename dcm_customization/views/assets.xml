@@ -15,6 +15,8 @@
     <template id="assets_frontend" inherit_id="website.assets_frontend">
         <xpath expr="." position="inside">
         	<link rel="stylesheet" type="text/css" href="/dcm_customization/static/src/css/jqtree.css"/>
+            <link rel="stylesheet" type="text/scss"
+                  href="/dcm_customization/static/src/scss/midardir.scss"/>
             <script type="text/javascript" src="/dcm_customization/static/src/js/portal.js"/>
             <script type="text/javascript" src="/dcm_customization/static/src/js/website_search.js"/>
             <script type="text/javascript" src="/dcm_customization/static/src/js/tree.jquery.js"/>

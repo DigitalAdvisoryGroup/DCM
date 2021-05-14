@@ -94,7 +94,8 @@ class SocialPartnerGroups(models.Model):
                                  '/web/myimage/res.partner/%s/image_128/?%s' % (self.group_owner_id.id, self.group_owner_id.file_name_custom)) or '',
                 "total_count": len(self.partner_ids),
                 "code": self.code,
-                "members": [{"id": x.id,"name": x.name,"function": x.function} for x in self.partner_ids],
+                "members": [{"image_url": url_join(base_url,
+                                 '/web/myimage/res.partner/%s/image_128/?%s' % (x.id, x.file_name_custom)),"id": x.id,"name": x.name,"function": x.function} for x in self.partner_ids],
                 "org_data": self.get_all_heirarchy_data()
             })
         _logger.info("----------social---data-----------%s",data)
