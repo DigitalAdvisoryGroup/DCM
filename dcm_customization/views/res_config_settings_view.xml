@@ -43,6 +43,21 @@
                         </div>
                     </div>
                 </div>
+                <h2>Iframe Access Token</h2>
+                <div class="row mt16 o_settings_container" id="iframe">
+                    <div class="col-xs-12 col-md-6">
+                        <div class="o_setting_right_pane">
+                            <label for="iframe_acess_token"/>
+                            <field name="iframe_acess_token" readonly="0" />
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-md-6">
+                        <div class="o_setting_right_pane">
+                            <label for="iframe_url"/>
+                            <field name="iframe_url" readonly="1" force_save="1"/>
+                        </div>
+                    </div>
+                </div>
             </xpath>
 
         </field>

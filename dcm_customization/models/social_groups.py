@@ -13,9 +13,16 @@ _logger = logging.getLogger(__name__)
 
 class SocialPartnerGroupsType(models.Model):
     _name = 'social.partner.group.type'
+    _inherit = ['image.mixin']
     _description = "Social Groups Type"
     _rec_name = "name"
 
+    @api.model
+    def _default_image(self):
+        image_path = get_module_resource('dcm_customization', 'static/src/img', 'bit.png')
+        return base64.b64encode(open(image_path, 'rb').read())
+
+    image_1920 = fields.Image(default=_default_image)
     name = fields.Char("Name", required=True,translate=True)
     is_org_unit = fields.Boolean(string="Org Unit Flag")
     # type = fields.Selection([('normal', 'Normal'), ('functional', 'Functional')], string="Type", default="normal")
@@ -77,13 +84,13 @@ class SocialPartnerGroups(models.Model):
             record.total_count = len(set(partner_ids+record.partner_ids.ids))
 
 
-    def get_social_group_details(self, config_id=False):
+    def get_social_group_details(self):
         self.ensure_one()
         data = []
         if self:
             base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
             data.append({
-                "group_image": url_join(base_url, '/web/myimage/global.search.config/%s/image_512/?%s' % (config_id, str(int(time.time() * 100000))[-15:])),
+                "group_image": url_join(base_url, '/web/myimage/social.partner.group.type/%s/image_512/?%s' % (self.type_id.id, str(int(time.time() * 100000))[-15:])),
                 "name": self.name,
                 "group_owner_name": self.group_owner_id and self.group_owner_id.name or '',
                 "group_owner_id": self.group_owner_id and self.group_owner_id.id or '',
@@ -94,7 +101,8 @@ class SocialPartnerGroups(models.Model):
                                  '/web/myimage/res.partner/%s/image_128/?%s' % (self.group_owner_id.id, self.group_owner_id.file_name_custom)) or '',
                 "total_count": len(self.partner_ids),
                 "code": self.code,
-                "members": [{"id": x.id,"name": x.name,"function": x.function} for x in self.partner_ids],
+                "members": [{"image_url": url_join(base_url,
+                                 '/web/myimage/res.partner/%s/image_128/?%s' % (x.id, x.file_name_custom)),"id": x.id,"name": x.name,"function": x.function} for x in self.partner_ids],
                 "org_data": self.get_all_heirarchy_data()
             })
         _logger.info("----------social---data-----------%s",data)

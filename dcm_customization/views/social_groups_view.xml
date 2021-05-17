@@ -88,6 +88,7 @@
         <field name="arch" type="xml">
             <form string="Social Group Type">
                 <sheet>
+                    <field name="image_1920" widget="image" class="oe_avatar" options="{&quot;zoom&quot;: true, &quot;preview_image&quot;:&quot;image_128&quot;}"/>
                     <group>
                         <field name="name"/>
                         <field name="is_org_unit"/>
