@@ -12,6 +12,24 @@ IMAGE_FIELDS = {
     # "social.partner.group": "image_128",
 }
 
+
+def string_before(value, a):
+    # Find first part and return slice before it.
+    pos_a = value.find(a)
+    if pos_a == -1: return ""
+    return value[0:pos_a]
+
+def string_after(value, a):
+    # Find and validate first part.
+    pos_a = value.rfind(a)
+    if pos_a == -1: return ""
+    # Returns chars after the found string.
+    adjusted_pos_a = pos_a + len(a)
+    if adjusted_pos_a >= len(value): return ""
+    return value[adjusted_pos_a:]
+
+
+
 class GlobalSearchHistory(models.Model):
     _name = 'global.search.history'
     _description = 'Global Search History'
@@ -30,12 +48,20 @@ class GlobalSearchHistory(models.Model):
 
     def get_partner_history_data(self, partner_id=False):
         data_list = []
+        data_new_list = []
         if partner_id:
             history_rec_id = self.search([('partner_id','=',partner_id)])
             if history_rec_id:
+                data_list = [x.search_string for x in history_rec_id]
+                data_new_list = [{'id': x.id,'name': x.search_string} for x in history_rec_id]
                 for rec in history_rec_id:
                     data_list.append(rec.search_string)
-        return {"search_history_data": data_list}
+        return {"search_history_data": data_list,"new_history_data": data_new_list}
+
+    def delete_parnter_history_data(self):
+        if self:
+            self.unlink()
+        return True
 
 
 
@@ -145,7 +171,10 @@ class GlobalSearchConfig(models.Model):
                         elif model == "social.post":
                             post = self.env['social.post'].sudo().search([("id","=",r['id'])])
                             image_url = url_join(base_url,'/web/image/utm.campaign/%s/image_128/%s'%(post.utm_campaign_id.id,post.utm_campaign_id.file_name))
+                            before_msg = string_before(r['message'],data)[-40:]
+                            after_msg = string_after(r['message'],data)[-40:]
                             r.update({
+                                'message': before_msg+data+after_msg,
                                 'name': post.utm_campaign_id.name or '',
                                 'date': post.published_date.strftime(DEFAULT_SERVER_DATETIME_FORMAT),
                                 'total_like_count': len(post.like_ids),
