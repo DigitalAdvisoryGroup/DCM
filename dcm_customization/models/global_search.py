@@ -54,8 +54,8 @@ class GlobalSearchHistory(models.Model):
             if history_rec_id:
                 data_list = [x.search_string for x in history_rec_id]
                 data_new_list = [{'id': x.id,'name': x.search_string} for x in history_rec_id]
-                for rec in history_rec_id:
-                    data_list.append(rec.search_string)
+                # for rec in history_rec_id:
+                #     data_list.append(rec.search_string)
         return {"search_history_data": data_list,"new_history_data": data_new_list}
 
     def delete_parnter_history_data(self):

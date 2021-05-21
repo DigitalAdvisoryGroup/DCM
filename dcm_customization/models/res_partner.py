@@ -311,6 +311,7 @@ class ResPartner(models.Model):
                 # 'responsbility' : [{"name": x.name, "id": x.id} for x in self.category_res_ids],
                 # 'org_data': self.get_all_heirarchy_data(),
                 'org_data': self.get_group_data(),
+                'org_data_latest': self.get_group_data_latest(),
                 'ext_tags': self.get_extended_tags_data(),
             })
         return {'data': data}
@@ -336,6 +337,33 @@ class ResPartner(models.Model):
                 "id": group.id
             })
         _logger.info("0-------------group--profile--data------------%s",final_data)
+        return final_data
+
+    def get_group_data_latest(self):
+        final_data = []
+        for group in self.social_group_id:
+            parent_sg_id = False
+            if group.parent2_id:
+                parent_sg_id = self.get_last_data(group)
+            if final_data and group.type_id and group.type_id.name in [x['name'] for x in final_data]:
+                for l in final_data:
+                    if l['name'] == group.type_id.name:
+                        l['data'].append({
+                        "root_group": parent_sg_id and parent_sg_id.name or '',
+                        "current_group": group.name,
+                        "id": group.id
+                    })
+            else:
+                final_data.append({
+                    "name": group.type_id and group.type_id.name or '',
+                    "data": [{
+                        "root_group": parent_sg_id and parent_sg_id.name or '',
+                        "current_group": group.name,
+                        "id": group.id
+                    }]
+
+                })
+        _logger.info("0-------------group--profile--data---latest---------%s",final_data)
         return final_data
 
     def get_extended_tags_data(self):
