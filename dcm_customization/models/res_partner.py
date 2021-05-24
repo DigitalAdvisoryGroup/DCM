@@ -78,6 +78,8 @@ class ResPartner(models.Model):
     fax = fields.Char("Telefax Number")
     skype = fields.Char("Skype Number")
     xing = fields.Char("Xing Profile")
+    manager_id = fields.Many2one("res.partner","Manager")
+    name_switched = fields.Char("Switched Name (Family First)")
 
 
     ext_tag_lines = fields.One2many("partner.extended.tag.level", "partner_id", string="Extended Tags")
@@ -264,6 +266,23 @@ class ResPartner(models.Model):
                     })
         return data
 
+    def get_resp_contact_data(self):
+        final_list = []
+        if self.category_res_ids:
+            for cat in self.category_res_ids:
+                contact = self.search([('is_company', '=', True), ('id_code', '=', cat.name)],limit=1)
+                if contact:
+                    base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+                    image_url = url_join(base_url,
+                                         '/web/myimage/res.partner/%s/image_128/?%s' % (contact.id, contact.file_name_custom))
+                    final_list.append({
+                        "image_url": image_url,
+                        "name": contact.name,
+                        "id": contact.id
+                    })
+        return final_list
+
+
 
 
     def get_partner_profile_data(self):
@@ -307,12 +326,13 @@ class ResPartner(models.Model):
                 #extra parameters
                 'app_basic_info' : self.app_basic_info,
                 'app_extended_info': self.app_extended_info,
-                'responsbility': ",".join([x.name for x in self.category_res_ids]),
-                # 'responsbility' : [{"name": x.name, "id": x.id} for x in self.category_res_ids],
+                # 'responsbility': ",".join([x.name for x in self.category_res_ids]),
+                'responsbility' : self.self.get_resp_contact_data(),
                 # 'org_data': self.get_all_heirarchy_data(),
                 'org_data': self.get_group_data(),
                 'org_data_latest': self.get_group_data_latest(),
                 'ext_tags': self.get_extended_tags_data(),
+                'is_mobile_user': self.is_token_available
             })
         return {'data': data}
 

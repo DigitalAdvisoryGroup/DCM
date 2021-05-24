@@ -6,7 +6,7 @@
     'name': "DCM - Customization",
     'version': '1.0',
     'summary': """
-        Odoo customizations for JustThis project requirements (http://www.xplain.ch/wp/produkte/justthis/)
+        Odoo customizations for Midar
     """,
     'description': """
 

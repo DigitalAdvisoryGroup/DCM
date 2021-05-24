@@ -342,6 +342,7 @@
                             <div id="o_employee_right">
                                 <group string="Line Organisation" name="row_1_left">
                                     <field name="function" string="Function"/>
+                                    <field name="manager_id" />
                                     <field name="mlevel_id" string="Management level"/>
                                 </group>
                                 <h4 class="o_org_chart_title mb16 mt0">Chart</h4>
