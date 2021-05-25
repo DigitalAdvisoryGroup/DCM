@@ -103,10 +103,24 @@ class SocialPartnerGroups(models.Model):
                 "code": self.code,
                 "members": [{"image_url": url_join(base_url,
                                  '/web/myimage/res.partner/%s/image_128/?%s' % (x.id, x.file_name_custom)),"id": x.id,"name": x.name,"function": x.function} for x in self.partner_ids],
-                "org_data": self.get_all_heirarchy_data()
+                "org_data": self.get_all_heirarchy_data(),
+                "org_data_latest": self.get_all_heirarchy_data_latest()
             })
         _logger.info("----------social---data-----------%s",data)
         return {"data": data}
+
+    def get_all_heirarchy_data_latest(self):
+        data = self.get_all_heirarchy_data()
+        output = [{'name': data[0]['name'],'id': 0}]
+        in_pass = data[0]['children']
+        def add_child(in_pass, output):
+            output.append({'id': in_pass['id'], 'name': in_pass['name']})
+            if in_pass['children']:
+                add_child(in_pass['children'][0], output)
+            else:
+                return output
+        add_child(in_pass[0], output)
+        return output
 
     def get_all_heirarchy_data(self):
 

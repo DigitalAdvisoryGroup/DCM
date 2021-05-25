@@ -252,7 +252,7 @@ class ResPartner(models.Model):
     def get_resp_members_data(self):
         data = []
         if self.id_code:
-            contacts = self.search([('is_company','=',False),('category_res_ids','in',self.category_res_ids.ids)])
+            contacts = self.search([('is_company','=',False),('category_res_ids.name','=',self.id_code)])
             if contacts:
                 for part in contacts:
                     base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
@@ -264,6 +264,7 @@ class ResPartner(models.Model):
                         "function": part.function,
                         "image_url": image_url
                     })
+        print("--------data---------asdasd-----------",data)
         return data
 
     def get_resp_contact_data(self):
