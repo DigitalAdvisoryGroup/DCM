@@ -2,7 +2,7 @@
 <odoo>
 
     <template id="midardir_cat_res_contacts" name="MidarDir Responsibility">
-        <t t-call="website.layout">
+        <t t-call="dcm_customization.midardir_layout">
             <div class="oe_structure"/>
             <!--<div class="container clearfix">
                 <a t-att-href="'/midardir?search=%s'%(search)" class="btn btn-primary float-left mb32"
@@ -102,7 +102,7 @@
     </template>
 
     <template id="midardir_social_group" name="MidarDir Social Group">
-        <t t-call="website.layout">
+        <t t-call="dcm_customization.midardir_layout">
             <div class="oe_structure"/>
             <!--<div class="container clearfix">
                 <a t-att-href="'/midardir?search=%s'%(search)" class="btn btn-primary float-left mb32"
@@ -261,7 +261,7 @@
     </template>
 
     <template id="midardir_contact" name="MidarDir Contact">
-        <t t-call="website.layout">
+        <t t-call="dcm_customization.midardir_layout">
             <div class="oe_structure">
                 <section class="s_page_header pt32 pb32" style="background-color: rgb(239, 239, 239);"
                          data-name="Page header">
@@ -506,7 +506,7 @@
 
 
     <template id="midardir_post" name="MidarDir Post">
-        <t t-call="website.layout">
+        <t t-call="dcm_customization.midardir_layout">
             <div class="oe_structure"/>
             <div class="container">
                 <div class="row">
@@ -610,41 +610,14 @@
         </t>
     </template>
 
-    <!--<template id="midardir_search" name="MidarDir">
-        <t t-call="website.layout">
-            <div class="oe_structure"/>
-            <div class="container">
-                <div class="row">
-                    <t t-set="additional_title">MidarDir</t>
-                    <form t-att-action="'/midardir'" method="get">
-                        <div t-attf-class="input-group #{_classes}" role="search">
-                            <input type="text" name="search" class="search-query form-control oe_search_box"
-                                   placeholder="Search..." t-att-value="search"/>
-                            <div class="input-group-append">
-                                    <button type="submit" class="btn btn-primary oe_search_button" aria-label="Search"
-                                            title="Search">
-                                        <i class="fa fa-search"/>
-                                        </button>
-&lt;!&ndash;                                        <button type="submit"&ndash;&gt;
-&lt;!&ndash;                                            t-att-title="gsc.name"&ndash;&gt;
-&lt;!&ndash;                                            t-att-name="gsc.id"&ndash;&gt;
-&lt;!&ndash;                                            t-att-string="gsc.name"&ndash;&gt;
-&lt;!&ndash;                                            t-att-record_id="gsc.id">&ndash;&gt;
-&lt;!&ndash;                                        </button>&ndash;&gt;
-                            </div>
 
-                        </div>
-                    </form>
-                </div>
-            </div>
-            <br/>
-            <t t-call="dcm_customization.midardir_search_result"/>
-            <div class="oe_structure"/>
-        </t>
-    </template>-->
+    <template id="midardir_layout" inherit_id="website.layout" name="Midardir Layout" primary="True">
+        <xpath expr="//div[@id='top_menu_collapse']" position="replace">
+        </xpath>
+    </template>
     
     <template id="midardir_search_main_menu" name="Midardir Social Groups">
-    	<t t-call="website.layout">
+    	<t t-call="dcm_customization.midardir_layout">
     		<div class="oe_structure"/>
             <div class="container">
                 <div class="row">
@@ -701,7 +674,7 @@
     </template>
     
     <template id="midardir_search_menu_result" name="MidarDir Global Search Result">
-    	<t t-call="website.layout">
+    	<t t-call="dcm_customization.midardir_layout">
     		<div class="oe_structure"/>
             <div class="container">
                 <div class="row">
@@ -785,93 +758,5 @@
             </div>
     	</t>
     </template>
-
-    <!--<template id="midardir_search_result" name="MidarDir Result">
-        <t t-set="additional_title">MidarDir Result</t>
-        <div class="container">
-            <div class="row " t-att-data-res_model="model">
-                <t t-if="search != None and records == {}">
-                    <li class="text-center">
-                        <span><strong>No results found.</strong></span>
-                    </li>
-                </t>
-                <t t-foreach="search_models" t-as="model">
-                    <div class="col-md-6 pb16 res-mode-cls" id="res-mode-cls">
-                        <t t-if="model != 'social.partner.group'">
-                            <div t-att-data-res_model="model" t-att-data-count="records[model]['count']"
-                                 t-att-data-res_header="records[model]['header']">
-                                <strong>
-                                    <t t-esc="records[model]['header']"/>
-                                    (<t t-esc="records[model]['count']"/>)
-                                </strong>
-                                <t t-set="is_display_more" t-value="records[model]['count']"/>
-                            </div>
-                        </t>
-                        <t t-set="record_display" t-value="1"></t>
-                        <t t-foreach="records[model]['data']" t-as="record">
-                            <t t-set="record_display" t-value="record_display+1"/>
-                            <t t-if="model == 'company'" t-set="model" t-value="'res.partner'"/>
-                            <div t-att-class="'pl-2 d-none' if record_display > 11 else 'pl-2 d-block'"
-                                 t-att-data-res_model="model" t-att-data-res_header="records[model]['header']"
-                            >
-                                <span class="o_record_name"
-                                      t-att-data-res_category="record.get('display_name')">
-                                    <t t-if="'display_name' in record and 'name' not in record and model not in ('social.partner.group','res.partner.category')"
-                                       t-esc="record['display_name']"/>
-                                    <t t-if="'display_name' in record and 'name' not in record and model == 'res.partner.category'">
-                                        <a t-att-href="'/midardir/res/contact/%s?search=%s' % (record['id'],search)">
-                                            <span t-esc="record['display_name']"/>
-                                        </a>
-                                    </t>
-&lt;!&ndash;                                       t-esc="record['display_name']"/>&ndash;&gt;
-                                    <t t-if="'name' in record">
-                                        <a t-att-href="'/midardir/contact/%s?search=%s' % (record.get('id'),search)">
-                                            <t t-esc="record['name']"/>
-                                        </a>
-                                        <t t-if="record['category_res_id_name'] and search.lower() in record['category_res_id_name'].lower()">
-                                            ,
-                                            <t t-foreach="record['category_res_id_name'].split(',')" t-as="cat_res">
-                                                <t t-if="search.lower() in cat_res.lower()">
-                                                    <a t-att-href="'/midardir/res/contact/%s?search=%s' % (cat_res.split(':')[1],search)">
-                                                        <span t-esc="cat_res.split(':')[0]"/>
-                                                    </a>
-                                                </t>
-                                            </t>
-                                        </t>
-&lt;!&ndash;                                        <t t-if="record['category_skill_id_name'] and search.lower() in record['category_skill_id_name'].lower()">&ndash;&gt;
-&lt;!&ndash;                                            ,&ndash;&gt;
-&lt;!&ndash;                                            <t t-foreach="record['category_skill_id_name'].split(',')" t-as="cat_skill">&ndash;&gt;
-&lt;!&ndash;                                                <t t-if="search.lower() in cat_skill.lower()">&ndash;&gt;
-&lt;!&ndash;                                                    <a t-att-href="'/midardir/res/contact/%s?search=%s' % (cat_skill.split(':')[1],search)">&ndash;&gt;
-&lt;!&ndash;                                                        <span t-esc="cat_skill.split(':')[0]"/>&ndash;&gt;
-&lt;!&ndash;                                                    </a>&ndash;&gt;
-&lt;!&ndash;                                                </t>&ndash;&gt;
-&lt;!&ndash;                                            </t>&ndash;&gt;
-&lt;!&ndash;                                        </t>&ndash;&gt;
-                                        <t t-if="record['category_social_id_name']">,
-                                            <a t-att-href="'/midardir/socialgroup/%s?search=%s' % (record['category_social_id_name'].split(':')[1],search)">
-                                                <t t-esc="record['category_social_id_name'].split(':')[0]"/>
-                                            </a>
-                                        </t>
-                                    </t>
-                                    <t t-if="model == 'social.partner.group'">
-                                    	<div class="social_group_hierarchy">
-                                    	</div>
-                                   </t>
-                                </span>
-                            </div>
-                        </t>
-
-                        <t t-if="is_display_more > 10">
-                            <div class="pl-2 show-more">
-                                <a href="#">Show more</a>
-                            </div>
-                        </t>
-                    </div>
-                </t>
-            </div>
-        </div>
-    </template>-->
-
 
 </odoo>
