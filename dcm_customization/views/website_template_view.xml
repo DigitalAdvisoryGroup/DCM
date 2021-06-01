@@ -735,6 +735,7 @@
 	    			<t t-if="result_fields">
 	    				<t t-set="r_keys" t-value="result_fields.split(',')"/>
 	    				<div class="list-group" style="width:100%;">
+                            <span><t t-esc="results.get(model).get('header')"/></span>
 	    				<t t-foreach="results.get(model).get('data')" t-as="result">
 	    					<t t-set="redirect_url" t-value="'#'"/>
 	    					<t t-set="r_label_count" t-value="0"/>
