@@ -1,6 +1,8 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_social_partner_group,access_social_partner_group,model_social_partner_group,base.group_user,1,1,1,1
+access_social_partner_group_public,access_social_partner_group_public,model_social_partner_group,base.group_public,1,0,0,0
 access_social_bit_comments,access_social_bit_comments,model_social_bit_comments,base.group_user,1,1,1,1
+access_social_bit_comments_portal,access_social_bit_comments_portal,model_social_bit_comments,base.group_public,1,0,0,0
 access_social_visitor_designer,access_website_visitor_social,website.model_website_visitor,dcm_customization.group_social_visitor_access,1,1,1,0
 access_res_partner_token,access_res_partner_token,model_res_partner_token,base.group_user,1,1,1,1
 access_global_search,access_global_search,model_global_search,,1,1,1,1
@@ -13,3 +15,4 @@ access_extended_tag_level,access_extended_tag_level,model_extended_tag_level,bas
 access_partner_extended_tag_level,access_partner_extended_tag_level,model_partner_extended_tag_level,base.group_user,1,1,1,1
 access_global_search_config,access_global_search_config,model_global_search_config,base.group_user,1,1,1,1
 access_global_search_history,access_global_search_history,model_global_search_history,base.group_user,1,1,1,1
+access_social_post_public,access_social_post_public,model_social_post,base.group_public,1,0,0,0

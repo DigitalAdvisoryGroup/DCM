@@ -51,7 +51,7 @@ class SocialPartnerGroups(models.Model):
     child_total_count = fields.Integer("Child Subscribers",compute="compute_total_count")
 
     group_owner_id = fields.Many2one("res.partner", string="Group Owner")
-    is_org_unit = fields.Boolean(related="type_id.is_org_unit", string="Org Unit Flag", store=True)
+    is_org_unit = fields.Boolean(string="Org Unit Flag")
     # oe1_id = fields.Char("OE 1")
     # oe2_id = fields.Char("OE 2")
     # oe3_id = fields.Char("OE 3")

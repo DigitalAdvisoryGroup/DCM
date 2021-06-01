@@ -504,7 +504,113 @@
         </t>
     </template>
 
-    <template id="midardir_search" name="MidarDir">
+
+    <template id="midardir_post" name="MidarDir Post">
+        <t t-call="website.layout">
+            <div class="oe_structure"/>
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6" style="padding: 0;">
+                        <ol class="breadcrumb mt8">
+                            <li class="breadcrumb-item">
+                                <a t-att-href="'/midardir?search=%s' % (search)">
+                                    <i class="fa fa-home" role="img" aria-label="Home" title="Home"/>
+                                </a>
+                            </li>
+                            <li t-if="parent" class="breadcrumb-item">
+                                <a t-att-href="'%s' % (prevpath)">
+                                    <t t-esc="parent"/>
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item active">
+                                <t t-esc="name"/>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <table class="table w-50" style="background-color: lightgrey;">
+                        <tbody>
+                            <tr>
+                                <td colspan="2" class="btn-primary">
+                                    <span>
+                                        <strong>
+                                            <t t-esc="name"/>
+                                        </strong>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr class="">
+                                <td>
+                                    <strong>Date:</strong>
+                                </td>
+                                <td>
+                                    <span>
+                                        <t t-esc="date"/>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr class="">
+                                <td>
+                                    <strong>Message:</strong>
+                                </td>
+                                <td>
+                                    <span>
+                                        <t t-esc="message"/>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr class="">
+                                <td>
+                                    <strong>Total Likes:</strong>
+                                </td>
+                                <td>
+                                    <span>
+                                        <t t-esc="total_like_count"/>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr class="">
+                                <td>
+                                    <strong>Total Dislikes:</strong>
+                                </td>
+                                <td>
+                                    <span>
+                                        <t t-esc="total_dislike_count"/>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr class="">
+                                <td>
+                                    <strong>Total Comments:</strong>
+                                </td>
+                                <td>
+                                    <span>
+                                        <t t-esc="total_comment_count"/>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr class="">
+                                <td>
+                                    <strong>Total Share:</strong>
+                                </td>
+                                <td>
+                                    <span>
+                                        <t t-esc="total_share_count"/>
+                                    </span>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!--<template id="midardir_search" name="MidarDir">
         <t t-call="website.layout">
             <div class="oe_structure"/>
             <div class="container">
@@ -519,14 +625,14 @@
                                             title="Search">
                                         <i class="fa fa-search"/>
                                         </button>
-<!--                                        <button type="submit"-->
-<!--                                            t-att-title="gsc.name"-->
-<!--                                            t-att-name="gsc.id"-->
-<!--                                            t-att-string="gsc.name"-->
-<!--                                            t-att-record_id="gsc.id">-->
-<!--                                        </button>-->
-
+&lt;!&ndash;                                        <button type="submit"&ndash;&gt;
+&lt;!&ndash;                                            t-att-title="gsc.name"&ndash;&gt;
+&lt;!&ndash;                                            t-att-name="gsc.id"&ndash;&gt;
+&lt;!&ndash;                                            t-att-string="gsc.name"&ndash;&gt;
+&lt;!&ndash;                                            t-att-record_id="gsc.id">&ndash;&gt;
+&lt;!&ndash;                                        </button>&ndash;&gt;
                             </div>
+
                         </div>
                     </form>
                 </div>
@@ -535,7 +641,7 @@
             <t t-call="dcm_customization.midardir_search_result"/>
             <div class="oe_structure"/>
         </t>
-    </template>
+    </template>-->
     
     <template id="midardir_search_main_menu" name="Midardir Social Groups">
     	<t t-call="website.layout">
@@ -552,13 +658,35 @@
                                             title="Search">
                                         <i class="fa fa-search"/>
                                         </button>
+                                <t t-call="website_language_flag_cr.language_flags" />
                             </div>
                         </div>
                     </form>
                 </div>
-                
+                <t t-if="not search">
+                <div>
+                    <img src="/dcm_customization/static/description/search_1.png" style="width:200px;" class="img img-fluid"/>
+                </div>
+
+                <div>
+                    <span><strong>Seek and you shall find.</strong></span><br/>
+                    <span>Find persons, organisation units, posts, </span><br/>
+                    <span>responsibilities, and more in one go</span>
+                </div>
+                </t>
+
+                <t t-if="search and not records.get('data')">
+                <div>
+                    <img src="/dcm_customization/static/description/search_2.png" style="width:200px;" class="img img-fluid"/>
+                </div>
+
+                <div>
+                    <span><strong>No data found</strong></span><br/>
+                    <span>Don’t worry, try again</span><br/>
+                </div>
+                </t>
                 <br/>
-	    		<div class="row" style="width: 30%;">
+	    		<div class="row" style="width: 80%;">
 	    			<t t-foreach="records.get('data')" t-as="record">
 	    				<div class="col-12 midardir_social_group_menu">
 	    					<a t-att-href="'/midardir/result?search=%s&amp;config=%s'%(search,record.get('id'))">
@@ -592,7 +720,7 @@
                     </form>
                 </div>
                 <br/>
-	    		<div class="row" style="width: 30%;">
+	    		<div class="row" style="width: 80%;">
 	    			<t t-foreach="records.get('data')" t-as="record">
 	    				<div t-att-class="'col-12 mr-1 mb-2 midardir_social_group_menu active' if current_config == record.get('id') else 'col-12 mr-1 mb-2 midardir_social_group_menu'">
 	    					<a t-att-href="'/midardir/result?search=%s&amp;config=%s'%(search,record.get('id'))">
@@ -621,7 +749,9 @@
 	    					<t t-if="page == 'profile'">
 	    						<t t-set="redirect_url" t-value="'/midardir/contact/%s?parent=%s&amp;search=%s'%(result.get('id'),r_label,search)"/>
 	    					</t>
-	    					
+	    					<t t-if="page == 'post'">
+	    						<t t-set="redirect_url" t-value="'/midardir/post/%s?parent=%s&amp;search=%s'%(result.get('id'),r_label,search)"/>
+	    					</t>
 	    					<t t-if="page == 'group'">
 	    						<t t-set="redirect_url" t-value="'/midardir/socialgroup/%s?parent=%s&amp;search=%s'%(result.get('id'),r_label,search)"/>
 	    					</t>
@@ -655,7 +785,7 @@
     	</t>
     </template>
 
-    <template id="midardir_search_result" name="MidarDir Result">
+    <!--<template id="midardir_search_result" name="MidarDir Result">
         <t t-set="additional_title">MidarDir Result</t>
         <div class="container">
             <div class="row " t-att-data-res_model="model">
@@ -692,7 +822,7 @@
                                             <span t-esc="record['display_name']"/>
                                         </a>
                                     </t>
-<!--                                       t-esc="record['display_name']"/>-->
+&lt;!&ndash;                                       t-esc="record['display_name']"/>&ndash;&gt;
                                     <t t-if="'name' in record">
                                         <a t-att-href="'/midardir/contact/%s?search=%s' % (record.get('id'),search)">
                                             <t t-esc="record['name']"/>
@@ -707,16 +837,16 @@
                                                 </t>
                                             </t>
                                         </t>
-<!--                                        <t t-if="record['category_skill_id_name'] and search.lower() in record['category_skill_id_name'].lower()">-->
-<!--                                            ,-->
-<!--                                            <t t-foreach="record['category_skill_id_name'].split(',')" t-as="cat_skill">-->
-<!--                                                <t t-if="search.lower() in cat_skill.lower()">-->
-<!--                                                    <a t-att-href="'/midardir/res/contact/%s?search=%s' % (cat_skill.split(':')[1],search)">-->
-<!--                                                        <span t-esc="cat_skill.split(':')[0]"/>-->
-<!--                                                    </a>-->
-<!--                                                </t>-->
-<!--                                            </t>-->
-<!--                                        </t>-->
+&lt;!&ndash;                                        <t t-if="record['category_skill_id_name'] and search.lower() in record['category_skill_id_name'].lower()">&ndash;&gt;
+&lt;!&ndash;                                            ,&ndash;&gt;
+&lt;!&ndash;                                            <t t-foreach="record['category_skill_id_name'].split(',')" t-as="cat_skill">&ndash;&gt;
+&lt;!&ndash;                                                <t t-if="search.lower() in cat_skill.lower()">&ndash;&gt;
+&lt;!&ndash;                                                    <a t-att-href="'/midardir/res/contact/%s?search=%s' % (cat_skill.split(':')[1],search)">&ndash;&gt;
+&lt;!&ndash;                                                        <span t-esc="cat_skill.split(':')[0]"/>&ndash;&gt;
+&lt;!&ndash;                                                    </a>&ndash;&gt;
+&lt;!&ndash;                                                </t>&ndash;&gt;
+&lt;!&ndash;                                            </t>&ndash;&gt;
+&lt;!&ndash;                                        </t>&ndash;&gt;
                                         <t t-if="record['category_social_id_name']">,
                                             <a t-att-href="'/midardir/socialgroup/%s?search=%s' % (record['category_social_id_name'].split(':')[1],search)">
                                                 <t t-esc="record['category_social_id_name'].split(':')[0]"/>
@@ -740,7 +870,7 @@
                 </t>
             </div>
         </div>
-    </template>
+    </template>-->
 
 
 </odoo>
