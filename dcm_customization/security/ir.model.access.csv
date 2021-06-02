@@ -16,3 +16,4 @@ access_partner_extended_tag_level,access_partner_extended_tag_level,model_partne
 access_global_search_config,access_global_search_config,model_global_search_config,base.group_user,1,1,1,1
 access_global_search_history,access_global_search_history,model_global_search_history,base.group_user,1,1,1,1
 access_social_post_public,access_social_post_public,model_social_post,base.group_public,1,0,0,0
+access_res_partner_category_public,access_res_partner_category_public,model_res_partner_category,base.group_public,1,0,0,0

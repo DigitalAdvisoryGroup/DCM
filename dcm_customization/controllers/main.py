@@ -228,15 +228,14 @@ class MidarVideoAttachment(http.Controller):
                                                                           'prevpath': prevpath,
                                                                      })
 
-    @http.route('/midardir/res/contact/<model("res.partner.category"):partner_category>', type='http', auth='public', website=True, csrf=False)
-    def midardir_cat_res(self, partner_category, **kw):
+    @http.route('/midardir/res/contact/<model("res.partner"):partner>', type='http', auth='public', website=True, csrf=False)
+    def midardir_cat_res(self, partner, **kw):
         prevpath = request.httprequest.referrer
         parent = kw.get('parent')
-        parnter_ids = request.env['res.partner'].sudo()
-        if partner_category:
-            parnter_ids = request.env['res.partner'].sudo().search([('category_res_ids','in',partner_category.ids)])
+        if partner:
+            parnter_ids = request.env['res.partner'].sudo().search([('is_company', '=', False), ('category_res_ids.name', '=', partner.id_code)])
         return request.render("dcm_customization.midardir_cat_res_contacts", {'partners': parnter_ids,
-                                                                              'partner_category':partner_category,
+                                                                              'record':partner,
                                                                               'search': kw.get("search"),
                                                                               'parent': parent,
                                                                               'prevpath': prevpath,
