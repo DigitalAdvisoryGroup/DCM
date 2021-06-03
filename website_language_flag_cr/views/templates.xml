@@ -16,13 +16,14 @@
 			<a href="#" class="dropdown-toggle language_flag nav-link" data-toggle="dropdown">
 				<t t-foreach="website.language_ids" t-as="lg">
 					<t t-if="request.context.get('lang') == lg.code">
-						<img class="img img-fluid" t-att-src="website.image_url(lg, 'lang_flag')" height="25"
+<!--						t-att-src="'/web/image/product.product/%s/image_128' % product_variant.id"-->
+						<img class="img img-fluid" t-att-src="'/web/image/res.lang/%s/lang_flag' % lg.id" height="25"
 							width="25" t-att-title="lg.name" />
 					</t>
 				</t>
 			</a>
 			<ul class="dropdown-menu" role="menu" style="min-width: 80px;">
-				<li class="nav-item" t-foreach="website.language_ids" t-as="lg">
+				<!--<li class="nav-item" t-foreach="website.language_ids" t-as="lg">
 					<a
 						t-att-href="url_for(request.httprequest.path + '?' + keep_query(), lang_code=lg.code)"
 						t-att-data-default-lang="(editable or translatable) and 'true' if website and lg.code == website.default_lang_id.code else None"
@@ -30,6 +31,15 @@
 					<img t-att-src="website.image_url(lg, 'lang_flag')" height="30" width="30" t-att-title="lg.code" />
 						<t t-esc="lg.name.split('/').pop()"/>
 					</a>
+				</li>-->
+				<li class="nav-item" t-foreach="languages" t-as="lg">
+					<a t-att-href="url_for(request.httprequest.path + '?' + keep_query(), lang_code=lg[0])"
+                           class="js_change_lang nav-link"
+                           t-att-data-url_code="lg[1]">
+<!--						<img t-att-src="website.image_url(lg, 'lang_flag')" height="30" width="30" t-att-title="lg[0]" />-->
+                            <t t-esc="lg[2].split('/').pop()"/>
+
+                        </a>
 				</li>
 			</ul>
 		</li>

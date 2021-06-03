@@ -12,6 +12,26 @@ import base64
 from odoo.http import Response
 
 
+from werkzeug.urls import url_join
+from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
+
+def string_before(value, a):
+    # Find first part and return slice before it.
+    pos_a = value.find(a)
+    if pos_a == -1: return ""
+    return value[0:pos_a]
+
+def string_after(value, a):
+    # Find and validate first part.
+    pos_a = value.rfind(a)
+    if pos_a == -1: return ""
+    # Returns chars after the found string.
+    adjusted_pos_a = pos_a + len(a)
+    if adjusted_pos_a >= len(value): return ""
+    return value[adjusted_pos_a:]
+
+
+
 class MidarLogin(Home):
 
     @http.route()
@@ -86,10 +106,9 @@ class MidarVideoAttachment(http.Controller):
     def midardir_search(self, **kw):
         print("---------kw-------------",kw)
         print("---------company------------",request.env.company.iframe_acess_token)
+        print("---------context------------",request.env.context)
         if 'search' not in kw and request.env.company.iframe_acess_token != kw.get("token"):
             return request.render("http_routing.403", {})
-        # if (not kw.get("search") and not kw.get("token")) or :
-
         data = {}
         if kw and kw.get("search"):
             data = request.env['global.search.config'].sudo().get_global_search_configuration_data(kw['search'])
@@ -127,6 +146,30 @@ class MidarVideoAttachment(http.Controller):
                                                                     'page': page,
                                                                     # 'global_search_config': global_search_config
                                                                     })
+
+    @http.route('/midardir/post/<model("social.post"):post>', type='http', auth='public', website=True)
+    def midardir_post(self, post, **kw):
+        print("--------post-------------",post)
+        data = kw.get("search")
+        base_url = request.env['ir.config_parameter'].sudo().get_param('web.base.url')
+        image_url = url_join(base_url, '/web/image/utm.campaign/%s/image_128/%s' % (post.utm_campaign_id.id, post.utm_campaign_id.file_name))
+        before_msg = string_before(post.message, data)[-40:]
+        after_msg = string_after(post.message, data)[-40:]
+        prevpath = request.httprequest.referrer
+        parent = kw.get('parent')
+        print("--------here000000000000000")
+        return request.render("dcm_customization.midardir_post", {'record': post,
+                                                                     'search': kw.get("search"),
+                                                                     'parent': parent,
+                                                                     'prevpath': prevpath,
+                                                                      'message': before_msg + data + after_msg,
+                                                                      'name': post.utm_campaign_id.name or '',
+                                                                      'date': post.published_date.strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                                                                      'total_like_count': len(post.like_ids),
+                                                                      'total_dislike_count': len(post.dislike_ids),
+                                                                      'total_comment_count': len(post.comments_ids),
+                                                                      'total_share_count': len(post.share_ids),
+                                                                     })
 
     @http.route('/midardir/contact/<model("res.partner"):partner>', type='http', auth='public', website=True)
     def midardir_contact(self, partner,**kw):
@@ -185,15 +228,14 @@ class MidarVideoAttachment(http.Controller):
                                                                           'prevpath': prevpath,
                                                                      })
 
-    @http.route('/midardir/res/contact/<model("res.partner.category"):partner_category>', type='http', auth='public', website=True, csrf=False)
-    def midardir_cat_res(self, partner_category, **kw):
+    @http.route('/midardir/res/contact/<model("res.partner"):partner>', type='http', auth='public', website=True, csrf=False)
+    def midardir_cat_res(self, partner, **kw):
         prevpath = request.httprequest.referrer
         parent = kw.get('parent')
-        parnter_ids = request.env['res.partner'].sudo()
-        if partner_category:
-            parnter_ids = request.env['res.partner'].sudo().search([('category_res_ids','in',partner_category.ids)])
+        if partner:
+            parnter_ids = request.env['res.partner'].sudo().search([('is_company', '=', False), ('category_res_ids.name', '=', partner.id_code)])
         return request.render("dcm_customization.midardir_cat_res_contacts", {'partners': parnter_ids,
-                                                                              'partner_category':partner_category,
+                                                                              'record':partner,
                                                                               'search': kw.get("search"),
                                                                               'parent': parent,
                                                                               'prevpath': prevpath,
