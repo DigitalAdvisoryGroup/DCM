@@ -240,6 +240,13 @@ class MidarVideoAttachment(http.Controller):
                                                                               'parent': parent,
                                                                               'prevpath': prevpath,
                                                                           })
+        
+    @http.route('/social_group_hierarchy', type='http', auth='public', website=True, csrf=False)
+    def social_group_hierarchy(self,**kw):
+        sc_groups = False
+        if kw.get('social_group_id'):
+            sc_groups = request.env['social.partner.group'].sudo().browse(int(kw.get('social_group_id')))
+        return request.render('dcm_customization.midardir_social_group_heirarchical_view',{'social_group_id' : kw.get('social_group_id') if kw.get('social_group_id') else False,'type' : sc_groups.type_id.name if sc_groups else False})
 
     def get_parent_data(self,group_id,group_data,search):
         sc_groups = request.env['social.partner.group'].sudo().browse(group_id)
@@ -260,15 +267,15 @@ class MidarVideoAttachment(http.Controller):
                     return {'id' : parent_sg_id.id,'label' :'<a href="/midardir/socialgroup/%d?search=%s">%s</a>' %(parent_sg_id.id,search,parent_sg_id.name),'children' : []}
 
 
-    def get_children_data(self,group_id,group_data,search):
-        sc_groups = request.env['social.partner.group'].sudo().browse(group_id)
+    def get_children_data(self,group_id,group_data):
+        sc_groups = group_id
         
         if sc_groups:
             if sc_groups.code:
-                child_sg_ids = request.env['social.partner.group'].sudo().search([('parent2_id', '=', sc_groups.code)])
+                child_sg_ids = request.env['social.partner.group'].sudo().search([('is_org_unit','=',True),('parent2_id', '=', sc_groups.code)])
                 if child_sg_ids:
                     for child_sg in child_sg_ids:
-                        child_group_data = self.get_children_data(child_sg.id,{'id' : child_sg.id,'label' : '<a href="/midardir/socialgroup/%d?search=%s">%s</a>' %(child_sg.id,search,child_sg.name),'children' : []},search)
+                        child_group_data = self.get_children_data(child_sg,{'name' : child_sg.name,'title' : child_sg.code,'children' : []})
                         if group_data:
                             group_data['children'].append(child_group_data)
                         else:
@@ -281,7 +288,7 @@ class MidarVideoAttachment(http.Controller):
         else:
             return {}
     
-    def get_heirarchy_data(self,group_id,search):
+    def get_heirarchy_data(self,partner_group_id):
         sc_groups = request.env['social.partner.group'].sudo().browse(group_id)
         if not sc_groups.parent2_id:
             return {'id' : sc_groups.id,'label' :'<b><a href="/midardir/socialgroup/%d?search=%s" style="font-size:larger;">%s</a></b>' %(sc_groups.id,search,sc_groups.name),'children' : []}
@@ -296,18 +303,27 @@ class MidarVideoAttachment(http.Controller):
     
     @http.route('/get_heirarchy_details',auth="public",type="json",website=True)
     def get_hierarchy_details(self,**kw):
-        if kw.get('search_query'):
-            data = request.env['global.search'].sudo().get_records(kw['search_query'])
+        if kw.get('social_group_id'):
+            partner_group_id = request.env['social.partner.group'].sudo().browse(int(kw['social_group_id']))
             hierarchy_dict = {}
-            for key,dt in data.items():
-                if key == 'social.partner.group':
-                    for soc_gr_data in dt.get('data'):
-                        for s_key,s_group in soc_gr_data.items():
-                            hierarchy_data = []
-                            for main_data in s_group:
-                                hierarchy_parent_data = self.get_heirarchy_data(main_data.get('id'),kw['search_query'])
-                                hierarchy_data.append(hierarchy_parent_data)
-                            hierarchy_dict.update({s_key : hierarchy_data})   
+            if partner_group_id:
+                main_level_data = {
+                    'name': partner_group_id.name,
+                    'title' : partner_group_id.code,
+                    'children': [],
+                }
+                hierarchy_child_data =  self.get_children_data(partner_group_id,main_level_data)
+                hierarchy_dict.update(hierarchy_child_data)
+                
+            # for key,dt in data.items():
+                # if key == 'social.partner.group':
+                    # for soc_gr_data in dt.get('data'):
+                        # for s_key,s_group in soc_gr_data.items():
+                            # hierarchy_data = []
+                            # for main_data in s_group:
+                                # hierarchy_parent_data = self.get_heirarchy_data(main_data.get('id'),kw['search_query'])
+                                # hierarchy_data.append(hierarchy_parent_data)
+                            # hierarchy_dict.update({s_key : hierarchy_data})   
             print("--------hierarchy_dict-----------iframe--",hierarchy_dict)
             return hierarchy_dict
         
