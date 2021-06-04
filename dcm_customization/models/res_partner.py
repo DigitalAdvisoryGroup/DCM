@@ -163,6 +163,7 @@ class ResPartner(models.Model):
                     'change_connection':partner_id.change_connection,
                     'lang': LANG_CODE_APP.get(partner_id.lang)
                 })
+
                 return {'data': data}
         return {'data': data}
 
@@ -331,7 +332,7 @@ class ResPartner(models.Model):
                 'responsbility' : self.self.get_resp_contact_data(),
                 # 'org_data': self.get_all_heirarchy_data(),
                 'org_data': self.get_group_data(),
-                'org_data_latest': self.get_group_data_latest(),
+                'org_data_latest': self.with_context(lang=self.lang).get_group_data_latest(),
                 'ext_tags': self.get_extended_tags_data(),
                 'is_mobile_user': self.is_token_available
             })
