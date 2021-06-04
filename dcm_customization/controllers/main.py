@@ -243,10 +243,11 @@ class MidarVideoAttachment(http.Controller):
         
     @http.route('/social_group_hierarchy', type='http', auth='public', website=True, csrf=False)
     def social_group_hierarchy(self,**kw):
-        sc_groups = False
+        sc_groups = request.env['social.partner.group'].sudo()
+        prevpath = request.httprequest.referrer
         if kw.get('social_group_id'):
             sc_groups = request.env['social.partner.group'].sudo().browse(int(kw.get('social_group_id')))
-        return request.render('dcm_customization.midardir_social_group_heirarchical_view',{'social_group_id' : kw.get('social_group_id') if kw.get('social_group_id') else False,'type' : sc_groups.type_id.name if sc_groups else False})
+        return request.render('dcm_customization.midardir_social_group_heirarchical_view',{'social_group_id' : kw.get('social_group_id') if kw.get('social_group_id') else False,'type' : sc_groups.type_id.name if sc_groups else False,'search':kw.get('search') if kw.get('search') else False,'prevpath': prevpath,'record' : sc_groups,'parent' : sc_groups.name})
 
     def get_parent_data(self,group_id,group_data,search):
         sc_groups = request.env['social.partner.group'].sudo().browse(group_id)

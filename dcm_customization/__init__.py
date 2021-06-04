@@ -137,7 +137,7 @@ def dump_cookie(key, value='', max_age=None, expires=None, path='/',
     # Python 3 for consistency with the headers object and a bytestring
     # on Python 2 because that's how the API makes more sense.
     rv = b'; '.join(buf)
-    if not PY2:set_cookie
+    if not PY2:
         rv = rv.decode('latin1')
 
     # Warn if the final value of the cookie is less than the limit. If the

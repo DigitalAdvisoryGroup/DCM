@@ -143,7 +143,7 @@
                                             <t t-esc="record.name"/>
                                         </h2>
                                         <h3 class="card-title">Teamleiter/in</h3>
-                                        <a t-att-href="'/social_group_hierarchy?social_group_id=%s' % (record.id)" class="btn btn-primary"> Show Heirarchy</a>
+                                        <a t-att-href="'/social_group_hierarchy?social_group_id=%s&amp;search=%s' % (record.id,search)" class="btn btn-primary"> Show Heirarchy</a>
                                         <ul class="list-group list-group-flush">
                                             <li class="list-group-item row d-flex px-0">
                                                 <div class="col-3">
@@ -196,8 +196,31 @@
 
 	 <template id="midardir_social_group_heirarchical_view" name="MidarDir Social Group Hierarchy">
 	 	<t t-call="dcm_customization.midardir_layout">
-	 		<center><h2><t t-esc="type"/></h2></center>
-	 		<div id="chart-container" t-att-group-id="social_group_id"></div>
+	 		<div class="oe_structure">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-6" style="padding: 0;">
+                            <ol class="breadcrumb mt8">
+                                <li class="breadcrumb-item">
+                                    <a t-att-href="'/midardir?search=%s' % (search)">
+                                        <i class="fa fa-home" role="img" aria-label="Home" title="Home"/>
+                                    </a>
+                                </li>
+                                <li t-if="parent" class="breadcrumb-item">
+                                    <a t-att-href="'%s' % (prevpath)">
+                                        <t t-esc="parent"/>
+                                    </a>
+                                </li>
+                                <li class="breadcrumb-item active">
+                                    <t t-esc="record.name"/>
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+		 		<center><h2><t t-esc="type"/></h2></center>
+		 		<div id="chart-container" t-att-group-id="social_group_id"></div>
+	 		</div>
 	 	</t>
 	 </template>
 
