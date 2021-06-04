@@ -147,7 +147,10 @@ class GlobalSearchConfig(models.Model):
         for i in range(1,len(self.search_fields_lines)):
             domain.append('|')
         for f in self.search_fields_lines:
-            domain.append([f.name,'ilike',data])
+            if f.ttype == "many2one":
+                domain.append([f.name+".name", 'ilike', data])
+            else:
+                domain.append([f.name,'ilike',data])
         extra_domain = literal_eval(self.global_search_domain) if self.global_search_domain else []
         return {self.global_search_model_real: domain+extra_domain}
 

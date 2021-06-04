@@ -46,9 +46,9 @@ odoo.define('dcm_customization.social_group_heirarchy', function (require) {
 //    			var count = 0
 //    			_.each(result,function(value,key){
 //    				console.log("Key==",key,value)
-//    				
+//
 //    				var temp_div = '<strong>' + key + '</strong><div id="tree_' + count.toString() + '"></div><br/>';
-//    				
+//
 //    				$('.social_group_hierarchy').append(temp_div)
 //    				$('#tree_' + count.toString()).tree({
 //    					data: value,

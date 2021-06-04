@@ -142,6 +142,10 @@
                                         <h2 class="card-title">
                                             <t t-esc="record.name"/>
                                         </h2>
+
+                                        <div class="social_group_hierarchy"></div>
+
+
                                         <h3 class="card-title">Teamleiter/in</h3>
                                         <a t-att-href="'/social_group_hierarchy?social_group_id=%s&amp;search=%s' % (record.id,search)" class="btn btn-primary"> Show Heirarchy</a>
                                         <ul class="list-group list-group-flush">

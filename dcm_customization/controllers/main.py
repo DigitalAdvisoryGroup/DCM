@@ -104,9 +104,6 @@ class MidarVideoAttachment(http.Controller):
 
     @http.route('/midardir', type='http', auth='public', website=True)
     def midardir_search(self, **kw):
-        print("---------kw-------------",kw)
-        print("---------company------------",request.env.company.iframe_acess_token)
-        print("---------context------------",request.env.context)
         if 'search' not in kw and request.env.company.iframe_acess_token != kw.get("token"):
             return request.render("http_routing.403", {})
         data = {}
@@ -118,7 +115,6 @@ class MidarVideoAttachment(http.Controller):
         
     @http.route('/midardir/result', type='http', auth='public', website=True, csrf=False)
     def midardir_search_result(self, **kw):
-        print("---------kw-------------",kw)
         data = {}
         data_result = False
         result_fields = False
