@@ -141,13 +141,15 @@
                                     <div class="card-body">
                                         <h2 class="card-title">
                                             <t t-esc="record.name"/>
+
                                         </h2>
 
+                                        <div style="display:inline-flex;">
                                         <div class="social_group_hierarchy"></div>
-
-
+                                         <a t-att-href="'/social_group_hierarchy?social_group_id=%s&amp;search=%s' % (record.id,search)" class="btn btn-primary ml-4" style="height:10%;"> Show Graphical Hierarchy</a>
+                                        </div>
                                         <h3 class="card-title">Teamleiter/in</h3>
-                                        <a t-att-href="'/social_group_hierarchy?social_group_id=%s&amp;search=%s' % (record.id,search)" class="btn btn-primary"> Show Heirarchy</a>
+                                       
                                         <ul class="list-group list-group-flush">
                                             <li class="list-group-item row d-flex px-0">
                                                 <div class="col-3">
@@ -165,7 +167,7 @@
                                             </li>
                                         </ul>
                                         <br/>
-                                        <h3 class="card-title">Teammitglieder</h3>
+                                        <h3 class="card-title">Teammitglieder (<t t-esc="len(record.partner_ids)"/>)</h3>
                                         <ul class="list-group list-group-flush">
                                             <t t-foreach="record.partner_ids" t-as="part">
                                                 <li class="list-group-item row d-flex px-0">
@@ -184,6 +186,9 @@
                                                 </li>
                                             </t>
                                         </ul>
+                                        
+                                        <input type="hidden" name="social_group_id" t-att-value="record.id"/>
+                                        <input type="hidden" name="social_group_search" t-att-value="search"/>
                                     </div>
 
                                 </div>
@@ -566,6 +571,11 @@
 
                 </div>
                 <br/>
+                <t t-foreach="records.get('data')" t-as="record">
+                    <t t-if="current_config == record.get('id')">
+                        <h2 t-esc="record.get('name')"/>
+                    </t>
+                </t>
                 <div class="row">
                     <t t-if="result_fields">
                         <t t-set="r_keys" t-value="result_fields.split(',')"/>
