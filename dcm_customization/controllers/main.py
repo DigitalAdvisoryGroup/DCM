@@ -198,15 +198,19 @@ class MidarVideoAttachment(http.Controller):
             level_3_dict = {}
         prevpath = request.httprequest.referrer
         parent = kw.get('parent')
-        print("--------here000000000000000")
+        org_data_latest = partner.with_context(lang=partner.lang).get_group_data_latest()
+        responsbility = partner.get_resp_contact_data()
+        print("---------responsbility------------",responsbility)
         return request.render("dcm_customization.midardir_contact", {'record': partner,
-                                                                     'level_1': level_1_dict,
+                                                                     # 'level_1': level_1_dict,
                                                                      'search': kw.get("search"),
                                                                      'lang_name': request.env['res.lang']._lang_get(partner.lang).name,
-                                                                     'level_2': level_2_dict,
-                                                                     'level_3': level_3_dict,
+                                                                     # 'level_2': level_2_dict,
+                                                                     # 'level_3': level_3_dict,
                                                                      'parent': parent,
                                                                      'prevpath': prevpath,
+                                                                     'org_data_latest': org_data_latest,
+                                                                     'responsbility': responsbility
                                                                      })
 
     @http.route('/midardir/socialgroup/<model("social.partner.group"):social_group>', type='http', auth='public', website=True, csrf=False)

@@ -280,7 +280,7 @@ class ResPartner(models.Model):
                     final_list.append({
                         "image_url": image_url,
                         "name": contact.name,
-                        "id": contact.id
+                        "id": contact.id,
                     })
         return final_list
 
@@ -364,27 +364,28 @@ class ResPartner(models.Model):
     def get_group_data_latest(self):
         final_data = []
         for group in self.social_group_id:
-            parent_sg_id = False
-            if group.parent2_id:
-                parent_sg_id = self.get_last_data(group)
-            if final_data and group.type_id and group.type_id.name in [x['name'] for x in final_data]:
-                for l in final_data:
-                    if l['name'] == group.type_id.name:
-                        l['data'].append({
-                        "root_group": parent_sg_id and parent_sg_id.name or '',
-                        "current_group": group.name,
-                        "id": group.id
-                    })
-            else:
-                final_data.append({
-                    "name": group.type_id and group.type_id.name or '',
-                    "data": [{
-                        "root_group": parent_sg_id and parent_sg_id.name or '',
-                        "current_group": group.name,
-                        "id": group.id
-                    }]
+            # if group.is_org_unit:
+                parent_sg_id = False
+                if group.parent2_id:
+                    parent_sg_id = self.get_last_data(group)
+                if final_data and group.type_id and group.type_id.name in [x['name'] for x in final_data]:
+                    for l in final_data:
+                        if l['name'] == group.type_id.name:
+                            l['data'].append({
+                            "root_group": parent_sg_id and parent_sg_id.name or '',
+                            "current_group": group.name,
+                            "id": group.id
+                        })
+                else:
+                    final_data.append({
+                        "name": group.type_id and group.type_id.name or '',
+                        "data": [{
+                            "root_group": parent_sg_id and parent_sg_id.name or '',
+                            "current_group": group.name,
+                            "id": group.id
+                        }]
 
-                })
+                    })
         _logger.info("0-------------group--profile--data---latest---------%s",final_data)
         return final_data
 

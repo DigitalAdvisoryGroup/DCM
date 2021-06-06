@@ -31,75 +31,133 @@
                     </div>
                 </div>
             </div>
-            <div class="container">
-                <div class="row">
-                    <table class="table w-50" style="background-color: lightgrey;">
-                        <tbody>
-                            <tr>
-                                <td colspan="2" class="btn-primary">
-                                    <span>
-                                        <strong>
-                                            <t t-esc="record.name"/>
-                                        </strong>
+            <section class="s_text_block pt32 pb32" data-name="Text block">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-12 pt32 pb32">
+                            <p class="lead">
+                                <br/>
+                            </p>
+                            <div class="card">
+                                <img class="card-image-top" src="https://live.staticflickr.com/65535/51193848084_000412f583_c_d.jpg" style=""/>
+                                <img class="rounded-circle border-white" alt="Avatar" t-attf-src="/web/image/res.partner/#{record.id}/image_1920/100x100"
+                                     style="margin-left: 20px; margin-top: -50px; width: 100px; border-style: solid; border-width: thick;"/>
+                                <div class="card-body">
+                                    <h2 class="card-title">
+                                        <t t-esc="record.name"/>
+                                    </h2>
+                                    <h5 class="card-subtitle">
+                                        <t t-esc="record.function"/>
+                                    </h5>
+                                    <a t-att-href="'mailto:%s' % record.email">
+                                        <t t-esc="record.email"/>
+                                    </a>
+                                    <br/>
+                                    <a t-att-href="'tel:%s' % record.phone">
+                                        <t t-esc="record.phone"/>
+                                    </a>
+                                    <br/>
+                                    <a t-att-href="'tel:%s' % record.mobile">
+                                        <t t-esc="record.mobile"/>
+                                    </a>
+                                    <br/>
+                                    <span><t t-esc="record.street"/>,
+                                        <t t-esc="record.zip"/>
+                                        <t t-esc="record.city"/>
                                     </span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <span>Company Details:</span>
-                                </td>
-                                <td>
-                                    <span>
-                                        <strong>
-                                            <t t-esc="record.name"/>
-                                        </strong>
-                                        <br/>
-                                                                            <span><t t-esc="record.email"/></span><br/>
-                                                                            <span><t t-esc="record.phone"/></span><br/>
-<!--                                        <div t-field="record" t-options='{"widget": "contact", "fields": ["address","email","phone"], "phone_icons": True}'/>-->
-                                    </span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <table>
-                                        <thead>
-                                            <tr>
-                                                <td>
-                                                    <strong>Name:</strong>
-                                                </td>
-                                                <td>
-                                                    <strong>Email:</strong>
-                                                </td>
-                                            </tr>
-                                        </thead>
+                                    <br/>
+                                    <t t-esc="lang_name"/>
+                                </div>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item">
+                                        <h3 class="list-group-item-heading">
+                                            Responsibilities
+                                        </h3>
+                                    </li>
+                                    <li class="list-group-item" style="display: inline-flex;">
                                         <t t-foreach="partners" t-as="part">
-                                            <tbody>
-                                                <tr>
-                                                    <td>
-                                                        <span>
-                                                            <a t-att-href="'/midardir/contact/%s?search=%s&amp;parent=%s' % (part.id,search,record.id_code)">
-                                                                <t t-esc="part.name"/>
-                                                            </a>
-                                                        </span>
-                                                    </td>
-                                                    <td>
-                                                        <span>
-                                                            <a t-att-href="'mailto:%s' % part.email">
-                                                                <t t-esc="part.email"/>
-                                                            </a>
-                                                        </span>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
+                                            <li class="list-group-item row d-flex px-0">
+                                                <div class="col-3">
+                                                    <img class="rounded-circle" alt="Avatar" t-attf-src="/web/image/res.partner/#{part.id}/image_1920/100x100"
+                                                         style="height: 80px; width: 80px; border-style: solid; border-width: thin;"/>
+
+                                                </div>
+                                                <div class="col-9 align-self-center">
+                                                    <a t-att-href="'/midardir/contact/%s?search=%s&amp;parent=%s' % (part.id,search,part.name)">
+                                                        <t t-esc="part.name"/>
+                                                        <t t-esc="part.function"/>
+                                                    </a>
+                                                </div>
+                                            </li>
+
                                         </t>
-                                    </table>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                                    </li>
+                                </ul>
+
+                                <!--<ul class="list-group list-group-flush">
+                                    <li class="list-group-item">
+                                        <h2 class="list-group-item-heading">Linienorganisation</h2>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <a t-att-href="'/midardir/socialgroup/%s?search=%s&amp;parent=%s' % (level_1.get('id'),search,record.name)">
+                                            <t t-if="level_1.get('name')">
+                                                <t t-esc="level_1['name']"/>
+                                                <t t-esc="level_1['code']"/>
+                                            </t>
+                                        </a>
+                                        <br/>
+                                        <a class="text-indent-4" t-att-href="'/midardir/socialgroup/%s?search=%s&amp;parent=%s' % (level_2.get('id'),search,record.name)">
+                                            <t t-if="level_2.get('name')">
+                                                <t t-esc="level_2['name']"/>
+                                                <t t-esc="level_2['code']"/>
+                                            </t>
+                                        </a>
+                                        <br/>
+                                        <a class="text-indent-8" t-att-href="'/midardir/socialgroup/%s?search=%s&amp;parent=%s' % (level_3.get('id'),search,record.name)">
+                                            <t t-if="level_3.get('name')">
+                                                <t t-esc="level_3['name']"/>
+                                                <t t-esc="level_3['code']"/>
+                                            </t>
+                                        </a>
+                                    </li>
+
+                                </ul>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item">
+                                        <h2 class="list-group-item-heading">Arbeitsorganisation</h2>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <a t-att-href="'/midardir/socialgroup/%s?search=%s&amp;parent=%s' % (level_1.get('id'),search,record.name)">
+                                            <t t-if="level_1.get('name')">
+                                                <t t-esc="level_1['name']"/>
+                                                <t t-esc="level_1['code']"/>
+                                            </t>
+                                        </a>
+                                        <br/>
+                                        <a class="text-indent-4" t-att-href="'/midardir/socialgroup/%s?search=%s&amp;parent=%s' % (level_2.get('id'),search,record.name)">
+                                            <t t-if="level_2.get('name')">
+                                                <t t-esc="level_2['name']"/>
+                                                <t t-esc="level_2['code']"/>
+                                            </t>
+                                        </a>
+                                        <br/>
+                                        <a class="text-indent-8" t-att-href="'/midardir/socialgroup/%s?search=%s&amp;parent=%s' % (level_3.get('id'),search,record.name)">
+                                            <t t-if="level_3.get('name')">
+                                                <t t-esc="level_3['name']"/>
+                                                <t t-esc="level_3['code']"/>
+                                            </t>
+                                        </a>
+                                    </li>
+
+                                </ul>-->
+                            </div>
+                            <p class="lead">
+                                <br/>
+                            </p>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            </section>
         </t>
     </template>
 
@@ -145,11 +203,13 @@
                                         </h2>
 
                                         <div style="display:inline-flex;">
-                                        <div class="social_group_hierarchy"></div>
-                                         <a t-att-href="'/social_group_hierarchy?social_group_id=%s&amp;search=%s' % (record.id,search)" class="btn btn-primary ml-4" style="height:10%;"> Show Graphical Hierarchy</a>
+                                            <div class="social_group_hierarchy"></div>
+                                            <a t-att-href="'/social_group_hierarchy?social_group_id=%s&amp;search=%s' % (record.id,search)" class="btn btn-primary ml-4" style="height:10%;">Show
+                                                Graphical Hierarchy
+                                            </a>
                                         </div>
                                         <h3 class="card-title">Teamleiter/in</h3>
-                                       
+
                                         <ul class="list-group list-group-flush">
                                             <li class="list-group-item row d-flex px-0">
                                                 <div class="col-3">
@@ -167,7 +227,8 @@
                                             </li>
                                         </ul>
                                         <br/>
-                                        <h3 class="card-title">Teammitglieder (<t t-esc="len(record.partner_ids)"/>)</h3>
+                                        <h3 class="card-title">Teammitglieder (<t t-esc="len(record.partner_ids)"/>)
+                                        </h3>
                                         <ul class="list-group list-group-flush">
                                             <t t-foreach="record.partner_ids" t-as="part">
                                                 <li class="list-group-item row d-flex px-0">
@@ -186,7 +247,7 @@
                                                 </li>
                                             </t>
                                         </ul>
-                                        
+
                                         <input type="hidden" name="social_group_id" t-att-value="record.id"/>
                                         <input type="hidden" name="social_group_search" t-att-value="search"/>
                                     </div>
@@ -203,9 +264,9 @@
         </t>
     </template>
 
-	 <template id="midardir_social_group_heirarchical_view" name="MidarDir Social Group Hierarchy">
-	 	<t t-call="dcm_customization.midardir_layout">
-	 		<div class="oe_structure">
+    <template id="midardir_social_group_heirarchical_view" name="MidarDir Social Group Hierarchy">
+        <t t-call="dcm_customization.midardir_layout">
+            <div class="oe_structure">
                 <div class="container">
                     <div class="row">
                         <div class="col-md-6" style="padding: 0;">
@@ -227,11 +288,15 @@
                         </div>
                     </div>
                 </div>
-		 		<center><h2><t t-esc="type"/></h2></center>
-		 		<div id="chart-container" t-att-group-id="social_group_id"></div>
-	 		</div>
-	 	</t>
-	 </template>
+                <center>
+                    <h2>
+                        <t t-esc="type"/>
+                    </h2>
+                </center>
+                <div id="chart-container" t-att-group-id="social_group_id"></div>
+            </div>
+        </t>
+    </template>
 
     <template id="midardir_contact" name="MidarDir Contact">
         <t t-call="dcm_customization.midardir_layout">
@@ -295,6 +360,48 @@
                                         <t t-esc="lang_name"/>
                                     </div>
                                     <ul class="list-group list-group-flush">
+                                        <t t-foreach="org_data_latest" t-as="org_data">
+                                            <li class="list-group-item">
+                                                <h3 class="list-group-item-heading">
+                                                    <t t-esc="org_data.get('name')"/>
+                                                </h3>
+                                            </li>
+                                            <li class="list-group-item">
+                                                <t t-foreach="org_data.get('data')" t-as="org_line">
+                                                    <a t-att-href="'/midardir/socialgroup/%s?search=%s&amp;parent=%s' % (org_line.get('id'),search,org_line.get('current_group'))">
+                                                        <t t-esc="org_line.get('current_group')"/>
+                                                    </a>
+                                                </t>
+                                            </li>
+                                        </t>
+                                    </ul>
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item">
+                                            <h3 class="list-group-item-heading">
+                                                Responsibilities
+                                            </h3>
+                                        </li>
+                                        <li class="list-group-item" style="display: inline-flex;">
+                                            <t t-foreach="responsbility" t-as="resp">
+                                                <li class="list-group-item row d-flex px-0">
+                                                    <div class="col-3">
+                                                        <img class="rounded-circle" alt="Avatar" t-att-src="resp.get('image_url')"
+                                                             style="height: 80px; width: 80px; border-style: solid; border-width: thin;"/>
+
+                                                    </div>
+                                                    <div class="col-9 align-self-center">
+                                                        <a t-att-href="'/midardir/res/contact/%s?search=%s&amp;parent=%s' % (resp.get('id'),search,resp.get('name'))">
+                                                            <t t-esc="resp.get('name')"/>
+                                                            <t t-esc="resp.get('name')"/>
+                                                        </a>
+                                                    </div>
+                                                </li>
+
+                                            </t>
+                                        </li>
+                                    </ul>
+
+                                    <!--<ul class="list-group list-group-flush">
                                         <li class="list-group-item">
                                             <h2 class="list-group-item-heading">Linienorganisation</h2>
                                         </li>
@@ -349,7 +456,7 @@
                                             </a>
                                         </li>
 
-                                    </ul>
+                                    </ul>-->
                                 </div>
                                 <p class="lead">
                                     <br/>
