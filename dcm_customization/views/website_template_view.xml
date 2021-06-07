@@ -89,7 +89,6 @@
                                                     </a>
                                                 </div>
                                             </li>
-
                                         </t>
                                     </li>
                                 </ul>
@@ -294,6 +293,18 @@
                     </h2>
                 </center>
                 <div id="chart-container" t-att-group-id="social_group_id"></div>
+                <br/>
+                <div class="oe_structure">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-12">
+                                <figure class="highcharts-figure">
+                                    <div id="sunburst-container" style="height:50%;" t-att-group-id="social_group_id" />
+                                </figure>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </t>
     </template>
