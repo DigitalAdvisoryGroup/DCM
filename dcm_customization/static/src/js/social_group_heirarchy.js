@@ -68,9 +68,9 @@ odoo.define('dcm_customization.social_group_heirarchy', function (require) {
                         text: result.header
                     },
 
-                    subtitle: {
-                        text: 'Source <a href="https://en.wikipedia.org/wiki/List_of_countries_by_population_(United_Nations)">Wikipedia</a>'
-                    },
+//                    subtitle: {
+//                        text: 'Source <a href="https://en.wikipedia.org/wiki/List_of_countries_by_population_(United_Nations)">Wikipedia</a>'
+//                    },
 
                     series: [{
                         type: 'sunburst',
