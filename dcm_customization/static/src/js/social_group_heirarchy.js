@@ -58,14 +58,14 @@ odoo.define('dcm_customization.social_group_heirarchy', function(require) {
                 Highcharts.getOptions().colors.splice(0, 0, 'transparent');
                 Highcharts.chart('sunburst-container', {
                     chart: {
-                        height: '100%'
+                        height: '70%'
                     },
                     title: {
                         text: result.header
                     },
-//                    subtitle: {
-//                        text: 'Source <a href="https://en.wikipedia.org/wiki/List_of_countries_by_population_(United_Nations)">Wikipedia</a>'
-//                    },
+                    subtitle: {
+                        text: result.upper_level
+                    },
                     series: [{
                         type: 'sunburst',
                         data: result.data,

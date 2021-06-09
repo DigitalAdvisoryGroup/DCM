@@ -292,7 +292,7 @@
                         <t t-esc="type"/>
                     </h2>
                 </center>
-                <div id="chart-container" t-att-group-id="social_group_id"></div>
+<!--                <div id="chart-container" t-att-group-id="social_group_id"></div>-->
                 <br/>
                 <div class="oe_structure">
                     <div class="container">

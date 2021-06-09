@@ -387,7 +387,9 @@ class MidarVideoAttachment(http.Controller):
             search = kw.get('search')
             sc_groups = request.env['social.partner.group'].sudo().browse(int(kw.get('social_group_id')))
             data = self.get_sunburst_data(sc_groups,search)
-            return {"data": data, "header": sc_groups.type_id.name,"current_group": sc_groups.name}
+            return {"data": data, "header": sc_groups.type_id.name,"current_group": sc_groups.name,
+                    'upper_level': ("<a href='/social_group_hierarchy?social_group_id=%s&amp;search=%s'>Upper Level</a>") % (sc_groups.id,search)
+                    }
 
     # def get_sunburst_data(self, sc_groups,search):
     #     hierarchy_parents = self.get_sunburst_children_data(sc_groups, [{'id': str(sc_groups.id), 'name': '<b><span style="font-size:larger;color:black;">%s<br/>%s<br/>Direct: %s<br/>Child: %s</span></b>' %(sc_groups.name,sc_groups.group_owner_id.name,len(sc_groups.partner_ids.ids),sc_groups.total_count), 'parent': ''}], search)
