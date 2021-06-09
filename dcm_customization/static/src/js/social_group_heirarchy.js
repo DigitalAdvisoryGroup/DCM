@@ -61,17 +61,20 @@ odoo.define('dcm_customization.social_group_heirarchy', function(require) {
                         height: '70%'
                     },
                     title: {
-                        text: result.header
-                    },
-                    subtitle: {
                         text: result.upper_level
                     },
+//                    subtitle: {
+//                        text: result.upper_level
+//                    },
                     series: [{
                         type: 'sunburst',
                         data: result.data,
                         allowDrillToNode: true,
                         cursor: 'pointer',
                         dataLabels: {
+                            style: {
+                                textOutline: "0px",
+                            },
                             format: '{point.name}',
                             filter: {
                                 property: 'innerArcLength',

@@ -28,6 +28,12 @@
                         <button class="oe_stat_button order-4" name="action_subscriber_list_total" type="object" icon="fa-user">
                             <field name="total_count" string="Total Subscriber" widget="statinfo"/>
                         </button>
+                        <button class="oe_stat_button order-4" icon="fa-user" attrs="{'invisible':[('child_ids','=',False)]}">
+                            <field name="current_subscribers_count" string="Current Subscribers" widget="statinfo"/>
+                        </button>
+                        <button class="oe_stat_button order-4" icon="fa-user">
+                            <field name="current_and_childs_subscribers_count" string="Current and Childs Subscribers" widget="statinfo"/>
+                        </button>
                     </div>
                     <group>
                         <field name="image_1920" widget="image" class="oe_avatar" options="{&quot;zoom&quot;: true, &quot;preview_image&quot;:&quot;image_128&quot;}"/>

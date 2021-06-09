@@ -49,6 +49,28 @@ class SocialPartnerGroups(models.Model):
     child_ids = fields.One2many('social.partner.group','parent_id',string="Child Groups")
     total_count = fields.Integer("Total Subscribers",compute="compute_total_count")
     child_total_count = fields.Integer("Child Subscribers",compute="compute_total_count")
+    current_subscribers_count = fields.Integer("Child Subscribers", compute="_compute_subscriber_count")
+    current_and_childs_subscribers_count = fields.Integer("Child Subscribers", compute="_compute_subscriber_count")
+
+    def get_child_count(self):
+        if self.code:
+            child_sg_ids = self.env['social.partner.group'].sudo().search([('is_org_unit', '=', True), ('parent2_id', '=', self.code)])
+            if child_sg_ids:
+                count = 0
+                for cs in child_sg_ids:
+                    count += cs.get_child_count()
+                return len(self.partner_ids.ids) + count
+            else:
+                return len(self.partner_ids.ids)
+        else:
+            return len(self.partner_ids.ids)
+
+    @api.depends('partner_ids')
+    def _compute_subscriber_count(self):
+        for record in self:
+            record.current_subscribers_count = len(record.partner_ids.ids)
+            record.get_child_count()
+            record.current_and_childs_subscribers_count = record.get_child_count()
 
     group_owner_id = fields.Many2one("res.partner", string="Group Owner")
     is_org_unit = fields.Boolean(string="Org Unit Flag")
