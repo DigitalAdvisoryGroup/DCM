@@ -389,19 +389,62 @@ class MidarVideoAttachment(http.Controller):
             data = self.get_sunburst_data(sc_groups,search)
             return {"data": data, "header": sc_groups.type_id.name,"current_group": sc_groups.name}
 
-    def get_sunburst_data(self, sc_groups,search):
-        hierarchy_parents = self.get_sunburst_children_data(sc_groups, [{'id': str(sc_groups.id), 'name': sc_groups.name, 'parent': ''}], search)
-        return hierarchy_parents
+    # def get_sunburst_data(self, sc_groups,search):
+    #     hierarchy_parents = self.get_sunburst_children_data(sc_groups, [{'id': str(sc_groups.id), 'name': '<b><span style="font-size:larger;color:black;">%s<br/>%s<br/>Direct: %s<br/>Child: %s</span></b>' %(sc_groups.name,sc_groups.group_owner_id.name,len(sc_groups.partner_ids.ids),sc_groups.total_count), 'parent': ''}], search)
+    #     return hierarchy_parents
 
-    def get_sunburst_children_data(self, sc_groups, group_data, search):
-        count = 1
-        if sc_groups:
-            if sc_groups.code:
-                child_sg_ids = request.env['social.partner.group'].sudo().search([('is_org_unit', '=', True), ('parent2_id', '=', sc_groups.code)])
+    def get_sunburst_data(self, main_sc_group, search):
+        group_data = [{'id': str(main_sc_group.id), 'name': main_sc_group.name, 'parent': '','value': 1}]
+        if main_sc_group.code:
+            child_sg_ids = request.env['social.partner.group'].sudo().search([('is_org_unit', '=', True), ('parent2_id', '=', main_sc_group.code)])
+            if child_sg_ids:
+                for child_sg in child_sg_ids:
+                    new_child_sg_ids = request.env['social.partner.group'].sudo().search(
+                        [('is_org_unit', '=', True), ('parent2_id', '=', child_sg.code)])
+                    if new_child_sg_ids:
+                        group_data.append({'id': str(child_sg.id), 'name': child_sg.name, 'parent': main_sc_group.id})
+                    else:
+                        group_data.append({'id': str(child_sg.id), 'name': child_sg.name, 'parent': main_sc_group.id})
+
+                for second_level_sg in child_sg_ids:
+                    self.get_sunburst_children_data(second_level_sg, group_data, search)
+        return group_data
+
+    # def get_sunburst_children_data(self, sc_groups, group_data, search):
+    #     count = 1
+    #     if sc_groups:
+    #         if sc_groups.code:
+    #             child_sg_ids = request.env['social.partner.group'].sudo().search([('is_org_unit', '=', True), ('parent2_id', '=', sc_groups.code)])
+    #             if child_sg_ids:
+    #                 for child_sg in child_sg_ids:
+    #                     group_data.append({'id': str(child_sg.id), 'name': child_sg.name,'parent': sc_groups.id,'value': count})
+    #                     # group_data.append({'id': str(child_sg.id), 'name': '<b><span style="font-size:larger;color:black;">%s<br/>%s<br/>Direct: %s<br/>Child: %s</span></b>' %(child_sg.name,child_sg.group_owner_id.name,len(child_sg.partner_ids.ids),child_sg.total_count),'parent': sc_groups.id,'value': count})
+    #                     resp = self.get_sunburst_children_data(child_sg,group_data, search)
+    #
+    #                 return group_data
+    #             else:
+    #                 return group_data
+    #         else:
+    #             return group_data
+    #     else:
+    #         return {}
+
+    def get_sunburst_children_data(self, sc_group, group_data, search):
+        # count = 1
+        if sc_group:
+            if sc_group.code:
+                child_sg_ids = request.env['social.partner.group'].sudo().search([('is_org_unit', '=', True), ('parent2_id', '=', sc_group.code)])
                 if child_sg_ids:
+                    group_data.append({'id': str(sc_group.id)+"dummy", 'name': sc_group.name, 'parent': sc_group.id, 'value': len(sc_group.partner_ids.ids) or 1})
                     for child_sg in child_sg_ids:
-                        group_data.append({'id': str(child_sg.id), 'name': child_sg.name,'parent': sc_groups.id,'value': count})
-                        self.get_sunburst_children_data(child_sg,group_data, search)
+                        new_child_sg_ids = request.env['social.partner.group'].sudo().search(
+                            [('is_org_unit', '=', True), ('parent2_id', '=', child_sg.code)])
+                        if new_child_sg_ids:
+                            group_data.append({'id': str(child_sg.id), 'name': child_sg.name, 'parent': sc_group.id})
+                        else:
+                            group_data.append(
+                                {'id': str(child_sg.id), 'name': child_sg.name, 'parent': sc_group.id, 'value': len(sc_group.partner_ids.ids) or 1})
+                        self.get_sunburst_children_data(child_sg, group_data, search)
                     return group_data
                 else:
                     return group_data
