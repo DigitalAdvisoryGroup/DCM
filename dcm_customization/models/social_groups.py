@@ -185,4 +185,23 @@ class SocialPartnerGroups(models.Model):
                 else:
                     return {'id' : parent_sg_id.id,'name' :parent_sg_id.name,'children' : []}
 
+class SocialGroupUpdate(models.Model):
+    _name = "social.group.update"
 
+    partner_id = fields.Many2one("res.partner", "Partner")
+    name = fields.Char(related="partner_id.name", string="Name", store=True)
+    old_group_ids = fields.Many2many("social.partner.group", "rel_social_partner_group_old_update", "group_update_old_id","group_old_id", string="Old Groups")
+    new_group_ids = fields.Many2many("social.partner.group", "rel_social_partner_group_new_update", "group_update_new_id","group_new_id", string="New Groups")
+
+
+
+    def update_social_group(self, partner_id=False, old_group=False, new_group=False):
+        res_id = False
+        if partner_id:
+            vals = {
+                "partner_id": int(partner_id),
+                "old_group_ids": old_group,
+                "new_group_ids": new_group
+            }
+            res_id = self.create(vals).id
+        return res_id

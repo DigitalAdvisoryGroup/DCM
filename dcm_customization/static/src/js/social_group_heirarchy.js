@@ -57,17 +57,41 @@ odoo.define('dcm_customization.social_group_heirarchy', function(require) {
                 // Splice in transparent for the center circle
                 Highcharts.getOptions().colors.splice(0, 0, 'transparent');
                 Highcharts.chart('sunburst-container', {
+                plotOptions: {
+                     sunburst: {
+                        allowTraversingTree:true,
+                    }
+                },
                     chart: {
                         height: '70%'
                     },
                     title: {
-                        text: result.upper_level
+                        text: ''
                     },
 //                    subtitle: {
 //                        text: result.upper_level
 //                    },
                     series: [{
+                        events: {
+                            click: function (event) {
+                                console.log('------------ event ------------', event)
+                                $('#group_name').text(event.point.name);
+                                $('#leadership_name').text('Leadership: ' + event.point.group_owner_name);
+                                $('#headcount_direct').text('Headcount Direct: ' + event.point.current_subscribers_count);
+                                $('#headcount_total').text('Headcount Total: ' + event.point.value);
+                                if(typeof event.point.drillId === "undefined") {
+                                    window.location.href = '/midardir/socialgroup/' + event.point.id
+                                }
+                            }
+                        },
                         type: 'sunburst',
+                        panning : true,
+                        pinchType: 'none',
+                        resetZoomButton: {
+                            theme: {
+                                display: 'none'
+                            }
+                        },
                         data: result.data,
                         allowDrillToNode: true,
                         cursor: 'pointer',

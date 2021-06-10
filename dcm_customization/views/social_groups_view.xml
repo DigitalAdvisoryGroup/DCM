@@ -120,5 +120,51 @@
     <menuitem id="social_partner_group_type_menu_act" name="Social Groups Type"
               parent="social.menu_social_configuration" action="social_partner_group_type_action" sequence="30"/>
 
+
+    <record id="social_partner_group_update_view_tree" model="ir.ui.view">
+        <field name="name">social.group.update.tree</field>
+        <field name="model">social.group.update</field>
+        <field name="arch" type="xml">
+            <tree string="Social Group Update">
+                <field name="partner_id" />
+                <field name="old_group_ids" />
+                <field name="new_group_ids" />
+            </tree>
+        </field>
+    </record>
+
+    <!-- social.partner.group form view -->
+    <record id="social_partner_group_update_view_form" model="ir.ui.view">
+        <field name="name">social.group.update.form</field>
+        <field name="model">social.group.update</field>
+        <field name="arch" type="xml">
+            <form string="Social Group Type">
+                <sheet>
+                    <group>
+                        <field name="partner_id" />
+                        <field name="old_group_ids" />
+                        <field name="new_group_ids" />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- social.partner.group action window -->
+    <record id="social_partner_group_update_action" model="ir.actions.act_window">
+        <field name="name">Social Groups Type</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">social.group.update</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+            </p><p>
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="social_partner_group_update_menu_act" name="Social Groups Update"
+              parent="social.menu_social_configuration" action="social_partner_group_update_action" sequence="40"/>
+
 </data>
 </odoo>
