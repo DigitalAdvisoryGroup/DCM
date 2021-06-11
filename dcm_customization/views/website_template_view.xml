@@ -268,7 +268,7 @@
             <div class="oe_structure">
                 <div class="container">
                     <div class="row">
-                        <div class="col-md-6" style="padding: 0;">
+                        <div class="col-md-6 d-none d-md-block" style="padding: 0;">
                             <ol class="breadcrumb mt8">
                                 <li class="breadcrumb-item">
                                     <a t-att-href="'/midardir?search=%s' % (search)">
@@ -289,12 +289,12 @@
                 </div>
                 <center>
                     <h2>
-                        <p id="group_name"><t t-esc="record.name"/></p>
+                        <p style="margin: 0px;" id="group_name"><t t-esc="record.name"/></p>
                     </h2>
                     <h4>
-                        <p id="leadership_name">Leadership: <t t-esc="record.group_owner_id.name"/></p>
-                        <p id="headcount_direct">Headcount Direct: <t t-esc="record.current_subscribers_count"/></p>
-                        <p id="headcount_total">Headcount Total: <t t-esc="record.current_and_childs_subscribers_count"/></p>
+                        <p style="margin: 0px;" id="leadership_name">Leadership: <t t-esc="record.group_owner_id.name"/></p>
+                        <p style="margin: 0px;" id="headcount_direct">Headcount Direct: <t t-esc="record.current_subscribers_count"/></p>
+                        <p style="margin: 0px;" id="headcount_total">Headcount Total: <t t-esc="record.current_and_childs_subscribers_count"/></p>
                     </h4>
                     <t t-if="parent_sc_group">
                         <a role='button' class='btn btn-primary' t-att-href="'/social_group_hierarchy?social_group_id=%s&amp;search=%s' % (parent_sc_group.id, search)">Upper Level</a>

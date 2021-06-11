@@ -52,6 +52,24 @@ class SocialPartnerGroups(models.Model):
     current_subscribers_count = fields.Integer("Child Subscribers", compute="_compute_subscriber_count")
     current_and_childs_subscribers_count = fields.Integer("Child Subscribers", compute="_compute_subscriber_count")
 
+    def get_mobile_sunburst_child_data(self, sunburst_data):
+        if self.code:
+            child_sg_ids = self.search([('is_org_unit', '=', True), ('parent2_id', '=', self.code)])
+            if child_sg_ids:
+                for child_sg in child_sg_ids:
+                    sunburst_data.append({'name': child_sg.name, 'id': str(child_sg.id), 'parent': self.id, 'value': self.current_subscribers_count})
+                    child_sg.get_mobile_sunburst_child_data(sunburst_data)
+                return sunburst_data
+            else:
+                return sunburst_data
+        else:
+            return sunburst_data
+
+    def get_mobile_sunburst_data(self):
+        sunburst_data = [{'name': self.name, 'id': str(self.id), 'parent': '', 'value': self.current_subscribers_count}]
+        sunburst_data = self.get_mobile_sunburst_child_data(sunburst_data)
+        return sunburst_data
+
     def get_child_count(self):
         if self.code:
             child_sg_ids = self.env['social.partner.group'].sudo().search([('is_org_unit', '=', True), ('parent2_id', '=', self.code)])

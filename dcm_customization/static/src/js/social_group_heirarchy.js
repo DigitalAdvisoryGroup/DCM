@@ -63,7 +63,7 @@ odoo.define('dcm_customization.social_group_heirarchy', function(require) {
                     }
                 },
                     chart: {
-                        height: '70%'
+                        height: '100%'
                     },
                     title: {
                         text: ''
