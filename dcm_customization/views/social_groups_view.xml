@@ -1,170 +1,204 @@
 <odoo>
-<data>
-    <!-- social.partner.group tree view -->
-    <record id="social_partner_group_view_tree" model="ir.ui.view">
-        <field name="name">social.partner.group.view.tree</field>
-        <field name="model">social.partner.group</field>
-        <field name="arch" type="xml">
-            <tree>
-                <field name="name" />
-                <field name="code"/>
-                <field name="parent2_id"/>
-                <field name="partner_ids" />
-            </tree>
-        </field>
-    </record>
+    <data>
+        <!-- social.partner.group tree view -->
+        <record id="social_partner_group_view_tree" model="ir.ui.view">
+            <field name="name">social.partner.group.view.tree</field>
+            <field name="model">social.partner.group</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="type_id"/>
+                    <field name="code"/>
+                    <field name="parent_id"/>
+                    <field name="parent2_id"/>
+                    <field name="partner_ids"/>
+                </tree>
+            </field>
+        </record>
 
-    <!-- social.partner.group form view -->
-    <record id="social_partner_group_view_form" model="ir.ui.view">
-        <field name="name">social.partner.group.view.form</field>
-        <field name="model">social.partner.group</field>
-        <field name="arch" type="xml">
-            <form string="">
-                <sheet>
-                    <div class="oe_button_box" name="button_box">
-                        <button class="oe_stat_button order-4" name="action_subscriber_list" type="object" icon="fa-user" attrs="{'invisible':[('child_ids','=',False)]}">
-                            <field name="child_total_count" string="Child Subscriber" widget="statinfo"/>
-                        </button>
-                        <button class="oe_stat_button order-4" name="action_subscriber_list_total" type="object" icon="fa-user">
-                            <field name="total_count" string="Total Subscriber" widget="statinfo"/>
-                        </button>
-                        <button class="oe_stat_button order-4" icon="fa-user" attrs="{'invisible':[('child_ids','=',False)]}">
-                            <field name="current_subscribers_count" string="Current Subscribers" widget="statinfo"/>
-                        </button>
-                        <button class="oe_stat_button order-4" icon="fa-user">
-                            <field name="current_and_childs_subscribers_count" string="Current and Childs Subscribers" widget="statinfo"/>
-                        </button>
-                    </div>
-                    <group>
-                        <field name="image_1920" widget="image" class="oe_avatar" options="{&quot;zoom&quot;: true, &quot;preview_image&quot;:&quot;image_128&quot;}"/>
-                    </group>
-                    <group>
-                        <field name="name"/>
+        <!-- social.partner.group form view -->
+        <record id="social_partner_group_view_form" model="ir.ui.view">
+            <field name="name">social.partner.group.view.form</field>
+            <field name="model">social.partner.group</field>
+            <field name="arch" type="xml">
+                <form string="Social Group">
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button class="oe_stat_button order-4" name="action_subscriber_list" type="object" icon="fa-user" attrs="{'invisible':[('child_ids','=',False)]}">
+                                <field name="child_total_count" string="Child Subscriber" widget="statinfo"/>
+                            </button>
 
-                        <field name="group_owner_id"/>
+                            <button class="oe_stat_button order-4" name="action_subscriber_list_total" type="object" icon="fa-user">
+                                <field name="total_count" string="Total Subscriber" widget="statinfo"/>
+                            </button>
 
+                            <button class="oe_stat_button order-4" icon="fa-user" attrs="{'invisible':[('child_ids','=',False)]}">
+                                <field name="current_subscribers_count" string="Current Subscribers" widget="statinfo"/>
+                            </button>
 
-                        <field name="code"/>
-                        <field name="parent2_id"/>
+                            <button class="oe_stat_button order-4" icon="fa-user">
+                                <field name="current_and_childs_subscribers_count" string="Current and Childs Subscribers" widget="statinfo"/>
+                            </button>
+
+                        </div>
+
+                        <group>
+                            <field name="image_1920" widget="image" class="oe_avatar" options="{&quot;zoom&quot;: true, &quot;preview_image&quot;:&quot;image_128&quot;}"/>
+                            <field name="name"/>
+                            <field name="code"/>
+                            <field name="group_owner_id"/>
+                            <field name="type_id" required="1"/>
+                            <field name="is_org_unit"/>
+                            <field name="last_import_flag" readonly="1"/>
+                        </group>
+
+                        <group col="2" name="Parent">
+
+                            <group name="Distribution" string="Distribution">
+                                <field name="parent_id" domain="[('parent_id','=',False),('id','!=',id)]"/>
+                            </group>
+
+                            <group name="Organisation" string="Organisation">
+                                <field name="parent2_id"/>
+                            </group>
+                        </group>
+
                         <field name="id" invisible="1"/>
-                        <field name="parent_id" domain="[('parent_id','=',False),('id','!=',id)]"/>
-                        <field name="type_id" required="1"/>
-                        <field name="is_org_unit" />
                         <field name="partner_ids"/>
                         <field name="child_ids" invisible="1"/>
                         <field name="parent_id" invisible="1"/>
-                    </group>
-                </sheet>
-            </form>
-        </field>
-    </record>
+                    </sheet>
 
-    <!-- social.partner.group action window -->
-    <record id="social_partner_group_action" model="ir.actions.act_window">
-        <field name="name">Social Groups</field>
-        <field name="type">ir.actions.act_window</field>
-        <field name="res_model">social.partner.group</field>
-        <field name="view_mode">tree,form</field>
-        <field name="help" type="html">
-            <p class="oe_view_nocontent_create">
-            </p><p>
-            </p>
-        </field>
-    </record>
-
-    <!-- This Menu Item must have a parent and an action -->
-    <menuitem id="social_partner_group_menu_act" name="Social Groups" parent="social.menu_social_configuration" action="social_partner_group_action" sequence="20"/>
-
-    <!-- social.partner.group tree view -->
-    <record id="social_partner_group_type_view_tree" model="ir.ui.view">
-        <field name="name">social.partner.group.type.view.tree</field>
-        <field name="model">social.partner.group.type</field>
-        <field name="arch" type="xml">
-            <tree string="Social Group Type">
-                <field name="name" />
-                <field name="is_org_unit" />
-            </tree>
-        </field>
-    </record>
-
-    <!-- social.partner.group form view -->
-    <record id="social_partner_group_type_view_form" model="ir.ui.view">
-        <field name="name">social.partner.group.type.view.form</field>
-        <field name="model">social.partner.group.type</field>
-        <field name="arch" type="xml">
-            <form string="Social Group Type">
-                <sheet>
-                    <field name="image_1920" widget="image" class="oe_avatar" options="{&quot;zoom&quot;: true, &quot;preview_image&quot;:&quot;image_128&quot;}"/>
-                    <group>
-                        <field name="name"/>
-                        <field name="is_org_unit"/>
-                    </group>
-                </sheet>
-            </form>
-        </field>
-    </record>
-
-    <!-- social.partner.group action window -->
-    <record id="social_partner_group_type_action" model="ir.actions.act_window">
-        <field name="name">Social Groups Type</field>
-        <field name="type">ir.actions.act_window</field>
-        <field name="res_model">social.partner.group.type</field>
-        <field name="view_mode">tree,form</field>
-        <field name="help" type="html">
-            <p class="oe_view_nocontent_create">
-            </p><p>
-            </p>
-        </field>
-    </record>
-
-    <menuitem id="social_partner_group_type_menu_act" name="Social Groups Type"
-              parent="social.menu_social_configuration" action="social_partner_group_type_action" sequence="30"/>
+                </form>
+            </field>
+        </record>
 
 
-    <record id="social_partner_group_update_view_tree" model="ir.ui.view">
-        <field name="name">social.group.update.tree</field>
-        <field name="model">social.group.update</field>
-        <field name="arch" type="xml">
-            <tree string="Social Group Update">
-                <field name="partner_id" />
-                <field name="old_group_ids" />
-                <field name="new_group_ids" />
-            </tree>
-        </field>
-    </record>
+        <record id="social_partner_group_view_search" model="ir.ui.view">
+            <field name="name">social.partner.group.view.search</field>
+            <field name="model">social.partner.group</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name" string="Name"/>
+                    <field name="code" string="Code"/>
+                    <field name="parent_id" string="Parent dist list"/>
+                    <field name="parent2_id" string="Parent org unit"/>
+                </search>
+            </field>
+        </record>
 
-    <!-- social.partner.group form view -->
-    <record id="social_partner_group_update_view_form" model="ir.ui.view">
-        <field name="name">social.group.update.form</field>
-        <field name="model">social.group.update</field>
-        <field name="arch" type="xml">
-            <form string="Social Group Type">
-                <sheet>
-                    <group>
-                        <field name="partner_id" />
-                        <field name="old_group_ids" />
-                        <field name="new_group_ids" />
-                    </group>
-                </sheet>
-            </form>
-        </field>
-    </record>
 
-    <!-- social.partner.group action window -->
-    <record id="social_partner_group_update_action" model="ir.actions.act_window">
-        <field name="name">Social Groups Type</field>
-        <field name="type">ir.actions.act_window</field>
-        <field name="res_model">social.group.update</field>
-        <field name="view_mode">tree,form</field>
-        <field name="help" type="html">
-            <p class="oe_view_nocontent_create">
-            </p><p>
-            </p>
-        </field>
-    </record>
+        <!-- social.partner.group action window -->
+        <record id="social_partner_group_action" model="ir.actions.act_window">
+            <field name="name">Social Groups</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">social.partner.group</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                </p>
+                <p>
+                </p>
+            </field>
+        </record>
 
-    <menuitem id="social_partner_group_update_menu_act" name="Social Groups Update"
-              parent="social.menu_social_configuration" action="social_partner_group_update_action" sequence="40"/>
+        <!-- This Menu Item must have a parent and an action -->
+        <menuitem id="social_partner_group_menu_act" name="Social Groups" parent="social.menu_social_configuration" action="social_partner_group_action" sequence="20"/>
 
-</data>
+        <!-- social.partner.group tree view -->
+        <record id="social_partner_group_type_view_tree" model="ir.ui.view">
+            <field name="name">social.partner.group.type.view.tree</field>
+            <field name="model">social.partner.group.type</field>
+            <field name="arch" type="xml">
+                <tree string="Social Group Type">
+                    <field name="name"/>
+                    <field name="is_org_unit"/>
+                    <field name="is_user_updatable"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- social.partner.group form view -->
+        <record id="social_partner_group_type_view_form" model="ir.ui.view">
+            <field name="name">social.partner.group.type.view.form</field>
+            <field name="model">social.partner.group.type</field>
+            <field name="arch" type="xml">
+                <form string="Social Group Type">
+                    <sheet>
+                        <field name="image_1920" widget="image" class="oe_avatar" options="{&quot;zoom&quot;: true, &quot;preview_image&quot;:&quot;image_128&quot;}"/>
+                        <group>
+                            <field name="name"/>
+                            <field name="is_org_unit"/>
+                            <field name="is_user_updatable"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- social.partner.group action window -->
+        <record id="social_partner_group_type_action" model="ir.actions.act_window">
+            <field name="name">Social Groups Type</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">social.partner.group.type</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                </p>
+                <p>
+                </p>
+            </field>
+        </record>
+
+        <menuitem id="social_partner_group_type_menu_act" name="Social Groups Type"
+                  parent="social.menu_social_configuration" action="social_partner_group_type_action" sequence="30"/>
+
+
+        <record id="social_partner_group_update_view_tree" model="ir.ui.view">
+            <field name="name">social.group.update.tree</field>
+            <field name="model">social.group.update</field>
+            <field name="arch" type="xml">
+                <tree string="Social Group Update">
+                    <field name="partner_id"/>
+                    <field name="old_group_ids"/>
+                    <field name="new_group_ids"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- social.partner.group form view -->
+        <record id="social_partner_group_update_view_form" model="ir.ui.view">
+            <field name="name">social.group.update.form</field>
+            <field name="model">social.group.update</field>
+            <field name="arch" type="xml">
+                <form string="Social Group Type">
+                    <sheet>
+                        <group>
+                            <field name="partner_id"/>
+                            <field name="old_group_ids"/>
+                            <field name="new_group_ids"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- social.partner.group action window -->
+        <record id="social_partner_group_update_action" model="ir.actions.act_window">
+            <field name="name">Social Groups Type</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">social.group.update</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                </p>
+                <p>
+                </p>
+            </field>
+        </record>
+
+        <menuitem id="social_partner_group_update_menu_act" name="Social Groups Update"
+                  parent="social.menu_social_configuration" action="social_partner_group_update_action" sequence="40"/>
+
+    </data>
 </odoo>

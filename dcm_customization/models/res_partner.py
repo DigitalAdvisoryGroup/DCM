@@ -80,9 +80,18 @@ class ResPartner(models.Model):
     xing = fields.Char("Xing Profile")
     manager_id = fields.Many2one("res.partner","Manager")
     name_switched = fields.Char("Switched Name (Family First)")
+    sec_email = fields.Char("Secondary Email")
+    last_import_flag = fields.Char("Last import flag")
 
 
     ext_tag_lines = fields.One2many("partner.extended.tag.level", "partner_id", string="Extended Tags")
+
+
+    # def get_profile_field_data_help(self, app_field=False, mode='edit'):
+    #     if app_field:
+    #         if mode == 'edit':
+
+
 
     def update_store_fields(self):
         for part in self:
@@ -309,6 +318,7 @@ class ResPartner(models.Model):
                 'linkedin' : self.linkedin or '',
                 'msteams': self.msteams or '',
                 'skype': self.skype or '',
+                'sec_email': self.sec_email or '',
                 #third slide
                 'street': self.street or '',
                 'street2': self.street2 or '',
@@ -379,6 +389,8 @@ class ResPartner(models.Model):
                 else:
                     final_data.append({
                         "name": group.type_id and group.type_id.name or '',
+                        "is_user_updatable": group.type_id and group.type_id.is_user_updatable or False,
+                        "id": group.type_id and group.type_id.id or '',
                         "data": [{
                             "root_group": parent_sg_id and parent_sg_id.name or '',
                             "current_group": group.name,
