@@ -34,4 +34,4 @@ class ResConfigSettings(models.TransientModel):
     upload_limit = fields.Integer("File Upload Limit(MB)",related="company_id.upload_limit",readonly=False)
     iframe_acess_token = fields.Char("Iframe Access Token",related="company_id.iframe_acess_token",readonly=False)
     iframe_url = fields.Char("Iframe Access Token",related="company_id.iframe_url")
-    infomation_url = fields.Char("URL to Midar information", related="company_id.infomation_url")
+    infomation_url = fields.Char("URL to Midar information", related="company_id.infomation_url",readonly=False)

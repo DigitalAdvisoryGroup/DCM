@@ -240,4 +240,13 @@ class SocialGroupUpdate(models.Model):
                 "new_group_ids": new_group
             }
             res_id = self.create(vals).id
+            res_id.assing_parnter_group()
         return res_id
+
+
+    def assing_parnter_group(self):
+        if self.old_group_ids:
+            self.old_group_ids.write({'partner_ids': [(3, self.partner_id.id)]})
+        if self.new_group_ids:
+            self.new_group_ids.write({'partner_ids': [(4, self.partner_id.id)]})
+
