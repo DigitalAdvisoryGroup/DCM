@@ -70,18 +70,18 @@ class ResPartner(models.Model):
     id_code = fields.Char("Identification Code")
 
 
-    empl_number = fields.Char("Employee Number")
-    room_number = fields.Char("Room Number")
-    phone2 = fields.Char("Private Number")
-    linkedin = fields.Char("Linkedin Profile")
-    msteams = fields.Char("MS Teams ID")
-    fax = fields.Char("Telefax Number")
-    skype = fields.Char("Skype Number")
-    xing = fields.Char("Xing Profile")
-    manager_id = fields.Many2one("res.partner","Manager")
+    empl_number = fields.Char("Employee Number", help="Employee Number")
+    room_number = fields.Char("Room Number",help="Room Number")
+    phone2 = fields.Char("Private Number",help="Private Number")
+    linkedin = fields.Char("Linkedin Profile",help="Linkedin Profile")
+    msteams = fields.Char("MS Teams ID",help="MS Teams ID")
+    fax = fields.Char("Telefax Number",help="Telefax Number")
+    skype = fields.Char("Skype Number",help="Skype Number")
+    xing = fields.Char("Xing Profile",help="Xing Profile")
+    manager_id = fields.Many2one("res.partner","Manager",help="Manager")
     name_switched = fields.Char("Switched Name (Family First)")
-    sec_email = fields.Char("Secondary Email")
-    last_import_flag = fields.Char("Last import flag")
+    sec_email = fields.Char("Secondary Email",help="Secondary Email")
+    last_import_flag = fields.Char("Last import flag",help="")
 
 
     ext_tag_lines = fields.One2many("partner.extended.tag.level", "partner_id", string="Extended Tags")
@@ -293,8 +293,17 @@ class ResPartner(models.Model):
                     })
         return final_list
 
-
-
+    def get_field_edit_help(self, field_name=False):
+        field_value = ''
+        field_string = ''
+        field_help = ''
+        if field_name:
+            field_id = self.env['ir.model.fields'].with_context(lang=self.lang).search([('model_id.model','=',self._name),('name','=',field_name)])
+            if field_id:
+                field_value = self[field_name] or ''
+                field_string = field_id.field_description or ''
+                field_help = field_id.help or ''
+        return {"data": {"field_value": field_value,"field_string": field_string, "field_help": field_help}}
 
     def get_partner_profile_data(self):
         data = []
