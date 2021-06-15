@@ -374,6 +374,9 @@ class ResPartner(models.Model):
     def get_group_data_latest(self):
         final_data = []
         for group in self.social_group_id:
+            _logger.info("------------group------profile---1----%s",group)
+            _logger.info("------------group------profile---2----%s",group.name)
+            _logger.info("------------group------profile---3----%s",group.is_org_unit)
             if group.is_org_unit:
                 parent_sg_id = False
                 if group.parent2_id:
