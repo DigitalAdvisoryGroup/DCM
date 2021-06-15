@@ -8,6 +8,7 @@ class ResCompany(models.Model):
     fcm_title_message = fields.Char('Notification Title Message', translate=True)
     fcm_reply_title_message = fields.Char('Reply Notification Title Message', translate=True)
     privacy_policy_url = fields.Char("Accept Privacy and Policy Terms URL")
+    infomation_url = fields.Char("URL to Midar information")
     upload_limit = fields.Integer("File Upload Limit(MB)")
     iframe_acess_token = fields.Char("Iframe Token")
     iframe_url = fields.Char("Iframe URL", compute="_set_iframe_url", store=True)
@@ -33,3 +34,4 @@ class ResConfigSettings(models.TransientModel):
     upload_limit = fields.Integer("File Upload Limit(MB)",related="company_id.upload_limit",readonly=False)
     iframe_acess_token = fields.Char("Iframe Access Token",related="company_id.iframe_acess_token",readonly=False)
     iframe_url = fields.Char("Iframe Access Token",related="company_id.iframe_url")
+    infomation_url = fields.Char("URL to Midar information", related="company_id.infomation_url",readonly=False)

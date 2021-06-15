@@ -18,5 +18,8 @@ class ResUsers(models.Model):
     def get_privacy_policy_url(self):
         return {'privacy_policy_url':self.company_id.privacy_policy_url or ""}
 
+    def get_information_help_url(self):
+        return {'infomation_url':self.company_id.infomation_url or ""}
+
     def get_global_search_right(self, test=False):
         return self.env.user.has_group('dcm_customization.group_global_search_administrator')

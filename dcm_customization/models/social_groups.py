@@ -25,7 +25,32 @@ class SocialPartnerGroupsType(models.Model):
     image_1920 = fields.Image(default=_default_image)
     name = fields.Char("Name", required=True,translate=True)
     is_org_unit = fields.Boolean(string="Org Unit Flag")
+    is_user_updatable = fields.Boolean(string="User updatable")
     # type = fields.Selection([('normal', 'Normal'), ('functional', 'Functional')], string="Type", default="normal")
+
+
+    def get_social_group_data(self,partner_id=False):
+        res = {"selected_data": [], "unselected_data": []}
+        if partner_id:
+            partner_browse = self.env['res.partner'].browse(int(partner_id))
+            sel_groups = partner_browse.social_group_id.filtered(lambda x: x.type_id.id == self.id)
+            if sel_groups:
+                res['selected_data'] = [{
+                    "id": x.id,
+                    "name": x.name,
+                    "code": x.code or ''
+                } for x in sel_groups]
+            unsel_groups = self.env['social.partner.group'].search([('type_id','=',self.id),('is_org_unit','=',True)])
+            if unsel_groups:
+                res['unselected_data'] = [{
+                    "id": x.id,
+                    "name": x.name,
+                    "code": x.code or ''
+                } for x in unsel_groups]
+        _logger.info("-------group-------update----------%s",res)
+        return {"data": res}
+
+
 
 
 class SocialPartnerGroups(models.Model):
@@ -49,21 +74,53 @@ class SocialPartnerGroups(models.Model):
     child_ids = fields.One2many('social.partner.group','parent_id',string="Child Groups")
     total_count = fields.Integer("Total Subscribers",compute="compute_total_count")
     child_total_count = fields.Integer("Child Subscribers",compute="compute_total_count")
-
+    current_subscribers_count = fields.Integer("Child Subscribers", compute="_compute_subscriber_count")
+    current_and_childs_subscribers_count = fields.Integer("Child Subscribers", compute="_compute_subscriber_count")
     group_owner_id = fields.Many2one("res.partner", string="Group Owner")
     is_org_unit = fields.Boolean(string="Org Unit Flag")
-    # oe1_id = fields.Char("OE 1")
-    # oe2_id = fields.Char("OE 2")
-    # oe3_id = fields.Char("OE 3")
-    # oe_key = fields.Char("OE-Key")
-    # ou1_id = fields.Char("OU 1")
-    # ou2_id = fields.Char("OU 2")
-    # ou3_id = fields.Char("OU 3")
-    # ou_key = fields.Char("Org Unit Key")
-
     parent2_id = fields.Char("Parent (new)")
     code = fields.Char("Code")
-    
+    last_import_flag = fields.Char("Last import flag")
+
+
+    def get_mobile_sunburst_child_data(self, sunburst_data):
+        if self.code:
+            child_sg_ids = self.search([('is_org_unit', '=', True), ('parent2_id', '=', self.code)])
+            if child_sg_ids:
+                for child_sg in child_sg_ids:
+                    sunburst_data.append({'name': child_sg.name, 'id': child_sg.id, 'parent': self.id, 'value': self.current_subscribers_count})
+                    child_sg.get_mobile_sunburst_child_data(sunburst_data)
+                return sunburst_data
+            else:
+                return sunburst_data
+        else:
+            return sunburst_data
+
+    def get_mobile_sunburst_data(self):
+        sunburst_data = [{'name': self.name, 'id': self.id, 'parent': 0, 'value': self.current_subscribers_count}]
+        sunburst_data = self.get_mobile_sunburst_child_data(sunburst_data)
+        return sunburst_data
+
+    def get_child_count(self):
+        if self.code:
+            child_sg_ids = self.env['social.partner.group'].sudo().search([('is_org_unit', '=', True), ('parent2_id', '=', self.code)])
+            if child_sg_ids:
+                count = 0
+                for cs in child_sg_ids:
+                    count += cs.get_child_count()
+                return len(self.partner_ids.ids) + count
+            else:
+                return len(self.partner_ids.ids)
+        else:
+            return len(self.partner_ids.ids)
+
+    @api.depends('partner_ids')
+    def _compute_subscriber_count(self):
+        for record in self:
+            record.current_subscribers_count = len(record.partner_ids.ids)
+            record.get_child_count()
+            record.current_and_childs_subscribers_count = record.get_child_count()
+
     def action_subscriber_list(self):
         action = self.env.ref('contacts.action_contacts').read()[0]
         partner_ids = self.child_ids.mapped('partner_ids').ids
@@ -163,4 +220,33 @@ class SocialPartnerGroups(models.Model):
                 else:
                     return {'id' : parent_sg_id.id,'name' :parent_sg_id.name,'children' : []}
 
+class SocialGroupUpdate(models.Model):
+    _name = "social.group.update"
+
+    partner_id = fields.Many2one("res.partner", "Partner")
+    name = fields.Char(related="partner_id.name", string="Name", store=True)
+    old_group_ids = fields.Many2many("social.partner.group", "rel_social_partner_group_old_update", "group_update_old_id","group_old_id", string="Old Groups")
+    new_group_ids = fields.Many2many("social.partner.group", "rel_social_partner_group_new_update", "group_update_new_id","group_new_id", string="New Groups")
+
+
+
+    def update_social_group(self, partner_id=False,new_group=False):
+        res_id = False
+        if partner_id:
+            partner_browse = self.env['res.partner'].browse(int(partner_id))
+            vals = {
+                "partner_id": int(partner_id),
+                "old_group_ids": partner_browse.social_group_id.ids,
+                "new_group_ids": new_group
+            }
+            res_id = self.create(vals).id
+            res_id.assing_parnter_group()
+        return res_id
+
+
+    def assing_parnter_group(self):
+        if self.old_group_ids:
+            self.old_group_ids.write({'partner_ids': [(3, self.partner_id.id)]})
+        if self.new_group_ids:
+            self.new_group_ids.write({'partner_ids': [(4, self.partner_id.id)]})
 

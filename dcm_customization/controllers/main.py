@@ -198,15 +198,19 @@ class MidarVideoAttachment(http.Controller):
             level_3_dict = {}
         prevpath = request.httprequest.referrer
         parent = kw.get('parent')
-        print("--------here000000000000000")
+        org_data_latest = partner.with_context(lang=partner.lang).get_group_data_latest()
+        responsbility = partner.get_resp_contact_data()
+        print("---------responsbility------------",responsbility)
         return request.render("dcm_customization.midardir_contact", {'record': partner,
-                                                                     'level_1': level_1_dict,
+                                                                     # 'level_1': level_1_dict,
                                                                      'search': kw.get("search"),
                                                                      'lang_name': request.env['res.lang']._lang_get(partner.lang).name,
-                                                                     'level_2': level_2_dict,
-                                                                     'level_3': level_3_dict,
+                                                                     # 'level_2': level_2_dict,
+                                                                     # 'level_3': level_3_dict,
                                                                      'parent': parent,
                                                                      'prevpath': prevpath,
+                                                                     'org_data_latest': org_data_latest,
+                                                                     'responsbility': responsbility
                                                                      })
 
     @http.route('/midardir/socialgroup/<model("social.partner.group"):social_group>', type='http', auth='public', website=True, csrf=False)
@@ -243,7 +247,11 @@ class MidarVideoAttachment(http.Controller):
         prevpath = request.httprequest.referrer
         if kw.get('social_group_id'):
             sc_groups = request.env['social.partner.group'].sudo().browse(int(kw.get('social_group_id')))
-        return request.render('dcm_customization.midardir_social_group_heirarchical_view',{'social_group_id' : kw.get('social_group_id') if kw.get('social_group_id') else False,'type' : sc_groups.type_id.name if sc_groups else False,'search':kw.get('search') if kw.get('search') else False,'prevpath': prevpath,'record' : sc_groups,'parent' : sc_groups.name})
+        parent_sc_group = False
+        if sc_groups.parent2_id:
+            parent_sc_group = request.env['social.partner.group'].sudo().search(
+                    [('is_org_unit', '=', True), ('code', '=', sc_groups.parent2_id)])
+        return request.render('dcm_customization.midardir_social_group_heirarchical_view',{'parent_sc_group': parent_sc_group, 'social_group_id' : kw.get('social_group_id') if kw.get('social_group_id') else False,'type' : sc_groups.type_id.name if sc_groups else False,'search':kw.get('search') if kw.get('search') else False,'prevpath': prevpath,'record' : sc_groups,'parent' : sc_groups.name})
 
     def get_parent_data(self,group_id,group_data,search):
         sc_groups = request.env['social.partner.group'].sudo().browse(group_id)
@@ -311,17 +319,6 @@ class MidarVideoAttachment(http.Controller):
                 }
                 hierarchy_child_data =  self.get_children_data(partner_group_id,main_level_data)
                 hierarchy_dict.update(hierarchy_child_data)
-                
-            # for key,dt in data.items():
-                # if key == 'social.partner.group':
-                    # for soc_gr_data in dt.get('data'):
-                        # for s_key,s_group in soc_gr_data.items():
-                            # hierarchy_data = []
-                            # for main_data in s_group:
-                                # hierarchy_parent_data = self.get_heirarchy_data(main_data.get('id'),kw['search_query'])
-                                # hierarchy_data.append(hierarchy_parent_data)
-                            # hierarchy_dict.update({s_key : hierarchy_data})   
-            print("--------hierarchy_dict-----------iframe--",hierarchy_dict)
             return hierarchy_dict
         
     def get_tree_parent_data(self,group_id,group_data,search):
@@ -367,8 +364,6 @@ class MidarVideoAttachment(http.Controller):
     
     def get_tree_heirarchy_data(self,group_id,search):
         sc_groups = request.env['social.partner.group'].sudo().browse(group_id)
-        # if not sc_groups.parent2_id:
-            # return {'id' : sc_groups.id,'label' :'<b><a href="/midardir/socialgroup/%d?search=%s" style="font-size:larger;">%s</a></b>' %(sc_groups.id,search,sc_groups.name),'children' : []}
         group_data = {'id' : sc_groups.id,'label' :'<b><a href="/midardir/socialgroup/%d?search=%s" style="font-size:larger;">%s</a></b>' %(sc_groups.id,search,sc_groups.name),'children' : []}
         
         # hierarchy_children = self.get_tree_children_data(group_id,group_data,search)
@@ -388,8 +383,42 @@ class MidarVideoAttachment(http.Controller):
             # hierarchy_data.append(hierarchy_parent_data)
             heirachy_main_data = {'label' :'<b>' + group_id.type_id.name + '</b>','children' : [hierarchy_children_data]}
             hierarchy_dict.update({group_id.name : heirachy_main_data})   
-            print("--------tree hierarchy_dict-----------iframe--",hierarchy_dict)
             return hierarchy_dict
+
+    @http.route('/get_sunburst_details', auth="public", type="json", website=True)
+    def get_sunburst_details(self, **kw):
+        if kw.get('social_group_id'):
+            search = kw.get('search')
+            sc_groups = request.env['social.partner.group'].sudo().browse(int(kw.get('social_group_id')))
+            data = self.get_sunburst_data(sc_groups,search)
+            return {"data": data, "header": sc_groups.name, "current_group": sc_groups.name}
+
+    def get_sunburst_data(self, main_sc_group, search):
+        group_data = [{'id': str(main_sc_group.id), 'name': main_sc_group.name, 'parent': '','value': 1}]
+        if main_sc_group.code:
+            child_sg_ids = request.env['social.partner.group'].sudo().search([('is_org_unit', '=', True), ('parent2_id', '=', main_sc_group.code)])
+            if child_sg_ids:
+                for child_sg in child_sg_ids:
+                    group_data.append({'id': str(child_sg.id), 'current_subscribers_count': child_sg.current_subscribers_count, 'group_owner_name': child_sg.group_owner_id.name, 'name': child_sg.name, 'parent': main_sc_group.id, 'value': child_sg.current_and_childs_subscribers_count})
+
+                for second_level_sg in child_sg_ids:
+                    self.get_sunburst_children_data(second_level_sg, group_data, search)
+        return group_data
+
+    def get_sunburst_children_data(self, sc_group, group_data, search):
+        if sc_group and sc_group.code:
+            child_sg_ids = request.env['social.partner.group'].sudo().search([('is_org_unit', '=', True), ('parent2_id', '=', sc_group.code)])
+            if child_sg_ids:
+                group_data.append({'id': str(sc_group.id)+"dummy", 'current_subscribers_count': sc_group.current_subscribers_count, 'group_owner_name': sc_group.group_owner_id.name, 'name': sc_group.name, 'parent': sc_group.id, 'value': len(sc_group.partner_ids.ids)})
+                for child_sg in child_sg_ids:
+                    group_data.append({'id': str(child_sg.id), 'current_subscribers_count': child_sg.current_subscribers_count, 'group_owner_name': child_sg.group_owner_id.name, 'name': child_sg.name, 'parent': sc_group.id, 'value': child_sg.current_and_childs_subscribers_count})
+                    self.get_sunburst_children_data(child_sg, group_data, search)
+                return group_data
+            else:
+                return group_data
+        else:
+            return group_data
+
         
 class PortalAccount(CustomerPortal):
     @http.route()

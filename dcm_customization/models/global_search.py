@@ -105,7 +105,11 @@ class GlobalSearchConfig(models.Model):
     def get_global_search_configuration_data(self, search_string, partner_id=False, device_type="web"):
         data = []
         if search_string:
-            recs = self.search([])
+            if partner_id:
+                partner_browse = self.env['res.partner'].browse(int(partner_id))
+                recs = self.with_context(lang=partner_browse.lang).search([])
+            else:
+                recs = self.search([])
             if recs:
                 for rec in recs:
                     models = rec.get_models()
@@ -157,6 +161,7 @@ class GlobalSearchConfig(models.Model):
     def get_records(self, data, partner_id=False, device_type="web"):
         global_data = {}
         self = self.sudo()
+        partner_browse = self.env['res.partner'].browse(int(partner_id))
         if data:
             models = self.get_models()
             domains = self.get_model_domains(data)
@@ -164,7 +169,10 @@ class GlobalSearchConfig(models.Model):
             _logger.info("-------domains---------%s",domains)
             for model in models.keys():
                 print("-------model----------",model)
-                results = self.env[model.split('-')[0]].sudo().search_read(domains[model], self.result_fields_lines.mapped("name"))
+                if partner_browse:
+                    results = self.env[model.split('-')[0]].sudo().with_context(lang=partner_browse.lang).search_read(domains[model], self.result_fields_lines.mapped("name"))
+                else:
+                    results = self.env[model.split('-')[0]].sudo().search_read(domains[model], self.result_fields_lines.mapped("name"))
                 if results:
                     for r in results:
                         base_url = self.env['ir.config_parameter'].sudo().get_param(
@@ -172,7 +180,10 @@ class GlobalSearchConfig(models.Model):
                         if IMAGE_FIELDS.get(model):
                             image_url = url_join(base_url, '/web/myimage/%s/%s/%s/?%s' % (model,r['id'],IMAGE_FIELDS[model],str(int(time.time() * 100000))[-15:]))
                         elif model == "social.post":
-                            post = self.env['social.post'].sudo().search([("id","=",r['id'])])
+                            if partner_browse:
+                                post = self.env['social.post'].sudo().with_context(lang=partner_browse.lang).search([("id","=",r['id'])])
+                            else:
+                                post = self.env['social.post'].sudo().search([("id", "=", r['id'])])
                             image_url = url_join(base_url,'/web/image/utm.campaign/%s/image_128/%s'%(post.utm_campaign_id.id,post.utm_campaign_id.file_name))
                             before_msg = string_before(r['message'],data)[-40:]
                             after_msg = string_after(r['message'],data)[-40:]
