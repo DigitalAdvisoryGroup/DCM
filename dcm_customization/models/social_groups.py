@@ -227,16 +227,17 @@ class SocialGroupUpdate(models.Model):
     name = fields.Char(related="partner_id.name", string="Name", store=True)
     old_group_ids = fields.Many2many("social.partner.group", "rel_social_partner_group_old_update", "group_update_old_id","group_old_id", string="Old Groups")
     new_group_ids = fields.Many2many("social.partner.group", "rel_social_partner_group_new_update", "group_update_new_id","group_new_id", string="New Groups")
+    social_group_type_id = fields.Many2one("social.partner.group.type",string="Group Type")
 
 
-
-    def update_social_group(self, partner_id=False,new_group=False):
+    def update_social_group(self, partner_id=False,new_group=False,group_type=False):
         res_id = False
         if partner_id:
             partner_browse = self.env['res.partner'].browse(int(partner_id))
             vals = {
+                "social_group_type_id": group_type,
                 "partner_id": int(partner_id),
-                "old_group_ids": partner_browse.social_group_id.ids,
+                "old_group_ids": partner_browse.social_group_id.filtered(lambda x: x.type_id.id == int(group_type)).ids,
                 "new_group_ids": new_group
             }
             res_id = self.create(vals)
