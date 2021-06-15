@@ -239,9 +239,9 @@ class SocialGroupUpdate(models.Model):
                 "old_group_ids": partner_browse.social_group_id.ids,
                 "new_group_ids": new_group
             }
-            res_id = self.create(vals).id
+            res_id = self.create(vals)
             res_id.assing_parnter_group()
-        return res_id
+        return res_id.id
 
 
     def assing_parnter_group(self):
