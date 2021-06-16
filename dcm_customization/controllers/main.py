@@ -111,6 +111,7 @@ class MidarVideoAttachment(http.Controller):
             data = request.env['global.search.config'].sudo().get_global_search_configuration_data(kw['search'])
         return request.render("dcm_customization.midardir_search_main_menu", {'search_models': data.keys(),'records': data,
                                                                     'search': kw.get("search"),
+                                                                    'token': kw.get("token"),
                                                                     })
         
     @http.route('/midardir/result', type='http', auth='public', website=True, csrf=False)
@@ -119,6 +120,8 @@ class MidarVideoAttachment(http.Controller):
         data_result = False
         result_fields = False
         model = False
+        if request.env.company.iframe_acess_token != kw.get("token"):
+            return request.render("http_routing.403", {})
         if kw and kw.get("search"):
             # data = request.env['global.search'].sudo().get_records(kw['search'])
             data = request.env['global.search.config'].sudo().get_global_search_configuration_data(kw['search'])
@@ -140,12 +143,15 @@ class MidarVideoAttachment(http.Controller):
                                                                     'result_fields' : result_fields,
                                                                     'model' : model,
                                                                     'page': page,
+                                                                    'token': kw.get("token"),
                                                                     # 'global_search_config': global_search_config
                                                                     })
 
     @http.route('/midardir/post/<model("social.post"):post>', type='http', auth='public', website=True)
     def midardir_post(self, post, **kw):
         print("--------post-------------",post)
+        if request.env.company.iframe_acess_token != kw.get("token"):
+            return request.render("http_routing.403", {})
         data = kw.get("search")
         base_url = request.env['ir.config_parameter'].sudo().get_param('web.base.url')
         image_url = url_join(base_url, '/web/image/utm.campaign/%s/image_128/%s' % (post.utm_campaign_id.id, post.utm_campaign_id.file_name))
@@ -165,10 +171,13 @@ class MidarVideoAttachment(http.Controller):
                                                                       'total_dislike_count': len(post.dislike_ids),
                                                                       'total_comment_count': len(post.comments_ids),
                                                                       'total_share_count': len(post.share_ids),
+                                                                  'token': kw.get("token"),
                                                                      })
 
     @http.route('/midardir/contact/<model("res.partner"):partner>', type='http', auth='public', website=True)
     def midardir_contact(self, partner,**kw):
+        if request.env.company.iframe_acess_token != kw.get("token"):
+            return request.render("http_routing.403", {})
         partner = partner.sudo()
         print("-------partner.display_name---------",partner.display_name)
         if partner.social_group_id:
@@ -210,7 +219,8 @@ class MidarVideoAttachment(http.Controller):
                                                                      'parent': parent,
                                                                      'prevpath': prevpath,
                                                                      'org_data_latest': org_data_latest,
-                                                                     'responsbility': responsbility
+                                                                     'responsbility': responsbility,
+                                                                     'token': kw.get("token"),
                                                                      })
 
     @http.route('/midardir/socialgroup/<model("social.partner.group"):social_group>', type='http', auth='public', website=True, csrf=False)
@@ -218,6 +228,8 @@ class MidarVideoAttachment(http.Controller):
         prevpath = request.httprequest.referrer
         parent = kw.get('parent')
         parent_sg_id = False
+        if request.env.company.iframe_acess_token != kw.get("token"):
+            return request.render("http_routing.403", {})
         if social_group:
             if social_group.parent2_id:
                 parent_sg_id = request.env['social.partner.group'].sudo().search([('code', '=', social_group.parent2_id)], limit=1)
@@ -226,12 +238,15 @@ class MidarVideoAttachment(http.Controller):
                                                                           'search': kw.get("search"),
                                                                           'parent': parent,
                                                                           'prevpath': prevpath,
+                                                                          'token': kw.get("token"),
                                                                      })
 
     @http.route('/midardir/res/contact/<model("res.partner"):partner>', type='http', auth='public', website=True, csrf=False)
     def midardir_cat_res(self, partner, **kw):
         prevpath = request.httprequest.referrer
         parent = kw.get('parent')
+        if request.env.company.iframe_acess_token != kw.get("token"):
+            return request.render("http_routing.403", {})
         if partner:
             parnter_ids = request.env['res.partner'].sudo().search([('is_company', '=', False), ('category_res_ids.name', '=', partner.id_code)])
         return request.render("dcm_customization.midardir_cat_res_contacts", {'partners': parnter_ids,
@@ -239,10 +254,13 @@ class MidarVideoAttachment(http.Controller):
                                                                               'search': kw.get("search"),
                                                                               'parent': parent,
                                                                               'prevpath': prevpath,
+                                                                              'token': kw.get("token"),
                                                                           })
         
     @http.route('/social_group_hierarchy', type='http', auth='public', website=True, csrf=False)
     def social_group_hierarchy(self,**kw):
+        if request.env.company.iframe_acess_token != kw.get("token"):
+            return request.render("http_routing.403", {})
         sc_groups = request.env['social.partner.group'].sudo()
         prevpath = request.httprequest.referrer
         if kw.get('social_group_id'):
@@ -251,7 +269,7 @@ class MidarVideoAttachment(http.Controller):
         if sc_groups.parent2_id:
             parent_sc_group = request.env['social.partner.group'].sudo().search(
                     [('is_org_unit', '=', True), ('code', '=', sc_groups.parent2_id)])
-        return request.render('dcm_customization.midardir_social_group_heirarchical_view',{'parent_sc_group': parent_sc_group, 'social_group_id' : kw.get('social_group_id') if kw.get('social_group_id') else False,'type' : sc_groups.type_id.name if sc_groups else False,'search':kw.get('search') if kw.get('search') else False,'prevpath': prevpath,'record' : sc_groups,'parent' : sc_groups.name})
+        return request.render('dcm_customization.midardir_social_group_heirarchical_view',{'token': kw.get("token"),'parent_sc_group': parent_sc_group, 'social_group_id' : kw.get('social_group_id') if kw.get('social_group_id') else False,'type' : sc_groups.type_id.name if sc_groups else False,'search':kw.get('search') if kw.get('search') else False,'prevpath': prevpath,'record' : sc_groups,'parent' : sc_groups.name})
 
     def get_parent_data(self,group_id,group_data,search):
         sc_groups = request.env['social.partner.group'].sudo().browse(group_id)
@@ -375,6 +393,8 @@ class MidarVideoAttachment(http.Controller):
         
     @http.route('/get_tree_heirarchy_details',auth="public",type="json",website=True)
     def get_tree_hierarchy_details(self,**kw):
+        if request.env.company.iframe_acess_token != kw.get("token"):
+            return request.render("http_routing.403", {})
         if kw.get('social_group_id'):
             search = kw.get('search')
             group_id = request.env['social.partner.group'].sudo().browse(int(kw['social_group_id']))
@@ -387,6 +407,8 @@ class MidarVideoAttachment(http.Controller):
 
     @http.route('/get_sunburst_details', auth="public", type="json", website=True)
     def get_sunburst_details(self, **kw):
+        if request.env.company.iframe_acess_token != kw.get("token"):
+            return request.render("http_routing.403", {})
         if kw.get('social_group_id'):
             search = kw.get('search')
             sc_groups = request.env['social.partner.group'].sudo().browse(int(kw.get('social_group_id')))

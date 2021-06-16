@@ -5,7 +5,8 @@ odoo.define('dcm_customization.social_group_heirarchy', function(require) {
         if ($('.social_group_hierarchy').length > 0) {
             ajax.jsonRpc('/get_tree_heirarchy_details', 'call', {
                 'search': $('input[name="social_group_search"]').val(),
-                'social_group_id': $('input[name="social_group_id"]').val()
+                'social_group_id': $('input[name="social_group_id"]').val(),
+                'token': $('input[name="token"]').val()
             }).then(function(result) {
                 var count = 0
                 _.each(result, function(value, key) {
@@ -28,6 +29,7 @@ odoo.define('dcm_customization.social_group_heirarchy', function(require) {
         if ($('#chart-container').length > 0) {
             ajax.jsonRpc('/get_heirarchy_details', 'call', {
                 'social_group_id': $('#chart-container').attr('group-id')
+               // 'token': $('input[name="token"]').val()
             }).then(function(result) {
                 console.log("Result---", result)
                 var oc = $('#chart-container').orgchart({
@@ -52,7 +54,8 @@ odoo.define('dcm_customization.social_group_heirarchy', function(require) {
         }
         if ($('#sunburst-container').length > 0) {
             ajax.jsonRpc('/get_sunburst_details', 'call', {
-                'social_group_id': $('#sunburst-container').attr('group-id')
+                'social_group_id': $('#sunburst-container').attr('group-id'),
+                'token': $('#sunburst-container').attr('token'),
             }).then(function(result) {
                 // Splice in transparent for the center circle
                 Highcharts.getOptions().colors.splice(0, 0, 'transparent');
