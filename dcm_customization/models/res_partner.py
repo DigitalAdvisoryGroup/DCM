@@ -369,7 +369,6 @@ class ResPartner(models.Model):
                 'org_data_latest': self.with_context(lang=self.lang).get_group_data_latest(),
                 'ext_tags': self.get_extended_tags_data(),
                 'is_mobile_user': self.is_token_available,
-                'is_display_chart': self.is_display_chart
             })
         return {'data': data}
 
