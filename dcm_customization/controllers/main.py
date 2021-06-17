@@ -111,6 +111,7 @@ class MidarVideoAttachment(http.Controller):
             data = request.env['global.search.config'].sudo().get_global_search_configuration_data(kw['search'])
         return request.render("dcm_customization.midardir_search_main_menu", {'search_models': data.keys(),'records': data,
                                                                     'search': kw.get("search"),
+                                                                    'token': kw.get("token"),
                                                                     })
         
     @http.route('/midardir/result', type='http', auth='public', website=True, csrf=False)
@@ -119,6 +120,8 @@ class MidarVideoAttachment(http.Controller):
         data_result = False
         result_fields = False
         model = False
+        if request.env.company.iframe_acess_token != kw.get("token"):
+            return request.render("http_routing.403", {})
         if kw and kw.get("search"):
             # data = request.env['global.search'].sudo().get_records(kw['search'])
             data = request.env['global.search.config'].sudo().get_global_search_configuration_data(kw['search'])
@@ -140,12 +143,15 @@ class MidarVideoAttachment(http.Controller):
                                                                     'result_fields' : result_fields,
                                                                     'model' : model,
                                                                     'page': page,
+                                                                    'token': kw.get("token"),
                                                                     # 'global_search_config': global_search_config
                                                                     })
 
     @http.route('/midardir/post/<model("social.post"):post>', type='http', auth='public', website=True)
     def midardir_post(self, post, **kw):
         print("--------post-------------",post)
+        if request.env.company.iframe_acess_token != kw.get("token"):
+            return request.render("http_routing.403", {})
         data = kw.get("search")
         base_url = request.env['ir.config_parameter'].sudo().get_param('web.base.url')
         image_url = url_join(base_url, '/web/image/utm.campaign/%s/image_128/%s' % (post.utm_campaign_id.id, post.utm_campaign_id.file_name))
@@ -165,10 +171,13 @@ class MidarVideoAttachment(http.Controller):
                                                                       'total_dislike_count': len(post.dislike_ids),
                                                                       'total_comment_count': len(post.comments_ids),
                                                                       'total_share_count': len(post.share_ids),
+                                                                  'token': kw.get("token"),
                                                                      })
 
     @http.route('/midardir/contact/<model("res.partner"):partner>', type='http', auth='public', website=True)
     def midardir_contact(self, partner,**kw):
+        if request.env.company.iframe_acess_token != kw.get("token"):
+            return request.render("http_routing.403", {})
         partner = partner.sudo()
         print("-------partner.display_name---------",partner.display_name)
         if partner.social_group_id:
@@ -210,7 +219,8 @@ class MidarVideoAttachment(http.Controller):
                                                                      'parent': parent,
                                                                      'prevpath': prevpath,
                                                                      'org_data_latest': org_data_latest,
-                                                                     'responsbility': responsbility
+                                                                     'responsbility': responsbility,
+                                                                     'token': kw.get("token"),
                                                                      })
 
     @http.route('/midardir/socialgroup/<model("social.partner.group"):social_group>', type='http', auth='public', website=True, csrf=False)
@@ -218,6 +228,8 @@ class MidarVideoAttachment(http.Controller):
         prevpath = request.httprequest.referrer
         parent = kw.get('parent')
         parent_sg_id = False
+        if request.env.company.iframe_acess_token != kw.get("token"):
+            return request.render("http_routing.403", {})
         if social_group:
             if social_group.parent2_id:
                 parent_sg_id = request.env['social.partner.group'].sudo().search([('code', '=', social_group.parent2_id)], limit=1)
@@ -226,12 +238,15 @@ class MidarVideoAttachment(http.Controller):
                                                                           'search': kw.get("search"),
                                                                           'parent': parent,
                                                                           'prevpath': prevpath,
+                                                                          'token': kw.get("token"),
                                                                      })
 
     @http.route('/midardir/res/contact/<model("res.partner"):partner>', type='http', auth='public', website=True, csrf=False)
     def midardir_cat_res(self, partner, **kw):
         prevpath = request.httprequest.referrer
         parent = kw.get('parent')
+        if request.env.company.iframe_acess_token != kw.get("token"):
+            return request.render("http_routing.403", {})
         if partner:
             parnter_ids = request.env['res.partner'].sudo().search([('is_company', '=', False), ('category_res_ids.name', '=', partner.id_code)])
         return request.render("dcm_customization.midardir_cat_res_contacts", {'partners': parnter_ids,
@@ -239,10 +254,13 @@ class MidarVideoAttachment(http.Controller):
                                                                               'search': kw.get("search"),
                                                                               'parent': parent,
                                                                               'prevpath': prevpath,
+                                                                              'token': kw.get("token"),
                                                                           })
         
     @http.route('/social_group_hierarchy', type='http', auth='public', website=True, csrf=False)
     def social_group_hierarchy(self,**kw):
+        if request.env.company.iframe_acess_token != kw.get("token"):
+            return request.render("http_routing.403", {})
         sc_groups = request.env['social.partner.group'].sudo()
         prevpath = request.httprequest.referrer
         if kw.get('social_group_id'):
@@ -251,7 +269,17 @@ class MidarVideoAttachment(http.Controller):
         if sc_groups.parent2_id:
             parent_sc_group = request.env['social.partner.group'].sudo().search(
                     [('is_org_unit', '=', True), ('code', '=', sc_groups.parent2_id)])
-        return request.render('dcm_customization.midardir_social_group_heirarchical_view',{'parent_sc_group': parent_sc_group, 'social_group_id' : kw.get('social_group_id') if kw.get('social_group_id') else False,'type' : sc_groups.type_id.name if sc_groups else False,'search':kw.get('search') if kw.get('search') else False,'prevpath': prevpath,'record' : sc_groups,'parent' : sc_groups.name})
+        values = {
+            'token': kw.get("token"),
+            'parent_sc_group': parent_sc_group,
+            'social_group_id': kw.get('social_group_id') if kw.get('social_group_id') else False,
+            'type': sc_groups.type_id.name if sc_groups else False,
+            'search': kw.get('search') if kw.get('search') else False,
+            'prevpath': prevpath,
+            'record': sc_groups,
+            'parent': sc_groups.name
+        }
+        return request.render('dcm_customization.midardir_social_group_heirarchical_view', values)
 
     def get_parent_data(self,group_id,group_data,search):
         sc_groups = request.env['social.partner.group'].sudo().browse(group_id)
@@ -375,6 +403,8 @@ class MidarVideoAttachment(http.Controller):
         
     @http.route('/get_tree_heirarchy_details',auth="public",type="json",website=True)
     def get_tree_hierarchy_details(self,**kw):
+        if request.env.company.iframe_acess_token != kw.get("token"):
+            return request.render("http_routing.403", {})
         if kw.get('social_group_id'):
             search = kw.get('search')
             group_id = request.env['social.partner.group'].sudo().browse(int(kw['social_group_id']))
@@ -387,32 +417,84 @@ class MidarVideoAttachment(http.Controller):
 
     @http.route('/get_sunburst_details', auth="public", type="json", website=True)
     def get_sunburst_details(self, **kw):
+        if request.env.company.iframe_acess_token != kw.get("token"):
+            return request.render("http_routing.403", {})
         if kw.get('social_group_id'):
             search = kw.get('search')
             sc_groups = request.env['social.partner.group'].sudo().browse(int(kw.get('social_group_id')))
-            data = self.get_sunburst_data(sc_groups,search)
+            data = self.get_sunburst_data(sc_groups,search, kw.get("token"))
             return {"data": data, "header": sc_groups.name, "current_group": sc_groups.name}
 
-    def get_sunburst_data(self, main_sc_group, search):
-        group_data = [{'id': str(main_sc_group.id), 'name': main_sc_group.name, 'parent': '','value': 1}]
+    def get_sunburst_data(self, main_sc_group, search, token):
+        group_data = [{
+            'id': str(main_sc_group.id),
+            'name': main_sc_group.name,
+            'parent': '',
+            'value': main_sc_group.current_and_childs_subscribers_count,
+            'parent_id': main_sc_group.id,
+            'parent_name': main_sc_group.name,
+            'parent_group_owner_id': main_sc_group.group_owner_id.id,
+            'parent_group_owner_name': main_sc_group.group_owner_id.name,
+            'parent_value': main_sc_group.current_and_childs_subscribers_count,
+            'parent_current_subscribers_count': main_sc_group.current_subscribers_count,
+        }]
         if main_sc_group.code:
             child_sg_ids = request.env['social.partner.group'].sudo().search([('is_org_unit', '=', True), ('parent2_id', '=', main_sc_group.code)])
             if child_sg_ids:
                 for child_sg in child_sg_ids:
-                    group_data.append({'id': str(child_sg.id), 'current_subscribers_count': child_sg.current_subscribers_count, 'group_owner_name': child_sg.group_owner_id.name, 'name': child_sg.name, 'parent': main_sc_group.id, 'value': child_sg.current_and_childs_subscribers_count})
+                    group_data.append({
+                        'id': str(child_sg.id),
+                        'current_subscribers_count': child_sg.current_subscribers_count,
+                        'group_owner_id': child_sg.group_owner_id.id,
+                        'group_owner_name': child_sg.group_owner_id.name,
+                        'name': child_sg.name,
+                        'parent': main_sc_group.id,
+                        'value': child_sg.current_and_childs_subscribers_count,
+                        'token': token,
+                        'parent_id': main_sc_group.id,
+                        'parent_name': main_sc_group.name,
+                        'parent_group_owner_id': main_sc_group.group_owner_id.id,
+                        'parent_group_owner_name': main_sc_group.group_owner_id.name,
+                        'parent_value': main_sc_group.current_and_childs_subscribers_count,
+                        'parent_current_subscribers_count': main_sc_group.current_subscribers_count,
+                    })
 
                 for second_level_sg in child_sg_ids:
-                    self.get_sunburst_children_data(second_level_sg, group_data, search)
+                    self.get_sunburst_children_data(second_level_sg, group_data, search, token)
         return group_data
 
-    def get_sunburst_children_data(self, sc_group, group_data, search):
+    def get_sunburst_children_data(self, sc_group, group_data, search, token):
         if sc_group and sc_group.code:
             child_sg_ids = request.env['social.partner.group'].sudo().search([('is_org_unit', '=', True), ('parent2_id', '=', sc_group.code)])
             if child_sg_ids:
-                group_data.append({'id': str(sc_group.id)+"dummy", 'current_subscribers_count': sc_group.current_subscribers_count, 'group_owner_name': sc_group.group_owner_id.name, 'name': sc_group.name, 'parent': sc_group.id, 'value': len(sc_group.partner_ids.ids)})
+                group_data.append({
+                    'id': str(sc_group.id)+"dummy",
+                    'current_subscribers_count': sc_group.current_subscribers_count,
+                    'group_owner_id': sc_group.group_owner_id.id,
+                    'group_owner_name': sc_group.group_owner_id.name,
+                    'name': sc_group.name,
+                    'parent': sc_group.id,
+                    'value': len(sc_group.partner_ids.ids),
+                    'token': token,
+                })
                 for child_sg in child_sg_ids:
-                    group_data.append({'id': str(child_sg.id), 'current_subscribers_count': child_sg.current_subscribers_count, 'group_owner_name': child_sg.group_owner_id.name, 'name': child_sg.name, 'parent': sc_group.id, 'value': child_sg.current_and_childs_subscribers_count})
-                    self.get_sunburst_children_data(child_sg, group_data, search)
+                    group_data.append({
+                        'id': str(child_sg.id),
+                        'current_subscribers_count': child_sg.current_subscribers_count,
+                        'group_owner_id': child_sg.group_owner_id.id,
+                        'group_owner_name': child_sg.group_owner_id.name,
+                        'name': child_sg.name,
+                        'parent': sc_group.id,
+                        'value': child_sg.current_and_childs_subscribers_count,
+                        'token': token,
+                        'parent_id': sc_group.id,
+                        'parent_name': sc_group.name,
+                        'parent_group_owner_id': sc_group.group_owner_id.id,
+                        'parent_group_owner_name': sc_group.group_owner_id.name,
+                        'parent_value': sc_group.current_and_childs_subscribers_count,
+                        'parent_current_subscribers_count': sc_group.current_subscribers_count,
+                    })
+                    self.get_sunburst_children_data(child_sg, group_data, search, token)
                 return group_data
             else:
                 return group_data

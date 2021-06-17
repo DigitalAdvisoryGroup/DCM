@@ -5,7 +5,8 @@ odoo.define('dcm_customization.social_group_heirarchy', function(require) {
         if ($('.social_group_hierarchy').length > 0) {
             ajax.jsonRpc('/get_tree_heirarchy_details', 'call', {
                 'search': $('input[name="social_group_search"]').val(),
-                'social_group_id': $('input[name="social_group_id"]').val()
+                'social_group_id': $('input[name="social_group_id"]').val(),
+                'token': $('input[name="token"]').val()
             }).then(function(result) {
                 var count = 0
                 _.each(result, function(value, key) {
@@ -28,6 +29,7 @@ odoo.define('dcm_customization.social_group_heirarchy', function(require) {
         if ($('#chart-container').length > 0) {
             ajax.jsonRpc('/get_heirarchy_details', 'call', {
                 'social_group_id': $('#chart-container').attr('group-id')
+               // 'token': $('input[name="token"]').val()
             }).then(function(result) {
                 console.log("Result---", result)
                 var oc = $('#chart-container').orgchart({
@@ -52,7 +54,8 @@ odoo.define('dcm_customization.social_group_heirarchy', function(require) {
         }
         if ($('#sunburst-container').length > 0) {
             ajax.jsonRpc('/get_sunburst_details', 'call', {
-                'social_group_id': $('#sunburst-container').attr('group-id')
+                'social_group_id': $('#sunburst-container').attr('group-id'),
+                'token': $('#sunburst-container').attr('token'),
             }).then(function(result) {
                 // Splice in transparent for the center circle
                 Highcharts.getOptions().colors.splice(0, 0, 'transparent');
@@ -74,13 +77,26 @@ odoo.define('dcm_customization.social_group_heirarchy', function(require) {
                     series: [{
                         events: {
                             click: function (event) {
-                                console.log('------------ event ------------', event)
-                                $('#group_name').text(event.point.name);
-                                $('#leadership_name').text('Leadership: ' + event.point.group_owner_name);
-                                $('#headcount_direct').text('Headcount Direct: ' + event.point.current_subscribers_count);
-                                $('#headcount_total').text('Headcount Total: ' + event.point.value);
-                                if(typeof event.point.drillId === "undefined") {
-                                    window.location.href = '/midardir/socialgroup/' + event.point.id
+                                if (event.point.innerArcLength === 0) {
+                                    $('#group_name > a').attr({'href': '/midardir/socialgroup/'+ event.point.parent_id +'?token='+ event.point.token +'&search=&parent='});
+                                    $('#group_name > a').text(event.point.parent_name);
+                                    $('#leadership_name > a').attr({'href': '/midardir/contact/'+ event.point.parent_group_owner_id +'?token='+ event.point.token +'&search=&parent='});
+                                    $('#leadership_name > a').text(event.point.parent_group_owner_name);
+                                    $('#headcount_direct').text('Headcount Direct: ' + event.point.parent_current_subscribers_count);
+                                    $('#headcount_total').text('Headcount Total: ' + event.point.parent_value);
+                                    if(typeof event.point.drillId === "undefined") {
+                                        window.location.href = '/midardir/socialgroup/'+ event.point.parent_id +'?token='+ event.point.token +'&search=&parent='
+                                    }
+                                } else {
+                                    $('#group_name > a').attr({'href': '/midardir/socialgroup/'+ event.point.id +'?token='+ event.point.token +'&search=&parent='});
+                                    $('#group_name > a').text(event.point.name);
+                                    $('#leadership_name > a').attr({'href': '/midardir/contact/'+ event.point.group_owner_id +'?token='+ event.point.token +'&search=&parent='});
+                                    $('#leadership_name > a').text(event.point.group_owner_name);
+                                    $('#headcount_direct').text('Headcount Direct: ' + event.point.current_subscribers_count);
+                                    $('#headcount_total').text('Headcount Total: ' + event.point.value);
+                                    if(typeof event.point.drillId === "undefined") {
+                                        window.location.href = '/midardir/socialgroup/'+ event.point.id +'?token='+ event.point.token +'&search=&parent='
+                                    }
                                 }
                             }
                         },
@@ -112,7 +128,7 @@ odoo.define('dcm_customization.social_group_heirarchy', function(require) {
                             levelIsConstant: false,
 
                             dataLabels: {
-                                style: {'font-color': 'black'},
+                                style: {'color': 'black'},
                                 filter: {
                                     property: 'outerArcLength',
                                     operator: '>',

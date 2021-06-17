@@ -15,7 +15,7 @@
                     <div class="col-md-6" style="padding: 0;">
                         <ol class="breadcrumb mt8">
                             <li class="breadcrumb-item">
-                                <a t-att-href="'/midardir?search=%s' % (search)">
+                                <a t-att-href="'/midardir?token=%s&amp;search=%s' % (token,search)">
                                     <i class="fa fa-home" role="img" aria-label="Home" title="Home"/>
                                 </a>
                             </li>
@@ -83,7 +83,7 @@
 
                                                 </div>
                                                 <div class="col-9 align-self-center">
-                                                    <a t-att-href="'/midardir/contact/%s?search=%s&amp;parent=%s' % (part.id,search,part.name)">
+                                                    <a t-att-href="'/midardir/contact/%s?token=%s&amp;search=%s&amp;parent=%s' % (token,part.id,search,part.name)">
                                                         <t t-esc="part.name"/>
                                                         <t t-esc="part.function"/>
                                                     </a>
@@ -92,63 +92,6 @@
                                         </t>
                                     </li>
                                 </ul>
-
-                                <!--<ul class="list-group list-group-flush">
-                                    <li class="list-group-item">
-                                        <h2 class="list-group-item-heading">Linienorganisation</h2>
-                                    </li>
-                                    <li class="list-group-item">
-                                        <a t-att-href="'/midardir/socialgroup/%s?search=%s&amp;parent=%s' % (level_1.get('id'),search,record.name)">
-                                            <t t-if="level_1.get('name')">
-                                                <t t-esc="level_1['name']"/>
-                                                <t t-esc="level_1['code']"/>
-                                            </t>
-                                        </a>
-                                        <br/>
-                                        <a class="text-indent-4" t-att-href="'/midardir/socialgroup/%s?search=%s&amp;parent=%s' % (level_2.get('id'),search,record.name)">
-                                            <t t-if="level_2.get('name')">
-                                                <t t-esc="level_2['name']"/>
-                                                <t t-esc="level_2['code']"/>
-                                            </t>
-                                        </a>
-                                        <br/>
-                                        <a class="text-indent-8" t-att-href="'/midardir/socialgroup/%s?search=%s&amp;parent=%s' % (level_3.get('id'),search,record.name)">
-                                            <t t-if="level_3.get('name')">
-                                                <t t-esc="level_3['name']"/>
-                                                <t t-esc="level_3['code']"/>
-                                            </t>
-                                        </a>
-                                    </li>
-
-                                </ul>
-                                <ul class="list-group list-group-flush">
-                                    <li class="list-group-item">
-                                        <h2 class="list-group-item-heading">Arbeitsorganisation</h2>
-                                    </li>
-                                    <li class="list-group-item">
-                                        <a t-att-href="'/midardir/socialgroup/%s?search=%s&amp;parent=%s' % (level_1.get('id'),search,record.name)">
-                                            <t t-if="level_1.get('name')">
-                                                <t t-esc="level_1['name']"/>
-                                                <t t-esc="level_1['code']"/>
-                                            </t>
-                                        </a>
-                                        <br/>
-                                        <a class="text-indent-4" t-att-href="'/midardir/socialgroup/%s?search=%s&amp;parent=%s' % (level_2.get('id'),search,record.name)">
-                                            <t t-if="level_2.get('name')">
-                                                <t t-esc="level_2['name']"/>
-                                                <t t-esc="level_2['code']"/>
-                                            </t>
-                                        </a>
-                                        <br/>
-                                        <a class="text-indent-8" t-att-href="'/midardir/socialgroup/%s?search=%s&amp;parent=%s' % (level_3.get('id'),search,record.name)">
-                                            <t t-if="level_3.get('name')">
-                                                <t t-esc="level_3['name']"/>
-                                                <t t-esc="level_3['code']"/>
-                                            </t>
-                                        </a>
-                                    </li>
-
-                                </ul>-->
                             </div>
                             <p class="lead">
                                 <br/>
@@ -168,7 +111,7 @@
                         <div class="col-md-6" style="padding: 0;">
                             <ol class="breadcrumb mt8">
                                 <li class="breadcrumb-item">
-                                    <a t-att-href="'/midardir?search=%s' % (search)">
+                                    <a t-att-href="'/midardir?token=%s&amp;search=%s' % (token,search)">
                                         <i class="fa fa-home" role="img" aria-label="Home" title="Home"/>
                                     </a>
                                 </li>
@@ -203,7 +146,7 @@
 
                                         <div style="display:inline-flex;">
                                             <div class="social_group_hierarchy"></div>
-                                            <a t-att-href="'/social_group_hierarchy?social_group_id=%s&amp;search=%s' % (record.id,search)" class="btn btn-primary ml-4" style="height:10%;">Show
+                                            <a t-att-href="'/social_group_hierarchy?token=%s&amp;social_group_id=%s&amp;search=%s' % (token,record.id,search)" class="btn btn-primary ml-4" style="height:10%;">Show
                                                 Graphical Hierarchy
                                             </a>
                                         </div>
@@ -217,7 +160,7 @@
 
                                                 </div>
                                                 <div class="col-9">
-                                                    <a t-att-href="'/midardir/contact/%s?search=%s' % (record.group_owner_id.id,search)">
+                                                    <a t-att-href="'/midardir/contact/%s?token=%s&amp;search=%s' % (record.group_owner_id.id,token,search)">
                                                         <t t-esc="record.group_owner_id.name"/>
                                                     </a>
                                                     <br/>
@@ -237,7 +180,7 @@
 
                                                     </div>
                                                     <div class="col-9 align-self-center">
-                                                        <a t-att-href="'/midardir/contact/%s?search=%s&amp;parent=%s' % (part.id,search,record.name)">
+                                                        <a t-att-href="'/midardir/contact/%s?token=%s&amp;search=%s&amp;parent=%s' % (part.id,token,search,record.name)">
                                                             <t t-esc="part.name"/>
                                                         </a>
                                                         <br/>
@@ -249,6 +192,7 @@
 
                                         <input type="hidden" name="social_group_id" t-att-value="record.id"/>
                                         <input type="hidden" name="social_group_search" t-att-value="search"/>
+                                        <input type="hidden" name="token" t-att-value="token"/>
                                     </div>
 
                                 </div>
@@ -271,7 +215,7 @@
                         <div class="col-md-6 d-none d-md-block" style="padding: 0;">
                             <ol class="breadcrumb mt8">
                                 <li class="breadcrumb-item">
-                                    <a t-att-href="'/midardir?search=%s' % (search)">
+                                    <a t-att-href="'/midardir?token=%s&amp;search=%s' % (token,search)">
                                         <i class="fa fa-home" role="img" aria-label="Home" title="Home"/>
                                     </a>
                                 </li>
@@ -289,15 +233,23 @@
                 </div>
                 <center>
                     <h2>
-                        <p style="margin: 0px;" id="group_name"><t t-esc="record.name"/></p>
+                        <p style="margin: 0px;" id="group_name">
+                            <a style="text-decoration: none;" t-att-href="'/midardir/socialgroup/%s?token=%s&amp;search=%s&amp;parent=%s' % (record.id,token,search,'')">
+                                <t t-esc="record.name"/>
+                            </a>
+                        </p>
                     </h2>
                     <h4>
-                        <p style="margin: 0px;" id="leadership_name">Leadership: <t t-esc="record.group_owner_id.name"/></p>
+                        <p style="margin: 0px;" id="leadership_name">
+                            Leadership: <a style="text-decoration: none;" t-att-href="'/midardir/contact/%s?token=%s&amp;search=%s&amp;parent=%s' % (record.group_owner_id.id, token, search, '')">
+                                            <t t-esc="record.group_owner_id.name"/>
+                                        </a>
+                        </p>
                         <p style="margin: 0px;" id="headcount_direct">Headcount Direct: <t t-esc="record.current_subscribers_count"/></p>
                         <p style="margin: 0px;" id="headcount_total">Headcount Total: <t t-esc="record.current_and_childs_subscribers_count"/></p>
                     </h4>
                     <t t-if="parent_sc_group">
-                        <a role='button' class='btn btn-primary' t-att-href="'/social_group_hierarchy?social_group_id=%s&amp;search=%s' % (parent_sc_group.id, search)">Upper Level</a>
+                        <a role='button' class='btn btn-primary' t-att-href="'/social_group_hierarchy?token=%s&amp;social_group_id=%s&amp;search=%s' % (token,parent_sc_group.id,search)">Upper Level</a>
                     </t>
                 </center>
 <!--                <div id="chart-container" t-att-group-id="social_group_id"></div>-->
@@ -307,7 +259,7 @@
                         <div class="row">
                             <div class="col-md-8 offset-md-2 col-12">
                                 <figure class="highcharts-figure">
-                                    <div id="sunburst-container" style="height:50%;" t-att-group-id="social_group_id" />
+                                    <div id="sunburst-container" style="height:50%;" t-att-group-id="social_group_id" t-att-token="token"/>
                                 </figure>
                             </div>
                         </div>
@@ -325,7 +277,7 @@
                         <div class="col-md-6" style="padding: 0;">
                             <ol class="breadcrumb mt8">
                                 <li class="breadcrumb-item">
-                                    <a t-att-href="'/midardir?search=%s' % (search)">
+                                    <a t-att-href="'/midardir?token=%s&amp;search=%s' % (token,search)">
                                         <i class="fa fa-home" role="img" aria-label="Home" title="Home"/>
                                     </a>
                                 </li>
@@ -387,7 +339,7 @@
                                             </li>
                                             <li class="list-group-item">
                                                 <t t-foreach="org_data.get('data')" t-as="org_line">
-                                                    <a t-att-href="'/midardir/socialgroup/%s?search=%s&amp;parent=%s' % (org_line.get('id'),search,org_line.get('current_group'))">
+                                                    <a t-att-href="'/midardir/socialgroup/%s?token=%s&amp;search=%s&amp;parent=%s' % (org_line.get('id'),token,search,org_line.get('current_group'))">
                                                         <t t-esc="org_line.get('current_group')"/>
                                                     </a>
                                                 </t>
@@ -409,7 +361,7 @@
 
                                                     </div>
                                                     <div class="col-9 align-self-center">
-                                                        <a t-att-href="'/midardir/res/contact/%s?search=%s&amp;parent=%s' % (resp.get('id'),search,resp.get('name'))">
+                                                        <a t-att-href="'/midardir/res/contact/%s?token=%s&amp;search=%s&amp;parent=%s' % (resp.get('id'),token,search,resp.get('name'))">
                                                             <t t-esc="resp.get('name')"/>
                                                             <t t-esc="resp.get('name')"/>
                                                         </a>
@@ -419,63 +371,6 @@
                                             </t>
                                         </li>
                                     </ul>
-
-                                    <!--<ul class="list-group list-group-flush">
-                                        <li class="list-group-item">
-                                            <h2 class="list-group-item-heading">Linienorganisation</h2>
-                                        </li>
-                                        <li class="list-group-item">
-                                            <a t-att-href="'/midardir/socialgroup/%s?search=%s&amp;parent=%s' % (level_1.get('id'),search,record.name)">
-                                                <t t-if="level_1.get('name')">
-                                                    <t t-esc="level_1['name']"/>
-                                                    <t t-esc="level_1['code']"/>
-                                                </t>
-                                            </a>
-                                            <br/>
-                                            <a class="text-indent-4" t-att-href="'/midardir/socialgroup/%s?search=%s&amp;parent=%s' % (level_2.get('id'),search,record.name)">
-                                                <t t-if="level_2.get('name')">
-                                                    <t t-esc="level_2['name']"/>
-                                                    <t t-esc="level_2['code']"/>
-                                                </t>
-                                            </a>
-                                            <br/>
-                                            <a class="text-indent-8" t-att-href="'/midardir/socialgroup/%s?search=%s&amp;parent=%s' % (level_3.get('id'),search,record.name)">
-                                                <t t-if="level_3.get('name')">
-                                                    <t t-esc="level_3['name']"/>
-                                                    <t t-esc="level_3['code']"/>
-                                                </t>
-                                            </a>
-                                        </li>
-
-                                    </ul>
-                                    <ul class="list-group list-group-flush">
-                                        <li class="list-group-item">
-                                            <h2 class="list-group-item-heading">Arbeitsorganisation</h2>
-                                        </li>
-                                        <li class="list-group-item">
-                                            <a t-att-href="'/midardir/socialgroup/%s?search=%s&amp;parent=%s' % (level_1.get('id'),search,record.name)">
-                                                <t t-if="level_1.get('name')">
-                                                    <t t-esc="level_1['name']"/>
-                                                    <t t-esc="level_1['code']"/>
-                                                </t>
-                                            </a>
-                                            <br/>
-                                            <a class="text-indent-4" t-att-href="'/midardir/socialgroup/%s?search=%s&amp;parent=%s' % (level_2.get('id'),search,record.name)">
-                                                <t t-if="level_2.get('name')">
-                                                    <t t-esc="level_2['name']"/>
-                                                    <t t-esc="level_2['code']"/>
-                                                </t>
-                                            </a>
-                                            <br/>
-                                            <a class="text-indent-8" t-att-href="'/midardir/socialgroup/%s?search=%s&amp;parent=%s' % (level_3.get('id'),search,record.name)">
-                                                <t t-if="level_3.get('name')">
-                                                    <t t-esc="level_3['name']"/>
-                                                    <t t-esc="level_3['code']"/>
-                                                </t>
-                                            </a>
-                                        </li>
-
-                                    </ul>-->
                                 </div>
                                 <p class="lead">
                                     <br/>
@@ -497,7 +392,7 @@
                     <div class="col-md-6" style="padding: 0;">
                         <ol class="breadcrumb mt8">
                             <li class="breadcrumb-item">
-                                <a t-att-href="'/midardir?search=%s' % (search)">
+                                <a t-att-href="'/midardir?token=%s&amp;search=%s' % (token,search)">
                                     <i class="fa fa-home" role="img" aria-label="Home" title="Home"/>
                                 </a>
                             </li>
@@ -613,6 +508,7 @@
                                 <t t-call="website_language_flag_cr.language_flags"/>
                             </div>
                         </div>
+                        <input type="hidden" name="token" t-att-value="token"/>
                     </form>
                 </div>
                 <t t-if="not search">
@@ -649,7 +545,7 @@
                 <div class="row" style="width: 80%;">
                     <t t-foreach="records.get('data')" t-as="record">
                         <div class="col-12 midardir_social_group_menu">
-                            <a t-att-href="'/midardir/result?search=%s&amp;config=%s'%(search,record.get('id'))">
+                            <a t-att-href="'/midardir/result?token=%s&amp;search=%s&amp;config=%s'%(token,search,record.get('id'))">
                                 <img t-att-src="record.get('image')" class="img img-fluid midardir-img rounded-circle"/>
                                 <span t-esc="record.get('count')"/>
                                 <span t-esc="record.get('name')"/>
@@ -677,6 +573,7 @@
                                 </button>
                             </div>
                         </div>
+                        <input type="hidden" name="token" t-att-value="token"/>
                     </form>
                 </div>
                 <br/>
@@ -685,7 +582,7 @@
                     <t t-foreach="records.get('data')" t-as="record">
                         <div t-att-class="'col-12 mr-1 mb-2 midardir_social_group_menu active' if current_config == record.get('id') else 'col-12 mr-1 mb-2 midardir_social_group_menu'"
                              style="opacity: 0.5">
-                            <a t-att-href="'/midardir/result?search=%s&amp;config=%s'%(search,record.get('id'))">
+                            <a t-att-href="'/midardir/result?token=%s&amp;search=%s&amp;config=%s'%(token,search,record.get('id'))">
                                 <img t-att-src="record.get('image')" class="img img-fluid midardir-img rounded-circle"/>
                                 <span t-esc="record.get('count')"/>
                                 <span t-esc="record.get('name')"/>
@@ -717,16 +614,16 @@
                                     <t t-set="r_label_count" t-value="r_label_count+1"/>
                                 </t>
                                 <t t-if="page == 'profile'">
-                                    <t t-set="redirect_url" t-value="'/midardir/contact/%s?parent=%s&amp;search=%s'%(result.get('id'),r_label,search)"/>
+                                    <t t-set="redirect_url" t-value="'/midardir/contact/%s?token=%s&amp;parent=%s&amp;search=%s'%(result.get('id'),token,r_label,search)"/>
                                 </t>
                                 <t t-if="page == 'group'">
-                                    <t t-set="redirect_url" t-value="'/midardir/socialgroup/%s?parent=%s&amp;search=%s'%(result.get('id'),r_label,search)"/>
+                                    <t t-set="redirect_url" t-value="'/midardir/socialgroup/%s?token=%s&amp;parent=%s&amp;search=%s'%(result.get('id'),token,r_label,search)"/>
                                 </t>
                                 <t t-if="page == 'responsbility'">
-                                    <t t-set="redirect_url" t-value="'/midardir/res/contact/%s?parent=%s&amp;search=%s'%(result.get('id'),r_label,search)"/>
+                                    <t t-set="redirect_url" t-value="'/midardir/res/contact/%s?token=%s&amp;parent=%s&amp;search=%s'%(result.get('id'),token,r_label,search)"/>
                                 </t>
                                 <t t-if="page == 'post'">
-                                    <t t-set="redirect_url" t-value="'/midardir/post/%s?parent=%s&amp;search=%s'%(result.get('id'),r_label,search)"/>
+                                    <t t-set="redirect_url" t-value="'/midardir/post/%s?token=%s&amp;parent=%s&amp;search=%s'%(result.get('id'),token,r_label,search)"/>
                                 </t>
                                 <li class="row list-group-item list-group-item-action d-flex">
                                     <div class="col-3">
