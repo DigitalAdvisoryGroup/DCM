@@ -305,6 +305,18 @@ class ResPartner(models.Model):
                 field_help = field_id.help or ''
         return {"data": {"field_value": field_value,"field_string": field_string, "field_help": field_help}}
 
+    def get_and_field_edit_help(self, field_name=False):
+        field_value = ''
+        field_string = ''
+        field_help = ''
+        if field_name:
+            field_id = self.env['ir.model.fields'].with_context(lang=self.lang).search([('model_id.model','=',self._name),('name','=',field_name)])
+            if field_id:
+                field_value = self[field_name] or ''
+                field_string = field_id.field_description or ''
+                field_help = field_id.help or ''
+        return {"data": [{"field_value": field_value,"field_string": field_string, "field_help": field_help}]}
+
     def get_partner_profile_data(self):
         data = []
         if self:
