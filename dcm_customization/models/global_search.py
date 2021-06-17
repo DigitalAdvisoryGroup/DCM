@@ -179,6 +179,12 @@ class GlobalSearchConfig(models.Model):
                             'web.base.url')
                         if IMAGE_FIELDS.get(model):
                             image_url = url_join(base_url, '/web/myimage/%s/%s/%s/?%s' % (model,r['id'],IMAGE_FIELDS[model],str(int(time.time() * 100000))[-15:]))
+                        elif model == "social.partner.group":
+                            group_id = self.env['social.partner.group'].sudo().search([("id","=",r['id'])])
+                            if group_id.image_1920:
+                                image_url = url_join(base_url, '/web/myimage/%s/%s/%s/?%s' % (model, r['id'], 'image_128', str(int(time.time() * 100000))[-15:]))
+                            else:
+                                image_url = url_join(base_url, '/web/myimage/global.search.config/%s/image_128/?%s' % (self.id, str(int(time.time() * 100000))[-15:]))
                         elif model == "social.post":
                             if partner_browse:
                                 post = self.env['social.post'].sudo().with_context(lang=partner_browse.lang).search([("id","=",r['id'])])
@@ -197,7 +203,7 @@ class GlobalSearchConfig(models.Model):
                                 'total_share_count': len(post.share_ids),
                             })
                         else:
-                            image_url = url_join(base_url, '/web/myimage/global.search.config/%s/image_512/?%s' % (self.id, str(int(time.time() * 100000))[-15:]))
+                            image_url = url_join(base_url, '/web/myimage/global.search.config/%s/image_128/?%s' % (self.id, str(int(time.time() * 100000))[-15:]))
                         # else:
                         #     image_url = url_join(base_url, '/logo.png')
 

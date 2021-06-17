@@ -114,6 +114,7 @@
                     <field name="name"/>
                     <field name="is_org_unit"/>
                     <field name="is_user_updatable"/>
+                    <field name="max_group_assing_user"/>
                 </tree>
             </field>
         </record>
@@ -130,6 +131,8 @@
                             <field name="name"/>
                             <field name="is_org_unit"/>
                             <field name="is_user_updatable"/>
+                            <field name="is_restrict_max_group_assing_user"/>
+                            <field name="max_group_assing_user"/>
                         </group>
                     </sheet>
                 </form>

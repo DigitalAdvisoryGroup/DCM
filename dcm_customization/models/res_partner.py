@@ -82,14 +82,17 @@ class ResPartner(models.Model):
     name_switched = fields.Char("Switched Name (Family First)")
     sec_email = fields.Char("Secondary Email",help="Secondary Email")
     last_import_flag = fields.Char("Last import flag",help="")
+    is_display_chart = fields.Boolean("Display Chart in mobile")
 
 
     ext_tag_lines = fields.One2many("partner.extended.tag.level", "partner_id", string="Extended Tags")
 
-
-    # def get_profile_field_data_help(self, app_field=False, mode='edit'):
-    #     if app_field:
-    #         if mode == 'edit':
+    # @api.constrains('social_group_id')
+    # def _check_group_assing_users(self):
+    #     for part in self:
+    #         print("-------part-------------",part.social_group_id)
+            # if group.type_id.is_restrict_max_group_assing_user and line.company_id.id != line.account_id.company_id.id:
+            #     raise ValidationError(_('The selected account belongs to another company that the one you\'re trying to create an analytic item for'))
 
 
 
@@ -365,7 +368,8 @@ class ResPartner(models.Model):
                 'org_data': self.get_group_data(),
                 'org_data_latest': self.with_context(lang=self.lang).get_group_data_latest(),
                 'ext_tags': self.get_extended_tags_data(),
-                'is_mobile_user': self.is_token_available
+                'is_mobile_user': self.is_token_available,
+                'is_display_chart': self.is_display_chart
             })
         return {'data': data}
 

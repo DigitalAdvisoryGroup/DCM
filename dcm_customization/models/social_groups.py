@@ -2,11 +2,12 @@
 # Part of Odoo Module Developed by Candidroot Solutions Pvt. Ltd.
 # See LICENSE file for full copyright and licensing details.
 
-from odoo import models, fields, api
+from odoo import models, fields, api, _
 from odoo.modules.module import get_module_resource
 import base64
 from werkzeug.urls import url_join
 import time
+from odoo.exceptions import ValidationError
 import logging
 _logger = logging.getLogger(__name__)
 
@@ -26,6 +27,8 @@ class SocialPartnerGroupsType(models.Model):
     name = fields.Char("Name", required=True,translate=True)
     is_org_unit = fields.Boolean(string="Org Unit Flag")
     is_user_updatable = fields.Boolean(string="User updatable")
+    is_restrict_max_group_assing_user = fields.Boolean(string="Restrict Max Groups Per user")
+    max_group_assing_user = fields.Integer(string="Max Groups Per user")
     # type = fields.Selection([('normal', 'Normal'), ('functional', 'Functional')], string="Type", default="normal")
 
 
@@ -82,6 +85,17 @@ class SocialPartnerGroups(models.Model):
     code = fields.Char("Code")
     last_import_flag = fields.Char("Last import flag")
 
+    # def write(self, vals):
+    #     res = super(SocialPartnerGroups, self).write(vals)
+    #     print("-------vals--------------",vals)
+    #     return res
+    #
+    # @api.constrains('partner_ids', 'type_id')
+    # def _check_group_assing_users(self):
+    #     for group in self:
+    #         print("--------group-----------",group)
+            # if group.type_id.is_restrict_max_group_assing_user and line.company_id.id != line.account_id.company_id.id:
+            #     raise ValidationError(_('The selected account belongs to another company that the one you\'re trying to create an analytic item for'))
 
     def get_mobile_sunburst_child_data(self, sunburst_data):
         if self.code:

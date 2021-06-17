@@ -307,6 +307,7 @@
                                 <field name="firstname"/>
                                 <field name="familyname"/>
                                 <field name="id_code"/>
+                                <field name="is_display_chart"/>
                                 <label for="lang" attrs="{'invisible': [('active_lang_count', '&lt;=', 1)]}"/>
                                 <div class="o_row" attrs="{'invisible': [('active_lang_count', '&lt;=', 1)]}">
                                     <field name="lang"/>
