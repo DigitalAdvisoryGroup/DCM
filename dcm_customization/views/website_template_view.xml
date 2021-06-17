@@ -233,10 +233,18 @@
                 </div>
                 <center>
                     <h2>
-                        <p style="margin: 0px;" id="group_name"><t t-esc="record.name"/></p>
+                        <p style="margin: 0px;" id="group_name">
+                            <a style="text-decoration: none;" t-att-href="'/midardir/socialgroup/%s?token=%s&amp;search=%s&amp;parent=%s' % (record.id,token,search,'')">
+                                <t t-esc="record.name"/>
+                            </a>
+                        </p>
                     </h2>
                     <h4>
-                        <p style="margin: 0px;" id="leadership_name">Leadership: <t t-esc="record.group_owner_id.name"/></p>
+                        <p style="margin: 0px;" id="leadership_name">
+                            Leadership: <a style="text-decoration: none;" t-att-href="'/midardir/contact/%s?token=%s&amp;search=%s&amp;parent=%s' % (record.group_owner_id.id, token, search, '')">
+                                            <t t-esc="record.group_owner_id.name"/>
+                                        </a>
+                        </p>
                         <p style="margin: 0px;" id="headcount_direct">Headcount Direct: <t t-esc="record.current_subscribers_count"/></p>
                         <p style="margin: 0px;" id="headcount_total">Headcount Total: <t t-esc="record.current_and_childs_subscribers_count"/></p>
                     </h4>

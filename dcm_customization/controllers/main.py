@@ -269,7 +269,17 @@ class MidarVideoAttachment(http.Controller):
         if sc_groups.parent2_id:
             parent_sc_group = request.env['social.partner.group'].sudo().search(
                     [('is_org_unit', '=', True), ('code', '=', sc_groups.parent2_id)])
-        return request.render('dcm_customization.midardir_social_group_heirarchical_view',{'token': kw.get("token"),'parent_sc_group': parent_sc_group, 'social_group_id' : kw.get('social_group_id') if kw.get('social_group_id') else False,'type' : sc_groups.type_id.name if sc_groups else False,'search':kw.get('search') if kw.get('search') else False,'prevpath': prevpath,'record' : sc_groups,'parent' : sc_groups.name})
+        values = {
+            'token': kw.get("token"),
+            'parent_sc_group': parent_sc_group,
+            'social_group_id': kw.get('social_group_id') if kw.get('social_group_id') else False,
+            'type': sc_groups.type_id.name if sc_groups else False,
+            'search': kw.get('search') if kw.get('search') else False,
+            'prevpath': prevpath,
+            'record': sc_groups,
+            'parent': sc_groups.name
+        }
+        return request.render('dcm_customization.midardir_social_group_heirarchical_view', values)
 
     def get_parent_data(self,group_id,group_data,search):
         sc_groups = request.env['social.partner.group'].sudo().browse(group_id)
@@ -412,29 +422,79 @@ class MidarVideoAttachment(http.Controller):
         if kw.get('social_group_id'):
             search = kw.get('search')
             sc_groups = request.env['social.partner.group'].sudo().browse(int(kw.get('social_group_id')))
-            data = self.get_sunburst_data(sc_groups,search)
+            data = self.get_sunburst_data(sc_groups,search, kw.get("token"))
             return {"data": data, "header": sc_groups.name, "current_group": sc_groups.name}
 
-    def get_sunburst_data(self, main_sc_group, search):
-        group_data = [{'id': str(main_sc_group.id), 'name': main_sc_group.name, 'parent': '','value': 1}]
+    def get_sunburst_data(self, main_sc_group, search, token):
+        group_data = [{
+            'id': str(main_sc_group.id),
+            'name': main_sc_group.name,
+            'parent': '',
+            'value': main_sc_group.current_and_childs_subscribers_count,
+            'parent_id': main_sc_group.id,
+            'parent_name': main_sc_group.name,
+            'parent_group_owner_id': main_sc_group.group_owner_id.id,
+            'parent_group_owner_name': main_sc_group.group_owner_id.name,
+            'parent_value': main_sc_group.current_and_childs_subscribers_count,
+            'parent_current_subscribers_count': main_sc_group.current_subscribers_count,
+        }]
         if main_sc_group.code:
             child_sg_ids = request.env['social.partner.group'].sudo().search([('is_org_unit', '=', True), ('parent2_id', '=', main_sc_group.code)])
             if child_sg_ids:
                 for child_sg in child_sg_ids:
-                    group_data.append({'id': str(child_sg.id), 'current_subscribers_count': child_sg.current_subscribers_count, 'group_owner_name': child_sg.group_owner_id.name, 'name': child_sg.name, 'parent': main_sc_group.id, 'value': child_sg.current_and_childs_subscribers_count})
+                    group_data.append({
+                        'id': str(child_sg.id),
+                        'current_subscribers_count': child_sg.current_subscribers_count,
+                        'group_owner_id': child_sg.group_owner_id.id,
+                        'group_owner_name': child_sg.group_owner_id.name,
+                        'name': child_sg.name,
+                        'parent': main_sc_group.id,
+                        'value': child_sg.current_and_childs_subscribers_count,
+                        'token': token,
+                        'parent_id': main_sc_group.id,
+                        'parent_name': main_sc_group.name,
+                        'parent_group_owner_id': main_sc_group.group_owner_id.id,
+                        'parent_group_owner_name': main_sc_group.group_owner_id.name,
+                        'parent_value': main_sc_group.current_and_childs_subscribers_count,
+                        'parent_current_subscribers_count': main_sc_group.current_subscribers_count,
+                    })
 
                 for second_level_sg in child_sg_ids:
-                    self.get_sunburst_children_data(second_level_sg, group_data, search)
+                    self.get_sunburst_children_data(second_level_sg, group_data, search, token)
         return group_data
 
-    def get_sunburst_children_data(self, sc_group, group_data, search):
+    def get_sunburst_children_data(self, sc_group, group_data, search, token):
         if sc_group and sc_group.code:
             child_sg_ids = request.env['social.partner.group'].sudo().search([('is_org_unit', '=', True), ('parent2_id', '=', sc_group.code)])
             if child_sg_ids:
-                group_data.append({'id': str(sc_group.id)+"dummy", 'current_subscribers_count': sc_group.current_subscribers_count, 'group_owner_name': sc_group.group_owner_id.name, 'name': sc_group.name, 'parent': sc_group.id, 'value': len(sc_group.partner_ids.ids)})
+                group_data.append({
+                    'id': str(sc_group.id)+"dummy",
+                    'current_subscribers_count': sc_group.current_subscribers_count,
+                    'group_owner_id': sc_group.group_owner_id.id,
+                    'group_owner_name': sc_group.group_owner_id.name,
+                    'name': sc_group.name,
+                    'parent': sc_group.id,
+                    'value': len(sc_group.partner_ids.ids),
+                    'token': token,
+                })
                 for child_sg in child_sg_ids:
-                    group_data.append({'id': str(child_sg.id), 'current_subscribers_count': child_sg.current_subscribers_count, 'group_owner_name': child_sg.group_owner_id.name, 'name': child_sg.name, 'parent': sc_group.id, 'value': child_sg.current_and_childs_subscribers_count})
-                    self.get_sunburst_children_data(child_sg, group_data, search)
+                    group_data.append({
+                        'id': str(child_sg.id),
+                        'current_subscribers_count': child_sg.current_subscribers_count,
+                        'group_owner_id': child_sg.group_owner_id.id,
+                        'group_owner_name': child_sg.group_owner_id.name,
+                        'name': child_sg.name,
+                        'parent': sc_group.id,
+                        'value': child_sg.current_and_childs_subscribers_count,
+                        'token': token,
+                        'parent_id': sc_group.id,
+                        'parent_name': sc_group.name,
+                        'parent_group_owner_id': sc_group.group_owner_id.id,
+                        'parent_group_owner_name': sc_group.group_owner_id.name,
+                        'parent_value': sc_group.current_and_childs_subscribers_count,
+                        'parent_current_subscribers_count': sc_group.current_subscribers_count,
+                    })
+                    self.get_sunburst_children_data(child_sg, group_data, search, token)
                 return group_data
             else:
                 return group_data
