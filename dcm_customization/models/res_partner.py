@@ -83,17 +83,7 @@ class ResPartner(models.Model):
     sec_email = fields.Char("Secondary Email",help="Secondary Email")
     last_import_flag = fields.Char("Last import flag",help="")
     is_display_chart = fields.Boolean("Display Chart in mobile")
-
-
     ext_tag_lines = fields.One2many("partner.extended.tag.level", "partner_id", string="Extended Tags")
-
-    # @api.constrains('social_group_id')
-    # def _check_group_assing_users(self):
-    #     for part in self:
-    #         print("-------part-------------",part.social_group_id)
-            # if group.type_id.is_restrict_max_group_assing_user and line.company_id.id != line.account_id.company_id.id:
-            #     raise ValidationError(_('The selected account belongs to another company that the one you\'re trying to create an analytic item for'))
-
 
 
     def update_store_fields(self):
@@ -103,7 +93,6 @@ class ResPartner(models.Model):
             part._set_category_res_ids_name()
             part._set_category_social_ids_name()
         return True
-
 
     @api.depends("category_id")
     def _set_category_name(self):
@@ -296,24 +285,26 @@ class ResPartner(models.Model):
                     })
         return final_list
 
-    def get_field_edit_help(self, field_name=False):
+    def get_field_edit_help(self, field_name=False, partner_id=False):
         field_value = ''
         field_string = ''
         field_help = ''
         if field_name:
-            field_id = self.env['ir.model.fields'].with_context(lang=self.lang).search([('model_id.model','=',self._name),('name','=',field_name)])
+            partner_browse = self.env['res.partner'].browse(int(partner_id))
+            field_id = self.env['ir.model.fields'].with_context(lang=partner_browse.lang).search([('model_id.model','=',self._name),('name','=',field_name)])
             if field_id:
                 field_value = self[field_name] or ''
                 field_string = field_id.field_description or ''
                 field_help = field_id.help or ''
         return {"data": {"field_value": field_value,"field_string": field_string, "field_help": field_help}}
 
-    def get_and_field_edit_help(self, field_name=False):
+    def get_and_field_edit_help(self, field_name=False, partner_id=False):
         field_value = ''
         field_string = ''
         field_help = ''
         if field_name:
-            field_id = self.env['ir.model.fields'].with_context(lang=self.lang).search([('model_id.model','=',self._name),('name','=',field_name)])
+            partner_browse = self.env['res.partner'].browse(int(partner_id))
+            field_id = self.env['ir.model.fields'].with_context(lang=partner_browse.lang).search([('model_id.model','=',self._name),('name','=',field_name)])
             if field_id:
                 field_value = self[field_name] or ''
                 field_string = field_id.field_description or ''

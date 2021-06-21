@@ -62,12 +62,12 @@ class SocialPartnerGroups(models.Model):
     _description = "Social Groups"
     _rec_name = "name"
 
-    @api.model
-    def _default_image(self):
-        image_path = get_module_resource('dcm_customization', 'static/src/img', 'bit.png')
-        return base64.b64encode(open(image_path, 'rb').read())
+    # @api.model
+    # def _default_image(self):
+    #     image_path = get_module_resource('dcm_customization', 'static/src/img', 'bit.png')
+    #     return base64.b64encode(open(image_path, 'rb').read())
 
-    image_1920 = fields.Image(default=_default_image)
+    # image_1920 = fields.Image("Image", default=_default_image)
     name = fields.Char("Name",required=True)
     type_id = fields.Many2one("social.partner.group.type",string="Type")
     # type = fields.Selection(related="type_id.type", string="Type", store=True)
@@ -85,17 +85,14 @@ class SocialPartnerGroups(models.Model):
     code = fields.Char("Code")
     last_import_flag = fields.Char("Last import flag")
 
-    # def write(self, vals):
-    #     res = super(SocialPartnerGroups, self).write(vals)
-    #     print("-------vals--------------",vals)
-    #     return res
-    #
-    # @api.constrains('partner_ids', 'type_id')
-    # def _check_group_assing_users(self):
-    #     for group in self:
-    #         print("--------group-----------",group)
-            # if group.type_id.is_restrict_max_group_assing_user and line.company_id.id != line.account_id.company_id.id:
-            #     raise ValidationError(_('The selected account belongs to another company that the one you\'re trying to create an analytic item for'))
+    @api.constrains('partner_ids', 'type_id')
+    def _check_group_assing_users(self):
+        for group in self:
+            if group.type_id.is_restrict_max_group_assing_user and group.partner_ids:
+                for part in group.partner_ids:
+                    group_check = self.search_count([('id','!=',group.id),('type_id','=',group.type_id.id),('partner_ids','in',part.ids)])
+                    if group_check >= group.type_id.max_group_assing_user:
+                        raise ValidationError(_('%s can not belongs to more groups!')%(part.name))
 
     def get_mobile_sunburst_child_data(self, sunburst_data):
         if self.code:
