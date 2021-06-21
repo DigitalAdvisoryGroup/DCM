@@ -2,11 +2,12 @@
 # Part of Odoo Module Developed by Candidroot Solutions Pvt. Ltd.
 # See LICENSE file for full copyright and licensing details.
 
-from odoo import models, fields, api
+from odoo import models, fields, api, _
 from odoo.modules.module import get_module_resource
 import base64
 from werkzeug.urls import url_join
 import time
+from odoo.exceptions import ValidationError
 import logging
 _logger = logging.getLogger(__name__)
 
@@ -26,6 +27,8 @@ class SocialPartnerGroupsType(models.Model):
     name = fields.Char("Name", required=True,translate=True)
     is_org_unit = fields.Boolean(string="Org Unit Flag")
     is_user_updatable = fields.Boolean(string="User updatable")
+    is_restrict_max_group_assing_user = fields.Boolean(string="Restrict Max Groups Per user")
+    max_group_assing_user = fields.Integer(string="Max Groups Per user")
     # type = fields.Selection([('normal', 'Normal'), ('functional', 'Functional')], string="Type", default="normal")
 
 
@@ -59,12 +62,12 @@ class SocialPartnerGroups(models.Model):
     _description = "Social Groups"
     _rec_name = "name"
 
-    @api.model
-    def _default_image(self):
-        image_path = get_module_resource('dcm_customization', 'static/src/img', 'bit.png')
-        return base64.b64encode(open(image_path, 'rb').read())
+    # @api.model
+    # def _default_image(self):
+    #     image_path = get_module_resource('dcm_customization', 'static/src/img', 'bit.png')
+    #     return base64.b64encode(open(image_path, 'rb').read())
 
-    image_1920 = fields.Image(default=_default_image)
+    # image_1920 = fields.Image("Image", default=_default_image)
     name = fields.Char("Name",required=True)
     type_id = fields.Many2one("social.partner.group.type",string="Type")
     # type = fields.Selection(related="type_id.type", string="Type", store=True)
@@ -82,6 +85,14 @@ class SocialPartnerGroups(models.Model):
     code = fields.Char("Code")
     last_import_flag = fields.Char("Last import flag")
 
+    @api.constrains('partner_ids', 'type_id')
+    def _check_group_assing_users(self):
+        for group in self:
+            if group.type_id.is_restrict_max_group_assing_user and group.partner_ids:
+                for part in group.partner_ids:
+                    group_check = self.search_count([('id','!=',group.id),('type_id','=',group.type_id.id),('partner_ids','in',part.ids)])
+                    if group_check >= group.type_id.max_group_assing_user:
+                        raise ValidationError(_('%s can not belongs to more groups!')%(part.name))
 
     def get_mobile_sunburst_child_data(self, sunburst_data):
         if self.code:
@@ -141,10 +152,11 @@ class SocialPartnerGroups(models.Model):
             record.total_count = len(set(partner_ids+record.partner_ids.ids))
 
 
-    def get_social_group_details(self):
+    def get_social_group_details(self,partner_id=False):
         self.ensure_one()
         data = []
         if self:
+            partner_browse = self.env['res.partner'].browse(int(partner_id))
             base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
             data.append({
                 "group_image": url_join(base_url, '/web/myimage/social.partner.group.type/%s/image_512/?%s' % (self.type_id.id, str(int(time.time() * 100000))[-15:])),
@@ -161,7 +173,8 @@ class SocialPartnerGroups(models.Model):
                 "members": [{"image_url": url_join(base_url,
                                  '/web/myimage/res.partner/%s/image_128/?%s' % (x.id, x.file_name_custom)),"id": x.id,"name": x.name,"function": x.function} for x in self.partner_ids],
                 "org_data": self.get_all_heirarchy_data(),
-                "org_data_latest": self.get_all_heirarchy_data_latest()
+                "org_data_latest": self.get_all_heirarchy_data_latest(),
+                'is_display_chart': partner_browse and partner_browse.is_display_chart or False
             })
         _logger.info("----------social---data-----------%s",data)
         return {"data": data}

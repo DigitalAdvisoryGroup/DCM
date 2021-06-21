@@ -307,6 +307,7 @@
                                 <field name="firstname"/>
                                 <field name="familyname"/>
                                 <field name="id_code"/>
+                                <field name="is_display_chart"/>
                                 <label for="lang" attrs="{'invisible': [('active_lang_count', '&lt;=', 1)]}"/>
                                 <div class="o_row" attrs="{'invisible': [('active_lang_count', '&lt;=', 1)]}">
                                     <field name="lang"/>
@@ -354,15 +355,11 @@
                                 <h4 class="o_org_chart_title mb16 mt0">Chart</h4>
                                 <field name="social_group_fun_id" string="Functional Unit" widget="sg_fun_org_chart"/>
                             </div>
-
                         </div>
                     </page>
                     <page name="expertise" string="Expertise">
-
                         <group name="row_1_right">
-
                             <field name="category_res_ids" string="Responsibilities" widget="many2many_tags"/>
-
                             <field name="ext_tag_lines">
                                 <tree string="Extended Tags" editable="bottom">
                                     <field name="tag_id"/>
@@ -370,24 +367,20 @@
                                     <field name="level_id" domain="[('tag_type_id','=',tag_type_id)]"/>
                                 </tree>
                             </field>
-
                         </group>
                     </page>
                     <page name="midarapp_setting" string="App Settings">
                         <group name="row_1">
-
                             <group string="Profile Settings" name="row_1_left">
                                 <field name="app_basic_info"/>
                                 <field name="app_extended_info"/>
                             </group>
-
                             <group string="Connectivity" name="row_1_right">
                                 <field name="otp_token" string="OTP Token"/>
                                 <field name="change_connection"/>
                                 <field name="is_token_available"/>
                                 <field name="partner_token_lines"/>
                             </group>
-
                         </group>
                     </page>
                 </notebook>

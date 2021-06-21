@@ -513,7 +513,7 @@
                 </div>
                 <t t-if="not search">
                     <div>
-                        <img src="/dcm_customization/static/description/search_1.png" style="width:200px;" class="img img-fluid"/>
+                        <img src="/dcm_customization/static/description/search_1.jpg" style="width:200px;" class="img img-fluid"/>
                     </div>
 
                     <div>
@@ -529,7 +529,7 @@
 
                 <t t-if="search and not records.get('data')">
                     <div>
-                        <img src="/dcm_customization/static/description/search_2.png" style="width:200px;" class="img img-fluid"/>
+                        <img src="/dcm_customization/static/description/search_2.jpg" style="width:200px;" class="img img-fluid"/>
                     </div>
 
                     <div>
