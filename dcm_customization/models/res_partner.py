@@ -360,6 +360,8 @@ class ResPartner(models.Model):
                 'org_data_latest': self.with_context(lang=self.lang).get_group_data_latest(),
                 'ext_tags': self.get_extended_tags_data(),
                 'is_mobile_user': self.is_token_available,
+                'manager_name': self.manager_id and self.manager_id.name or '',
+                'manager_id': self.manager_id and self.manager_id.id or ''
             })
         return {'data': data}
 

@@ -490,7 +490,7 @@
     </template>
 
 
-    <template id="midardir_search_main_menu" name="Midardir Social Groups">
+    <template id="midardir_search_main_menu" name="Midardir Search">
         <t t-call="dcm_customization.midardir_layout">
             <div class="oe_structure"/>
             <div class="container">
