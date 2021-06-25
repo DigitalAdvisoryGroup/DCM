@@ -1,15 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <template id="assets_backend" name="social_bit_backend_assets" inherit_id="web.assets_backend">
-        <!-- <xpath expr="//script[contains(@src, '/social/static/src/js/social_stream_post_formatter_mixin.js')]" position="after">
-            <script type="text/javascript" src="/social_twitter/static/src/js/social_stream_post_formatter_mixin.js"/>
-        </xpath> -->
+    <template id="assets_common" inherit_id="web.assets_common">
         <xpath expr="." position="inside">
-            <script type="text/javascript" src="/dcm_customization/static/src/js/bit_kanban_comment.js"/>
-            <script type="text/javascript" src="/dcm_customization/static/src/js/stream_post_kanban_controller.js"/>
+            <script src="https://code.highcharts.com/highcharts.js"></script>
+            <script src="https://code.highcharts.com/modules/sunburst.js"></script>
+            <link rel="stylesheet" type="text/css" href="https://code.highcharts.com/css/highcharts.css"/>
         </xpath>
-
-
     </template>
 
     <template id="assets_frontend" inherit_id="website.assets_frontend">
@@ -23,14 +19,6 @@
             <script type="text/javascript" src="/dcm_customization/static/src/js/website_search.js"/>
             <script type="text/javascript" src="/dcm_customization/static/src/js/tree.jquery.js"/>
             <script type="text/javascript" src="/dcm_customization/static/src/js/social_group_heirarchy.js"/>
-
-
-            <script src="https://code.highcharts.com/highcharts.js"></script>
-            <script src="https://code.highcharts.com/modules/sunburst.js"></script>
-            <!--<script src="https://code.highcharts.com/modules/exporting.js"></script>
-            <script src="https://code.highcharts.com/modules/export-data.js"></script>-->
-<!--            <script src="https://code.highcharts.com/modules/accessibility.js"></script>-->
-
 
         </xpath>
     </template>
@@ -52,6 +40,11 @@
               href="/dcm_customization/static/src/scss/dialog.scss"/>
             <script type="text/javascript" src="/dcm_customization/static/src/js/social_group_org_chart.js"></script>
             <script type="text/javascript" src="/dcm_customization/static/src/js/social_group_fun_org_chart.js"></script>
+
+            <script type="text/javascript" src="/dcm_customization/static/src/js/bit_kanban_comment.js"/>
+            <script type="text/javascript" src="/dcm_customization/static/src/js/stream_post_kanban_controller.js"/>
+
+            <script type="text/javascript" src="/dcm_customization/static/src/js/dashboard_chart_preview.js"/>
         </xpath>
 
     </template>

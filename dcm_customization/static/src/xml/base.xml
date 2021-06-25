@@ -46,5 +46,9 @@
             </div>
         </t>
     </t>
+
+    <t t-name="highchart_dashboard_chart_form_view_preivew">
+        <div id="chart_container"/>
+    </t>
     
 </templates>

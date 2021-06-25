@@ -85,6 +85,29 @@ class ResPartner(models.Model):
     is_display_chart = fields.Boolean("Display Chart in mobile")
     ext_tag_lines = fields.One2many("partner.extended.tag.level", "partner_id", string="Extended Tags")
 
+    chart_preview = fields.Char('Preview')
+    chart_data = fields.Char("Chart Data", compute='_compute_chart_data', compute_sudo=True)
+
+    @api.depends("social_group_id")
+    def _compute_chart_data(self):
+        for partner in self:
+            partner.chart_data = json.dumps({
+                'chart': {
+                    'styledMode': True,
+                    "renderTo": "chart_container"
+                },
+                'title': {
+                    'text': 'Social Groups'
+                },
+                'series': [{
+                    'type': 'pie',
+                    'allowPointSelect': True,
+                    'keys': ['name', 'y', 'selected', 'sliced'],
+                    'data': [[x.name, x.current_and_childs_subscribers_count] for x in partner.social_group_id],
+                    'showInLegend': False
+                }]
+            })
+
 
     def update_store_fields(self):
         for part in self:
