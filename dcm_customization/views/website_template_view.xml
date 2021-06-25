@@ -336,23 +336,23 @@
                                             </h2>
                                             <t t-if="record.lang=='en_US'">
                                                 <img src="/dcm_customization/static/src/img/EN.png"
-                                                     style="height: 35px;width:35px;margin-top:6px;"/>
+                                                     style="height: 35px;width:35px;margin-top:6px;margin-left:10px;"/>
                                             </t>
                                             <t t-if="record.lang=='de_CH'">
                                                 <img src="/dcm_customization/static/src/img/DE.png"
-                                                     style="height: 35px;width:35px;margin-top:6px;"/>
+                                                     style="height: 35px;width:35px;margin-top:6px;margin-left:10px;"/>
                                             </t>
                                             <t t-if="record.lang=='fr_FR'">
                                                 <img src="/dcm_customization/static/src/img/FR.png"
-                                                     style="height: 35px;width:35px;margin-top:6px;"/>
+                                                     style="height: 35px;width:35px;margin-top:6px;margin-left:10px;"/>
                                             </t>
                                             <t t-if="record.lang=='it_IT'">
                                                 <img src="/dcm_customization/static/src/img/IT.png"
-                                                     style="height: 35px;width:35px;margin-top:6px;"/>
+                                                     style="height: 35px;width:35px;margin-top:6px;margin-left:10px;"/>
                                             </t>
                                             <t t-if="record.lang=='ro_RO'">
                                                 <img src="/dcm_customization/static/src/img/RM.png"
-                                                     style="height: 35px;width:35px;margin-top:6px;"/>
+                                                     style="height: 35px;width:35px;margin-top:6px;margin-left:10px;"/>
                                             </t>
                                         </div>
                                         <h4 class="card-subtitle my-2 font-weight-bold">
@@ -361,7 +361,10 @@
                                         <h4 class="card-subtitle my-2 font-weight-bold">
                                             <img src="/dcm_customization/static/src/img/people-fill.svg"
                                                  style="height: 20px;width:20px;"/>
-                                            <span style="padding-left:2px;" t-field="record.manager_id.name"/>
+                                            <!--<span style="padding-left:2px;" t-field="record.manager_id.name"/>-->
+                                            <a t-att-href="'/midardir/contact/%s?token=%s&amp;search=%s&amp;parent=%s' % (record.manager_id.id,token,search,record.manager_id.name)">
+                                                <t t-esc="record.manager_id.name"/>
+                                            </a>
                                         </h4>
                                         <!--<div class="py-2">
                                             <a t-att-href="'mailto:%s' % record.email">
@@ -604,7 +607,7 @@
                                     </div>
                                     <div class="col-11" style="margin-top: 20px;">
                                         <h3 class="card-title font-weight-bold">
-                                            <a t-att-href="'/midardir/contact/%s?search=%s' % (record.create_uid.partner_id.id,search)">
+                                            <a t-att-href="'/midardir/contact/%s?token=%s&amp;parent=%s&amp;search=%s' % (record.create_uid.partner_id.id,token,parent,search)">
                                                 <t t-esc="name"/>
                                             </a>
                                         </h3>
@@ -718,7 +721,7 @@
                 </div>
                 <t t-if="not search">
                     <div>
-                        <img src="/dcm_customization/static/description/search_1.png" style="width:200px;"
+                        <img src="/dcm_customization/static/description/search_1.jpg" style="width:200px;"
                              class="img img-fluid"/>
                     </div>
 
@@ -735,7 +738,7 @@
 
                 <t t-if="search and not records.get('data')">
                     <div>
-                        <img src="/dcm_customization/static/description/search_2.png" style="width:200px;"
+                        <img src="/dcm_customization/static/description/search_2.jpg" style="width:200px;"
                              class="img img-fluid"/>
                     </div>
 
