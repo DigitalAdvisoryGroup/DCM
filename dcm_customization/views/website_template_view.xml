@@ -39,16 +39,15 @@
                                 <br/>
                             </p>
                             <div class="card">
-                                <img class="card-image-top" src="https://live.staticflickr.com/65535/51193848084_000412f583_c_d.jpg" style=""/>
-                                <img class="rounded-circle border-white" alt="Avatar" t-attf-src="/web/image/res.partner/#{record.id}/image_1920/100x100"
-                                     style="margin-left: 20px; margin-top: -50px; width: 100px; border-style: solid; border-width: thick;"/>
+                                <img class="card-image-top"
+                                     src="/dcm_customization/static/src/img/51193848084_000412f583_c.jpg" style=""/>
+                                <img class="rounded-circle border-white" alt="Avatar"
+                                     t-attf-src="/web/image/res.partner/#{record.id}/image_1920/100x100"
+                                     style="margin-left: 20px; margin-top: -50px; height: 100px; width: 100px; border-style: solid; border-width: thick;"/>
                                 <div class="card-body">
                                     <h2 class="card-title">
                                         <t t-esc="record.name"/>
                                     </h2>
-                                    <h5 class="card-subtitle">
-                                        <t t-esc="record.function"/>
-                                    </h5>
                                     <a t-att-href="'mailto:%s' % record.email">
                                         <t t-esc="record.email"/>
                                     </a>
@@ -67,20 +66,17 @@
                                     </span>
                                     <br/>
                                     <t t-esc="lang_name"/>
-                                </div>
-                                <ul class="list-group list-group-flush">
-                                    <li class="list-group-item">
-                                        <h3 class="list-group-item-heading">
-                                            Responsibilities
-                                        </h3>
-                                    </li>
-                                    <li class="list-group-item" style="display: inline-flex;">
+                                    <h3 class="list-group-item-heading mt-3">
+                                        Persons providing Support
+                                        <!-- <span class="badge badge-primary badge-pill"><t t-esc="len(record.partner_ids)"/></span> -->
+                                    </h3>
+                                    <ul class="list-group list-group-flush">
                                         <t t-foreach="partners" t-as="part">
                                             <li class="list-group-item row d-flex px-0">
                                                 <div class="col-3">
-                                                    <img class="rounded-circle" alt="Avatar" t-attf-src="/web/image/res.partner/#{part.id}/image_1920/100x100"
-                                                         style="height: 80px; width: 80px; border-style: solid; border-width: thin;"/>
-
+                                                    <img class="rounded-circle" alt="Avatar"
+                                                         t-attf-src="/web/image/res.partner/#{part.id}/image_1920/100x100"
+                                                         style="height: 80px; width: 80px;"/>
                                                 </div>
                                                 <div class="col-9 align-self-center">
                                                     <a t-att-href="'/midardir/contact/%s?token=%s&amp;search=%s&amp;parent=%s' % (token,part.id,search,part.name)">
@@ -90,8 +86,8 @@
                                                 </div>
                                             </li>
                                         </t>
-                                    </li>
-                                </ul>
+                                    </ul>
+                                </div>
                             </div>
                             <p class="lead">
                                 <br/>
@@ -135,51 +131,66 @@
                                     <br/>
                                 </p>
                                 <div class="card">
-                                    <img class="card-image-top" src="https://live.staticflickr.com/65535/51193848084_000412f583_c_d.jpg" style=""/>
-                                    <img class="rounded-circle border-white" alt="Avatar" t-attf-src="/web/image/social.partner.group/#{record.id}/image_1920/100x100"
-                                         style="margin-left: 20px; margin-top: -50px; width: 100px; border-style: solid; border-width: thick;"/>
+                                    <img class="card-image-top"
+                                         src="/dcm_customization/static/src/img/51193848084_000412f583_c.jpg" style=""/>
+                                    <img class="rounded-circle border-white" alt="Avatar"
+                                         t-attf-src="/web/image/social.partner.group/#{record.id}/image_1920/100x100"
+                                         style="margin-left: 20px; margin-top: -50px; height: 100px; width: 100px; border-style: solid; border-width: thick;"/>
                                     <div class="card-body">
-                                        <h2 class="card-title">
+                                        <h2 class="card-title font-weight-bold">
                                             <t t-esc="record.name"/>
-
                                         </h2>
 
-                                        <div style="display:inline-flex;">
-                                            <div class="social_group_hierarchy"></div>
-                                            <a t-att-href="'/social_group_hierarchy?token=%s&amp;social_group_id=%s&amp;search=%s' % (token,record.id,search)" class="btn btn-primary ml-4" style="height:10%;">Show
-                                                Graphical Hierarchy
-                                            </a>
-                                        </div>
-                                        <h3 class="card-title">Teamleiter/in</h3>
-
-                                        <ul class="list-group list-group-flush">
-                                            <li class="list-group-item row d-flex px-0">
-                                                <div class="col-3">
-                                                    <img class="rounded-circle" alt="Avatar" t-attf-src="/web/image/res.partner/#{record.group_owner_id}/image_1920/100x100"
-                                                         style="max-height: 80px; width: 80px; border-style: solid; border-width: thin;"/>
-
+                                        <div class="card-group px-0 border-0">
+                                            <div class="card border-0" style="flex:0.4">
+                                                <div class="card-body">
+                                                    <div class="social_group_hierarchy"/>
                                                 </div>
-                                                <div class="col-9">
-                                                    <a t-att-href="'/midardir/contact/%s?token=%s&amp;search=%s' % (record.group_owner_id.id,token,search)">
-                                                        <t t-esc="record.group_owner_id.name"/>
+                                            </div>
+                                            <div class="card border-0">
+                                                <div class="card-body">
+                                                    <a t-att-href="'/social_group_hierarchy?token=%s&amp;social_group_id=%s&amp;search=%s' % (token,record.id,search)"
+                                                       class="btn btn-primary ml-4">Show
+                                                        Graphical Hierarchy
                                                     </a>
-                                                    <br/>
-                                                    <t t-esc="record.group_owner_id.function"/>
                                                 </div>
-                                            </li>
-                                        </ul>
+                                            </div>
+                                        </div>
+                                        <h3 class="card-title">Leadership</h3>
+
+                                        <t t-if="record.group_owner_id.id">
+                                            <ul class="list-group list-group-flush">
+                                                <li class="list-group-item row d-flex px-0">
+                                                    <div class="col-1">
+                                                        <img class="rounded-circle" alt="Avatar"
+                                                             t-attf-src="/web/image/res.partner/#{record.group_owner_id.id}/image_1920/100x100"
+                                                             style="height: 40px; width: 40px;"/>
+                                                    </div>
+                                                    <div class="col-11 align-self-center">
+                                                        <a t-att-href="'/midardir/contact/%s?token=%s&amp;search=%s' % (record.group_owner_id.id,token,search)">
+                                                            <t t-esc="record.group_owner_id.name"/>
+                                                        </a>
+                                                        <br/>
+                                                        <t t-esc="record.group_owner_id.function"/>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </t>
                                         <br/>
-                                        <h3 class="card-title">Teammitglieder (<t t-esc="len(record.partner_ids)"/>)
+                                        <h3 class="card-title">Team Members
+                                            <span class="badge badge-primary badge-pill">
+                                                <t t-esc="len(record.partner_ids)"/>
+                                            </span>
                                         </h3>
                                         <ul class="list-group list-group-flush">
                                             <t t-foreach="record.partner_ids" t-as="part">
                                                 <li class="list-group-item row d-flex px-0">
-                                                    <div class="col-3">
-                                                        <img class="rounded-circle" alt="Avatar" t-attf-src="/web/image/res.partner/#{part.id}/image_1920/100x100"
-                                                             style="height: 80px; width: 80px; border-style: solid; border-width: thin;"/>
-
+                                                    <div class="col-1">
+                                                        <img class="rounded-circle" alt="Avatar"
+                                                             t-attf-src="/web/image/res.partner/#{part.id}/image_1920/100x100"
+                                                             style="height: 40px; width: 40px;"/>
                                                     </div>
-                                                    <div class="col-9 align-self-center">
+                                                    <div class="col-11 align-self-center">
                                                         <a t-att-href="'/midardir/contact/%s?token=%s&amp;search=%s&amp;parent=%s' % (part.id,token,search,record.name)">
                                                             <t t-esc="part.name"/>
                                                         </a>
@@ -234,32 +245,43 @@
                 <center>
                     <h2>
                         <p style="margin: 0px;" id="group_name">
-                            <a style="text-decoration: none;" t-att-href="'/midardir/socialgroup/%s?token=%s&amp;search=%s&amp;parent=%s' % (record.id,token,search,'')">
+                            <a style="text-decoration: none;"
+                               t-att-href="'/midardir/socialgroup/%s?token=%s&amp;search=%s&amp;parent=%s' % (record.id,token,search,'')">
                                 <t t-esc="record.name"/>
                             </a>
                         </p>
                     </h2>
                     <h4>
                         <p style="margin: 0px;" id="leadership_name">
-                            Leadership: <a style="text-decoration: none;" t-att-href="'/midardir/contact/%s?token=%s&amp;search=%s&amp;parent=%s' % (record.group_owner_id.id, token, search, '')">
-                                            <t t-esc="record.group_owner_id.name"/>
-                                        </a>
+                            Leadership:
+                            <a style="text-decoration: none;"
+                               t-att-href="'/midardir/contact/%s?token=%s&amp;search=%s&amp;parent=%s' % (record.group_owner_id.id, token, search, '')">
+                                <t t-esc="record.group_owner_id.name"/>
+                            </a>
                         </p>
-                        <p style="margin: 0px;" id="headcount_direct">Headcount Direct: <t t-esc="record.current_subscribers_count"/></p>
-                        <p style="margin: 0px;" id="headcount_total">Headcount Total: <t t-esc="record.current_and_childs_subscribers_count"/></p>
+                        <p style="margin: 0px;" id="headcount_direct">Headcount Direct:
+                            <t t-esc="record.current_subscribers_count"/>
+                        </p>
+                        <p style="margin: 0px;" id="headcount_total">Headcount Total:
+                            <t t-esc="record.current_and_childs_subscribers_count"/>
+                        </p>
                     </h4>
                     <t t-if="parent_sc_group">
-                        <a role='button' class='btn btn-primary' t-att-href="'/social_group_hierarchy?token=%s&amp;social_group_id=%s&amp;search=%s' % (token,parent_sc_group.id,search)">Upper Level</a>
+                        <a role='button' class='btn btn-primary'
+                           t-att-href="'/social_group_hierarchy?token=%s&amp;social_group_id=%s&amp;search=%s' % (token,parent_sc_group.id,search)">
+                            Upper Level
+                        </a>
                     </t>
                 </center>
-<!--                <div id="chart-container" t-att-group-id="social_group_id"></div>-->
+                <!--                <div id="chart-container" t-att-group-id="social_group_id"></div>-->
                 <br/>
                 <div class="oe_structure">
                     <div class="container">
                         <div class="row">
                             <div class="col-md-8 offset-md-2 col-12">
                                 <figure class="highcharts-figure">
-                                    <div id="sunburst-container" style="height:50%;" t-att-group-id="social_group_id" t-att-token="token"/>
+                                    <div id="sunburst-container" style="height:50%;" t-att-group-id="social_group_id"
+                                         t-att-token="token"/>
                                 </figure>
                             </div>
                         </div>
@@ -301,76 +323,231 @@
                                     <br/>
                                 </p>
                                 <div class="card">
-                                    <img class="card-image-top" src="https://live.staticflickr.com/65535/51193848084_000412f583_c_d.jpg" style=""/>
-                                    <img class="rounded-circle border-white" alt="Avatar" t-attf-src="/web/image/res.partner/#{record.id}/image_1920/100x100"
-                                         style="margin-left: 20px; margin-top: -50px; width: 100px; border-style: solid; border-width: thick;"/>
+                                    <img class="card-image-top"
+                                         src="/dcm_customization/static/src/img/51193848084_000412f583_c.jpg" style=""/>
+                                    <img class="rounded-circle border-white" alt="Avatar"
+                                         t-attf-src="/web/image/res.partner/#{record.id}/image_1920/100x100"
+                                         style="margin-left: 20px; margin-top: -50px; height: 100px; width: 100px; border-style: solid; border-width: thick;"/>
                                     <div class="card-body">
-                                        <h2 class="card-title">
-                                            <t t-esc="record.name"/>
-                                        </h2>
-                                        <h5 class="card-subtitle">
+
+                                        <div style="display:flex;">
+                                            <h2 class="card-title font-weight-bold">
+                                                <t t-esc="record.name"/>
+                                            </h2>
+                                            <t t-if="record.lang=='en_US'">
+                                                <img src="/dcm_customization/static/src/img/EN.png"
+                                                     style="height: 35px;width:35px;margin-top:6px;margin-left:10px;"/>
+                                            </t>
+                                            <t t-if="record.lang=='de_CH'">
+                                                <img src="/dcm_customization/static/src/img/DE.png"
+                                                     style="height: 35px;width:35px;margin-top:6px;margin-left:10px;"/>
+                                            </t>
+                                            <t t-if="record.lang=='fr_FR'">
+                                                <img src="/dcm_customization/static/src/img/FR.png"
+                                                     style="height: 35px;width:35px;margin-top:6px;margin-left:10px;"/>
+                                            </t>
+                                            <t t-if="record.lang=='it_IT'">
+                                                <img src="/dcm_customization/static/src/img/IT.png"
+                                                     style="height: 35px;width:35px;margin-top:6px;margin-left:10px;"/>
+                                            </t>
+                                            <t t-if="record.lang=='ro_RO'">
+                                                <img src="/dcm_customization/static/src/img/RM.png"
+                                                     style="height: 35px;width:35px;margin-top:6px;margin-left:10px;"/>
+                                            </t>
+                                        </div>
+                                        <h4 class="card-subtitle my-2 font-weight-bold">
                                             <t t-esc="record.function"/>
-                                        </h5>
-                                        <a t-att-href="'mailto:%s' % record.email">
-                                            <t t-esc="record.email"/>
-                                        </a>
-                                        <br/>
-                                        <a t-att-href="'tel:%s' % record.phone">
-                                            <t t-esc="record.phone"/>
-                                        </a>
-                                        <br/>
-                                        <a t-att-href="'tel:%s' % record.mobile">
-                                            <t t-esc="record.mobile"/>
-                                        </a>
-                                        <br/>
-                                        <span><t t-esc="record.street"/>,
-                                            <t t-esc="record.zip"/>
-                                            <t t-esc="record.city"/>
-                                        </span>
-                                        <br/>
-                                        <t t-esc="lang_name"/>
+                                        </h4>
+                                        <h4 class="card-subtitle my-2 font-weight-bold">
+                                            <img src="/dcm_customization/static/src/img/people-fill.svg"
+                                                 style="height: 20px;width:20px;"/>
+                                            <!--<span style="padding-left:2px;" t-field="record.manager_id.name"/>-->
+                                            <a t-att-href="'/midardir/contact/%s?token=%s&amp;search=%s&amp;parent=%s' % (record.manager_id.id,token,search,record.manager_id.name)">
+                                                <t t-esc="record.manager_id.name"/>
+                                            </a>
+                                        </h4>
+                                        <!--<div class="py-2">
+                                            <a t-att-href="'mailto:%s' % record.email">
+                                                <t t-esc="record.email"/>
+                                            </a>
+                                            <br/>
+                                            <span><t t-esc="record.street"/>,
+                                                <t t-esc="record.zip"/>
+                                                <t t-esc="record.city"/>
+                                            </span>
+                                            <br/>
+                                            <t t-esc="lang_name"/>
+                                        </div>-->
+                                        <div class="card-group align-items-start px-0 border-0">
+                                            <div class="card px-0 mx-0 border-0">
+                                                <div class="card-body"/>
+                                                <div class="card-subtitle px-0">
+                                                    <table class="table table-sm table-borderless px-0">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td class="px-0">
+                                                                    <i class="fa fa-envelope"
+                                                                       style="font-size:large;"></i>
+                                                                </td>
+                                                                <td>
+                                                                    <a t-att-href="'tel:%s' % record.email">
+                                                                        <t t-esc="record.email"/>
+                                                                    </a>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="px-0">
+                                                                    <i class="fa fa-envelope"
+                                                                       style="font-size:large;"></i>
+                                                                </td>
+                                                                <td>
+                                                                    <a t-att-href="'tel:%s' % record.sec_email">
+                                                                        <t t-esc="record.sec_email"/>
+                                                                    </a>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="px-0">
+                                                                    <i class="fa fa-phone" style="font-size:large;"></i>
+                                                                </td>
+                                                                <td>
+                                                                    <a t-att-href="'tel:%s' % record.phone">
+                                                                        <t t-esc="record.phone"/>
+                                                                    </a>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="px-0">
+                                                                    <i class="fa fa-mobile"
+                                                                       style="font-size:large;"></i>
+                                                                </td>
+                                                                <td>
+                                                                    <a t-att-href="'tel:%s' % record.mobile">
+                                                                        <t t-esc="record.mobile"/>
+                                                                    </a>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="px-0">
+                                                                    <i class="fa fa-phone" style="font-size:large;"></i>
+                                                                </td>
+                                                                <td>
+                                                                    <a t-att-href="'tel:%s' % record.phone2">
+                                                                        <t t-esc="record.phone2"/>
+                                                                    </a>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+
+                                            <div class="card px-0 mx-0 border-0">
+                                                <div class="card-body"/>
+                                                <div class="card-subtitle px-0"><!--Social-->
+                                                    <table class="table table-sm table-borderless px-0">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td class="px-0">
+                                                                    <i class="fa fa-linkedin"
+                                                                       style="padding:2px;background: #007bb5;color: white;"></i>
+                                                                </td>
+                                                                <td>
+                                                                    <a t-att-href="record.linkedin" target="_BLANK">
+                                                                        <t t-esc="record.linkedin"/>
+                                                                    </a>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="px-0">
+                                                                    <i class="fa fa-xing"
+                                                                       style="padding:2px;background: #007bb5;color: white;"/>
+                                                                </td>
+                                                                <td>
+                                                                    <a t-att-href="record.xing" target="_BLANK">
+                                                                        <t t-esc="record.xing"/>
+                                                                    </a>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="px-0">
+                                                                    <img src="/dcm_customization/static/src/img/icon_team.png"
+                                                                         style="height:20px;width:20px;"/>
+                                                                </td>
+                                                                <td>
+                                                                    <a t-att-href="record.msteams" target="_BLANK">
+                                                                        <t t-esc="record.msteams"/>
+                                                                    </a>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                            <div class="card px-0 mx-0 border-0">
+                                                <div class="card-body"/>
+                                                <div class="card-subtitle px-0">
+                                                    <address t-field="record.self"
+                                                             t-options='{"widget": "contact", "fields": ["street","street2","city","state_id","zip"]}'/>
+                                                </div>
+                                                <div>
+                                                    <i class="fa fa-home" style="font-size:large;"></i>
+                                                    <a t-att-href="record.room_number" target="_BLANK">
+                                                        <t t-esc="record.room_number"/>
+                                                    </a>
+                                                </div>
+                                                <div>
+                                                    <i class="fa fa-user" style="font-size:large;"></i>
+                                                    <a t-att-href="record.empl_number" target="_BLANK">
+                                                        <t t-esc="record.empl_number"/>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                     <ul class="list-group list-group-flush">
                                         <t t-foreach="org_data_latest" t-as="org_data">
-                                            <li class="list-group-item">
-                                                <h3 class="list-group-item-heading">
+                                            <li class="list-group-item bg-primary"
+                                                style="opacity: 0.5;padding: 0.50rem 1.25rem;">
+                                                <h3 class="list-group-item-heading text-white font-weight-bold">
                                                     <t t-esc="org_data.get('name')"/>
                                                 </h3>
                                             </li>
-                                            <li class="list-group-item">
-                                                <t t-foreach="org_data.get('data')" t-as="org_line">
-                                                    <a t-att-href="'/midardir/socialgroup/%s?token=%s&amp;search=%s&amp;parent=%s' % (org_line.get('id'),token,search,org_line.get('current_group'))">
-                                                        <t t-esc="org_line.get('current_group')"/>
-                                                    </a>
-                                                </t>
+                                            <li class="list-group-item" style="line-height: 0;">
+                                                <ul class="list-group list-group-flush">
+                                                    <t t-foreach="org_data.get('data')" t-as="org_line">
+                                                        <li class="list-group-item border-0">
+                                                            <div class="col-12 align-self-center">
+                                                                <a t-att-href="'/midardir/socialgroup/%s?token=%s&amp;search=%s&amp;parent=%s' % (org_line.get('id'),token,search,org_line.get('current_group'))">
+                                                                    <t t-esc="org_line.get('current_group')"/>
+                                                                </a>
+                                                            </div>
+                                                        </li>
+                                                    </t>
+                                                </ul>
                                             </li>
                                         </t>
-                                    </ul>
-                                    <ul class="list-group list-group-flush">
-                                        <li class="list-group-item">
-                                            <h3 class="list-group-item-heading">
+                                        <!--<li class="list-group-item bg-primary" style="opacity: 0.5;">
+                                            <h3 class="list-group-item-heading text-white font-weight-bold">
                                                 Responsibilities
                                             </h3>
                                         </li>
-                                        <li class="list-group-item" style="display: inline-flex;">
-                                            <t t-foreach="responsbility" t-as="resp">
-                                                <li class="list-group-item row d-flex px-0">
-                                                    <div class="col-3">
-                                                        <img class="rounded-circle" alt="Avatar" t-att-src="resp.get('image_url')"
-                                                             style="height: 80px; width: 80px; border-style: solid; border-width: thin;"/>
-
-                                                    </div>
-                                                    <div class="col-9 align-self-center">
-                                                        <a t-att-href="'/midardir/res/contact/%s?token=%s&amp;search=%s&amp;parent=%s' % (resp.get('id'),token,search,resp.get('name'))">
-                                                            <t t-esc="resp.get('name')"/>
-                                                            <t t-esc="resp.get('name')"/>
-                                                        </a>
-                                                    </div>
-                                                </li>
-
-                                            </t>
-                                        </li>
+                                        <li class="list-group-item" style="line-height: 0;">
+                                            <ul class="list-group list-group-flush">
+                                                <t t-foreach="responsbility" t-as="resp">
+                                                    <li class="list-group-item border-0">
+                                                        <div class="col-12 align-self-center">
+                                                            <a t-att-href="'/midardir/res/contact/%s?token=%s&amp;search=%s&amp;parent=%s' % (resp.get('id'),token,search,resp.get('name'))">
+                                                                <t t-esc="resp.get('name')"/>
+                                                                <t t-esc="resp.get('name')"/>
+                                                            </a>
+                                                        </div>
+                                                    </li>
+                                                </t>
+                                            </ul>
+                                        </li>-->
                                     </ul>
+
                                 </div>
                                 <p class="lead">
                                     <br/>
@@ -408,84 +585,148 @@
                     </div>
                 </div>
             </div>
-            <div class="container">
-                <div class="row">
-                    <table class="table w-50" style="background-color: lightgrey;">
-                        <tbody>
-                            <tr>
-                                <td colspan="2" class="btn-primary">
-                                    <span>
-                                        <strong>
-                                            <t t-esc="name"/>
-                                        </strong>
-                                    </span>
-                                </td>
-                            </tr>
-                            <tr class="">
-                                <td>
-                                    <strong>Date:</strong>
-                                </td>
-                                <td>
-                                    <span>
-                                        <t t-esc="date"/>
-                                    </span>
-                                </td>
-                            </tr>
-                            <tr class="">
-                                <td>
-                                    <strong>Message:</strong>
-                                </td>
-                                <td>
-                                    <span>
-                                        <t t-esc="message"/>
-                                    </span>
-                                </td>
-                            </tr>
-                            <tr class="">
-                                <td>
-                                    <strong>Total Likes:</strong>
-                                </td>
-                                <td>
-                                    <span>
-                                        <t t-esc="total_like_count"/>
-                                    </span>
-                                </td>
-                            </tr>
-                            <tr class="">
-                                <td>
-                                    <strong>Total Dislikes:</strong>
-                                </td>
-                                <td>
-                                    <span>
-                                        <t t-esc="total_dislike_count"/>
-                                    </span>
-                                </td>
-                            </tr>
-                            <tr class="">
-                                <td>
-                                    <strong>Total Comments:</strong>
-                                </td>
-                                <td>
-                                    <span>
-                                        <t t-esc="total_comment_count"/>
-                                    </span>
-                                </td>
-                            </tr>
-                            <tr class="">
-                                <td>
-                                    <strong>Total Share:</strong>
-                                </td>
-                                <td>
-                                    <span>
-                                        <t t-esc="total_share_count"/>
-                                    </span>
-                                </td>
-                            </tr>
 
-                        </tbody>
-                    </table>
-                </div>
+            <section class="s_text_block pt32 pb32" data-name="Text block">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-12 pt32 pb32">
+                            <p class="lead">
+                                <br/>
+                            </p>
+                            <div class="card">
+                                <img class="card-image-top"
+                                     src="/dcm_customization/static/src/img/51193848084_000412f583_c.jpg" style=""/>
+                                <!--<img class="rounded-circle border-white" alt="Avatar"
+                                     t-attf-src="/web/image/utm.campaign/#{record.utm_campaign_id.id}/image_1920/100x100"
+                                     style="margin-left: 20px; margin-top: -50px; height: 100px; width: 100px; border-style: solid; border-width: thick;"/>-->
+                                <div class="row">
+                                    <div class="col-1" style="margin-top: 20px;">
+                                        <img class="rounded-circle border-white" alt="Avatar"
+                                             t-attf-src="/web/image/utm.campaign/#{record.utm_campaign_id.id}/image_1920/100x100"
+                                             style="margin-left: 20px; height: 40px; width: 40px; border-style: solid; border-width: thick;"/>
+                                    </div>
+                                    <div class="col-11" style="margin-top: 20px;">
+                                        <h3 class="card-title font-weight-bold">
+                                            <a t-att-href="'/midardir/contact/%s?token=%s&amp;parent=%s&amp;search=%s' % (record.create_uid.partner_id.id,token,parent,search)">
+                                                <t t-esc="name"/>
+                                            </a>
+                                        </h3>
+                                        <div class="text-muted o_social_preview_description">
+                                            Published by Midar • <time t-esc="record.published_date"/> • <i class="fa fa-globe"/>
+                                        </div>
+                                        <!--<h4 class="card-subtitle font-weight-bold">
+                                            <t t-esc="name"/>
+                                            /
+                                            <t t-esc="date" t-options="{&quot;widget&quot;: &quot;datetime&quot;}"/>
+                                        </h4>-->
+
+                                        <i class="fa fa-heart mt16"/>
+                                        <span class="badge badge-primary badge-pill">
+                                            <t t-esc="total_like_count"/>
+                                        </span>
+
+                                        <img src="/dcm_customization/static/src/img/heart-broken-solid.svg" style="height:15px;margin-left: 1rem"/>
+                                        <span class="badge badge-primary badge-pill">
+                                            <t t-esc="total_dislike_count"/>
+                                        </span>
+
+                                        <i class="fa fa-share-alt" style="margin-left: 1rem"/>
+                                        <span class="badge badge-primary badge-pill">
+                                            <t t-esc="total_share_count"/>
+                                        </span>
+
+                                        <i class="fa fa-comments" style="margin-left: 1rem"/>
+                                        <span class="badge badge-primary badge-pill">
+                                            <t t-esc="total_comment_count"/>
+                                        </span>
+
+                                        <div class="o_social_preview_message mt16">
+                                            <t t-esc="record.message" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div t-attf-class="#{'o_social_stream_post_images_custom' if len(record.image_ids)==1 else 'o_social_stream_post_image'} overflow-hidden text-center">
+                <t t-foreach="record.image_ids" t-as="image">
+                    <t t-if="image.id">
+                        <t t-set="image_data" t-value="'/web/image/%s/500x500'%image.id" />
+                    </t>
+                    <!--<t t-if="not image.id">
+                        <t t-set="image_data" t-attf-value="'data:image/png;base64,%s'%image.datas" />
+                    </t>-->
+                    <a t-if="image_index == 1 and len(record.image_ids) > 2" class="o_social_stream_post_image_more position-relative d-flex ml-1" t-att-data-current-index="1">
+                        <t t-if="image.id">
+                            <img t-att-src="'/web/image/%s/500x500'%image.id"  alt="Post Image" t-if="image.mimetype.startswith('image')"/>
+                        </t>
+                        <!--<t t-if="not image.id">
+                            <img t-attf-src="data:image/png;base64, #{image.datas}"  alt="Post Image" t-if="image.mimetype.startswith('image')"/>
+                        </t>-->
+                        <img src="/web/static/src/img/mimetypes/pdf.svg" style="object-fit: contain;"  alt="Post Image" t-if="image.mimetype.startswith('application/pdf')"/>
+                        <img t-attf-src="#{image_data}"  alt="Post Image" t-if="image.mimetype.startswith('image')"/>
+                        <video width="200"  t-attf-src="/web/content/?social_newid=true&amp;datas=#{image._full_path(image.store_fname)}&amp;mimetype=#{image.mimetype}" alt="Post Image" controls="controls" />
+                        <div class="o_social_stream_post_image_more_overlay d-flex align-items-center h-100 w-100 text-white justify-content-center position-absolute h1 m-0" style="user-select: none;">
+                            +<t t-esc="len(record.image_ids) - 2"/>
+                        </div>
+                    </a>
+                    <video t-if="image_index &lt; 2 and image.mimetype.startswith('video')"  width="200"  t-attf-src="/web/content/?social_newid=true&amp;datas=#{image._full_path(image.store_fname)}&amp;mimetype=#{image.mimetype}" alt="Post Image" controls="controls"  t-att-type="image.mimetype"/>
+                    <t t-if="image.id">
+                        <img t-att-src="'/web/image/%s/500x500'%image.id"  alt="Post Image" t-if="image_index &lt; 2 and image.mimetype.startswith('image')"/>
+                        <img src="/web/static/src/img/mimetypes/pdf.svg" style="object-fit: contain;"  alt="Post Image" t-if="image_index &lt; 2 and image.mimetype.startswith('application/pdf')"/>
+                    </t>
+                    <!--<t t-if="not image.id">
+                        <img t-attf-src="data:image/png;base64, #{image.datas}"  alt="Post Image" t-if="image_index &lt; 2 and image.mimetype.startswith('image')"/>
+                        <img src="/web/static/src/img/mimetypes/pdf.svg" style="object-fit: contain;"  alt="Post Image" t-if="image_index &lt; 2 and image.mimetype.startswith('application/pdf')"/>
+                    </t>-->
+                </t>
             </div>
+                                    <!--<div class="card-body">
+                                        <t t-raw="record.bit_preview" style="width: 600px;"/>
+                                    </div>-->
+                                    <!--<div class="card-footer">
+                                        <div class="card-group">
+                                            <div class="card border-0">
+                                                <div class="card-text">
+                                                    <span class="badge badge-primary badge-pill">
+                                                        <t t-esc="total_like_count"/>
+                                                    </span>
+                                                    <i class="fa fa-thumbs-up ml-2"/>
+                                                </div>
+                                            </div>
+                                            <div class="card border-0">
+                                                <div class="card-text">
+                                                    <span class="badge badge-primary badge-pill">
+                                                        <t t-esc="total_dislike_count"/>
+                                                    </span>
+                                                    <i class="fa fa-thumbs-down ml-2"/>
+                                                </div>
+                                            </div>
+                                            <div class="card border-0">
+                                                <div class="card-text">
+                                                    <span class="badge badge-primary badge-pill">
+                                                        <t t-esc="total_comment_count"/>
+                                                    </span>
+                                                    <i class="fa fa-comments ml-2"/>
+                                                </div>
+                                            </div>
+                                            <div class="card border-0">
+                                                <div class="card-text">
+                                                    <span class="badge badge-primary badge-pill">
+                                                        <t t-esc="total_share_count"/>
+                                                    </span>
+                                                    <i class="fa fa-share-alt ml-2"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>-->
+                                </div>
+                            </div>
+                            <p class="lead">
+                                <br/>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
         </t>
     </template>
 
@@ -513,7 +754,8 @@
                 </div>
                 <t t-if="not search">
                     <div>
-                        <img src="/dcm_customization/static/description/search_1.jpg" style="width:200px;" class="img img-fluid"/>
+                        <img src="/dcm_customization/static/description/search_1.jpg" style="width:200px;"
+                             class="img img-fluid"/>
                     </div>
 
                     <div>
@@ -529,7 +771,8 @@
 
                 <t t-if="search and not records.get('data')">
                     <div>
-                        <img src="/dcm_customization/static/description/search_2.jpg" style="width:200px;" class="img img-fluid"/>
+                        <img src="/dcm_customization/static/description/search_2.jpg" style="width:200px;"
+                             class="img img-fluid"/>
                     </div>
 
                     <div>
@@ -542,11 +785,18 @@
                     </div>
                 </t>
                 <br/>
-                <div class="row" style="width: 80%;">
+                <div class="row">
                     <t t-foreach="records.get('data')" t-as="record">
-                        <div class="col-12 midardir_social_group_menu">
-                            <a t-att-href="'/midardir/result?token=%s&amp;search=%s&amp;config=%s'%(token,search,record.get('id'))">
-                                <img t-att-src="record.get('image')" class="img img-fluid midardir-img rounded-circle"/>
+                        <div class="col-12" style="opacity: 0.5;border : 1px solid white !important;
+	color : white !important;
+	background-color : #3366cc;
+	height: 3.5rem;
+    font-size: large;
+    line-height: 3rem;">
+                            <a t-att-href="'/midardir/result?token=%s&amp;search=%s&amp;config=%s'%(token,search,record.get('id'))" style="color : white !important;">
+                                <img t-att-src="record.get('image')" class="img img-fluid rounded-circle" style="height : 3rem;
+	width : 3rem;
+	margin-top:4px;"/>
                                 <span t-esc="record.get('count')"/>
                                 <span t-esc="record.get('name')"/>
                                 found
@@ -566,9 +816,11 @@
                     <t t-set="additional_title">MidarDir</t>
                     <form t-att-action="'/midardir'" method="get">
                         <div t-attf-class="input-group #{_classes}" role="search">
-                            <input type="text" name="search" class="search-query form-control oe_search_box" placeholder="Search..." t-att-value="search"/>
+                            <input type="text" name="search" class="search-query form-control oe_search_box"
+                                   placeholder="Search..." t-att-value="search"/>
                             <div class="input-group-append">
-                                <button type="submit" class="btn btn-primary oe_search_button" aria-label="Search" title="Search">
+                                <button type="submit" class="btn btn-primary oe_search_button" aria-label="Search"
+                                        title="Search">
                                     <i class="fa fa-search"/>
                                 </button>
                             </div>
@@ -577,13 +829,29 @@
                     </form>
                 </div>
                 <br/>
-                <div class="row" style="width: 100%;">
+                <div class="row">
 
                     <t t-foreach="records.get('data')" t-as="record">
-                        <div t-att-class="'col-12 mr-1 mb-2 midardir_social_group_menu active' if current_config == record.get('id') else 'col-12 mr-1 mb-2 midardir_social_group_menu'"
-                             style="opacity: 0.5">
-                            <a t-att-href="'/midardir/result?token=%s&amp;search=%s&amp;config=%s'%(token,search,record.get('id'))">
-                                <img t-att-src="record.get('image')" class="img img-fluid midardir-img rounded-circle"/>
+                        <!--<div t-att-class="'col-12 mb-2 midardir_social_group_menu active' if current_config == record.get('id') else 'col-12 mb-2 midardir_social_group_menu'"
+                             style="opacity: 0.5">-->
+                        <div class="col-12 mb-2" t-att-style="'border: 1px solid #3366cc !important;
+    color: #3366cc !important;
+    background-color: white;
+    height: 3.5rem;
+    opacity: 0.5;
+    font-size: large;
+    line-height: 3.5rem;' if current_config == record.get('id') else 'border: 1px solid white !important;
+    color: white !important;
+    background-color: #3366cc;
+    height: 3.5rem;
+    opacity: 0.5;
+    font-size: large;
+    line-height: 3rem;'"
+                             >
+                            <a t-att-href="'/midardir/result?token=%s&amp;search=%s&amp;config=%s'%(token,search,record.get('id'))" t-att-style="'color : #3366cc !important;' if current_config == record.get('id') else 'color : white !important;'">
+                                <img t-att-src="record.get('image')" class="img img-fluid rounded-circle" style="height : 3rem;
+	width : 3rem;
+	margin-top:4px;"/>
                                 <span t-esc="record.get('count')"/>
                                 <span t-esc="record.get('name')"/>
                                 gefunden
@@ -614,28 +882,34 @@
                                     <t t-set="r_label_count" t-value="r_label_count+1"/>
                                 </t>
                                 <t t-if="page == 'profile'">
-                                    <t t-set="redirect_url" t-value="'/midardir/contact/%s?token=%s&amp;parent=%s&amp;search=%s'%(result.get('id'),token,r_label,search)"/>
+                                    <t t-set="redirect_url"
+                                       t-value="'/midardir/contact/%s?token=%s&amp;parent=%s&amp;search=%s'%(result.get('id'),token,r_label,search)"/>
                                 </t>
                                 <t t-if="page == 'group'">
-                                    <t t-set="redirect_url" t-value="'/midardir/socialgroup/%s?token=%s&amp;parent=%s&amp;search=%s'%(result.get('id'),token,r_label,search)"/>
+                                    <t t-set="redirect_url"
+                                       t-value="'/midardir/socialgroup/%s?token=%s&amp;parent=%s&amp;search=%s'%(result.get('id'),token,r_label,search)"/>
                                 </t>
                                 <t t-if="page == 'responsbility'">
-                                    <t t-set="redirect_url" t-value="'/midardir/res/contact/%s?token=%s&amp;parent=%s&amp;search=%s'%(result.get('id'),token,r_label,search)"/>
+                                    <t t-set="redirect_url"
+                                       t-value="'/midardir/res/contact/%s?token=%s&amp;parent=%s&amp;search=%s'%(result.get('id'),token,r_label,search)"/>
                                 </t>
                                 <t t-if="page == 'post'">
-                                    <t t-set="redirect_url" t-value="'/midardir/post/%s?token=%s&amp;parent=%s&amp;search=%s'%(result.get('id'),token,r_label,search)"/>
+                                    <t t-set="redirect_url"
+                                       t-value="'/midardir/post/%s?token=%s&amp;parent=%s&amp;search=%s'%(result.get('id'),token,r_label,search)"/>
                                 </t>
-                                <li class="row list-group-item list-group-item-action d-flex">
-                                    <div class="col-3">
+                                <li class="list-group-item list-group-item-action d-flex">
+                                    <div class="col-1">
                                         <a t-att-href="redirect_url">
-                                            <img t-att-src="result.get('image_url')" class="img img-fluid rounded-circle"
-                                                 style="max-height: 80px; width: 80px; border-style: solid; border-width: thin;"/>
+                                            <img t-att-src="result.get('image_url')"
+                                                 class="img img-fluid rounded-circle"
+                                                 style="height: 40px; width: 40px;"/>
                                         </a>
                                     </div>
-                                    <div class="col-9 self-align-center">
+                                    <div class="col-11 align-self-center">
                                         <a t-att-href="redirect_url">
                                             <t t-set="r_count" t-value="0"/>
                                             <t t-foreach="r_keys" t-as="key">
+
                                                 <t t-if="r_count == 0">
                                                     <b>
                                                         <t t-esc="result.get(key)"/>

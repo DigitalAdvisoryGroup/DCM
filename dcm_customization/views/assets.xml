@@ -16,8 +16,8 @@
         <xpath expr="." position="inside">
         	<link rel="stylesheet" type="text/css" href="/dcm_customization/static/src/css/jqtree.css"/>
         	<link rel="stylesheet" type="text/css" href="/dcm_customization/static/src/css/jquery.orgchart.css"/>
-            <link rel="stylesheet" type="text/scss"
-                  href="/dcm_customization/static/src/scss/midardir.scss"/>
+            <!--<link rel="stylesheet" type="text/scss"
+                  href="/dcm_customization/static/src/scss/midardir.scss"/>-->
             <script type="text/javascript" src="/dcm_customization/static/src/js/jquery.orgchart.min.js"/>
             <script type="text/javascript" src="/dcm_customization/static/src/js/portal.js"/>
             <script type="text/javascript" src="/dcm_customization/static/src/js/website_search.js"/>

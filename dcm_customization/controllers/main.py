@@ -136,6 +136,7 @@ class MidarVideoAttachment(http.Controller):
 
         # global_search_config = request.env['global.search.config'].sudo().search([])
         print("----------global_search_config------------\n\n\n\n\--",data_result)
+        print ('-------result_fields---------------',result_fields)
         return request.render("dcm_customization.midardir_search_menu_result", {'search_models': data.keys(),'records': data,
                                                                     'search': kw.get("search"),
                                                                     'results' : data_result,
@@ -209,7 +210,6 @@ class MidarVideoAttachment(http.Controller):
         parent = kw.get('parent')
         org_data_latest = partner.with_context(lang=partner.lang).get_group_data_latest()
         responsbility = partner.get_resp_contact_data()
-        print("---------responsbility------------",responsbility)
         return request.render("dcm_customization.midardir_contact", {'record': partner,
                                                                      # 'level_1': level_1_dict,
                                                                      'search': kw.get("search"),
