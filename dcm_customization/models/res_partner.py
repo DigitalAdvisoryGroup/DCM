@@ -413,33 +413,56 @@ class ResPartner(models.Model):
 
     def get_group_data_latest(self):
         final_data = []
-        for group in self.social_group_id:
-            _logger.info("------------group------profile---1----%s",group)
-            _logger.info("------------group------profile---2----%s",group.name)
-            _logger.info("------------group------profile---3----%s",group.is_org_unit)
-            if group.is_org_unit:
-                parent_sg_id = False
-                if group.parent2_id:
-                    parent_sg_id = self.get_last_data(group)
-                if final_data and group.type_id and group.type_id.name in [x['name'] for x in final_data]:
-                    for l in final_data:
-                        if l['name'] == group.type_id.name:
-                            l['data'].append({
-                            "root_group": parent_sg_id and parent_sg_id.name or '',
-                            "current_group": group.name,
-                            "id": group.id
-                        })
-                else:
-                    final_data.append({
-                        "name": group.type_id and group.type_id.name or '',
-                        "is_user_updatable": group.type_id and group.type_id.is_user_updatable or False,
-                        "id": group.type_id and group.type_id.id or '',
-                        "data": [{
-                            "root_group": parent_sg_id and parent_sg_id.name or '',
-                            "current_group": group.name,
-                            "id": group.id
-                        }]
+        social_group_type = self.env['social.partner.group.type'].search([('is_user_updatable', '=', True)])
+        if self.social_group_id:
+            gtype_final_data = []
+            for group in self.social_group_id:
+                _logger.info("------------group------profile---1----%s",group)
+                _logger.info("------------group------profile---2----%s",group.name)
+                _logger.info("------------group------profile---3----%s",group.is_org_unit)
+                if group.is_org_unit:
+                    parent_sg_id = False
+                    if group.parent2_id:
+                        parent_sg_id = self.get_last_data(group)
+                    if final_data and group.type_id and group.type_id.name in [x['name'] for x in final_data]:
+                        for l in final_data:
+                            if l['name'] == group.type_id.name:
+                                l['data'].append({
+                                "root_group": parent_sg_id and parent_sg_id.name or '',
+                                "current_group": group.name,
+                                "id": group.id
+                            })
+                    else:
+                        final_data.append({
+                            "name": group.type_id and group.type_id.name or '',
+                            "is_user_updatable": group.type_id and group.type_id.is_user_updatable or False,
+                            "id": group.type_id and group.type_id.id or '',
+                            "data": [{
+                                "root_group": parent_sg_id and parent_sg_id.name or '',
+                                "current_group": group.name,
+                                "id": group.id
+                            }]
 
+                        })
+                        gtype_final_data.append(group.type_id.id)
+            if gtype_final_data and list(set(social_group_type.ids) - set(gtype_final_data)):
+                add_gtype = list(set(social_group_type.ids) - set(gtype_final_data))
+                add_gtype = self.env['social.partner.group.type'].browse(add_gtype)
+                for gtype in add_gtype:
+                    final_data.append({
+                        "name": gtype.name or '',
+                        "is_user_updatable": gtype.is_user_updatable or False,
+                        "id": gtype.id or '',
+                        "data": []
+                    })
+        else:
+            if social_group_type:
+                for gtype in social_group_type:
+                    final_data.append({
+                        "name": gtype.name or '',
+                        "is_user_updatable": gtype.is_user_updatable or False,
+                        "id": gtype.id or '',
+                        "data": []
                     })
         _logger.info("0-------------group--profile--data---latest---------%s",final_data)
         return final_data
