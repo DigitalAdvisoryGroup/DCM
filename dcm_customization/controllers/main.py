@@ -208,6 +208,7 @@ class MidarVideoAttachment(http.Controller):
             level_3_dict = {}
         prevpath = request.httprequest.referrer
         parent = kw.get('parent')
+
         org_data_latest = partner.with_context(lang=partner.lang).get_group_data_latest()
         responsbility = partner.get_resp_contact_data()
         return request.render("dcm_customization.midardir_contact", {'record': partner,
