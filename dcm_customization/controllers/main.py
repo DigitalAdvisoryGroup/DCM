@@ -423,6 +423,7 @@ class MidarVideoAttachment(http.Controller):
             search = kw.get('search')
             sc_groups = request.env['social.partner.group'].sudo().browse(int(kw.get('social_group_id')))
             data = self.get_sunburst_data(sc_groups,search, kw.get("token"))
+            print("--------data--------------------",data)
             return {"data": data, "header": sc_groups.name, "current_group": sc_groups.name}
 
     def get_sunburst_data(self, main_sc_group, search, token):
@@ -430,6 +431,7 @@ class MidarVideoAttachment(http.Controller):
             'id': str(main_sc_group.id),
             'name': main_sc_group.name,
             'parent': '',
+            'token': token,
             'value': main_sc_group.current_and_childs_subscribers_count,
             'parent_id': main_sc_group.id,
             'parent_name': main_sc_group.name,

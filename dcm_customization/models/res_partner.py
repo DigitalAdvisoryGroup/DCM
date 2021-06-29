@@ -1,56 +1,59 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo Module Developed by Candidroot Solutions Pvt. Ltd.
 # See LICENSE file for full copyright and licensing details.
-import json
-import time
-
-from pyfcm import FCMNotification
-from odoo import models, fields, api
-from odoo.tools.misc import formatLang, format_date, get_lang
-from odoo.tools import DEFAULT_SERVER_DATE_FORMAT
-from itertools import groupby
-import math, random
-from werkzeug.urls import url_join
 import datetime
+import json
 import logging
+import math
+import random
+from itertools import groupby
+
+from odoo import models, fields, api
+from odoo.tools import DEFAULT_SERVER_DATE_FORMAT
+from odoo.tools.misc import get_lang
+from pyfcm import FCMNotification
+from werkzeug.urls import url_join
+
 _logger = logging.getLogger(__name__)
 LANG_CODE_ODOO = {
-            "it-IT":"it_IT",
-            "rm-CH":"ro_RO",
-            "fr-CH":"fr_CH",
-            "de-CH":"de_CH",
-            "en":"en_US",
-            "de": "de_CH",
-            "fr": "fr_CH",
-            "it": "it_IT",
-            "rm": "ro_RO",
+    "it-IT": "it_IT",
+    "rm-CH": "ro_RO",
+    "fr-CH": "fr_CH",
+    "de-CH": "de_CH",
+    "en": "en_US",
+    "de": "de_CH",
+    "fr": "fr_CH",
+    "it": "it_IT",
+    "rm": "ro_RO",
 }
 
 LANG_CODE_APP = {
-            "it_IT":"it-IT",
-            "fr_CH":"fr-CH",
-            "de_CH":"de-CH",
-            "en_US":"en",
-            "ro_RO": "rm-CH"
+    "it_IT": "it-IT",
+    "fr_CH": "fr-CH",
+    "de_CH": "de-CH",
+    "en_US": "en",
+    "ro_RO": "rm-CH"
 }
+
 
 class ResPartnerCategory(models.Model):
     _inherit = 'res.partner.category'
 
     partner_id = fields.Many2one("res.partner", "Company")
 
+
 class ResPartner(models.Model):
     _inherit = 'res.partner'
 
     otp_token = fields.Char("OTP Token", copy=False)
-    social_group_id = fields.Many2many('social.partner.group','social_group_partner_rel','partner_id','social_group_id',string="Social Group")
-    social_group_fun_id = fields.Many2many('social.partner.group','social_group_fun_partner_rel','partner_id','social_group_id',string="Functional Social Group")
+    social_group_id = fields.Many2many('social.partner.group', 'social_group_partner_rel', 'partner_id', 'social_group_id', string="Social Group")
+    social_group_fun_id = fields.Many2many('social.partner.group', 'social_group_fun_partner_rel', 'partner_id', 'social_group_id', string="Functional Social Group")
     change_connection = fields.Boolean("Change Connection")
-    partner_token_lines = fields.One2many("res.partner.token","partner_id", string="Token Lines")
+    partner_token_lines = fields.One2many("res.partner.token", "partner_id", string="Token Lines")
     is_token_available = fields.Boolean("Is Token Available?", compute="_get_token_available", store=True)
     file_name_custom = fields.Char("Filename")
-    category_skill_ids = fields.Many2many("res.partner.category", "rel_parnter_category_skill","skill_partner_id","skill_category_id", string="Skills")
-    category_res_ids = fields.Many2many("res.partner.category", "rel_parnter_category_res","res_partner_id","res_category_id",string="Responsbilities")
+    category_skill_ids = fields.Many2many("res.partner.category", "rel_parnter_category_skill", "skill_partner_id", "skill_category_id", string="Skills")
+    category_res_ids = fields.Many2many("res.partner.category", "rel_parnter_category_res", "res_partner_id", "res_category_id", string="Responsbilities")
 
     category_social_id_name = fields.Char("Social Name", compute="_set_category_social_ids_name", store=True)
     category_id_name = fields.Char("Tags Name", compute="_set_category_name", store=True)
@@ -61,53 +64,116 @@ class ResPartner(models.Model):
     fu2_id = fields.Char("FU 2")
     fu3_id = fields.Char("FU 3")
     fu_key = fields.Char("Func Unit Key")
-    mlevel_id = fields.Many2one("partner.mlevel","Management level")
+    mlevel_id = fields.Many2one("partner.mlevel", "Management level")
 
-    app_basic_info = fields.Selection([('view','View'),('edit','Edit'),('not_display','Not Display')], string="Basic Information", default="view")
-    app_extended_info = fields.Selection([('view','View'),('edit','Edit'),('not_display','Not Display')], string="Extended Information", default="view")
+    app_basic_info = fields.Selection([('view', 'View'), ('edit', 'Edit'), ('not_display', 'Not Display')], string="Basic Information", default="view")
+    app_extended_info = fields.Selection([('view', 'View'), ('edit', 'Edit'), ('not_display', 'Not Display')], string="Extended Information", default="view")
     firstname = fields.Char("First Name")
     familyname = fields.Char("Family Name")
     id_code = fields.Char("Identification Code")
 
-
     empl_number = fields.Char("Employee Number", help="Employee Number")
-    room_number = fields.Char("Room Number",help="Room Number")
-    phone2 = fields.Char("Private Number",help="Private Number")
-    linkedin = fields.Char("Linkedin Profile",help="Linkedin Profile")
-    msteams = fields.Char("MS Teams ID",help="MS Teams ID")
-    fax = fields.Char("Telefax Number",help="Telefax Number")
-    skype = fields.Char("Skype Number",help="Skype Number")
-    xing = fields.Char("Xing Profile",help="Xing Profile")
-    manager_id = fields.Many2one("res.partner","Manager",help="Manager")
+    room_number = fields.Char("Room Number", help="Room Number")
+    phone2 = fields.Char("Private Number", help="Private Number")
+    linkedin = fields.Char("Linkedin Profile", help="Linkedin Profile")
+    msteams = fields.Char("MS Teams ID", help="MS Teams ID")
+    fax = fields.Char("Telefax Number", help="Telefax Number")
+    skype = fields.Char("Skype Number", help="Skype Number")
+    xing = fields.Char("Xing Profile", help="Xing Profile")
+    manager_id = fields.Many2one("res.partner", "Manager", help="Manager")
     name_switched = fields.Char("Switched Name (Family First)")
-    sec_email = fields.Char("Secondary Email",help="Secondary Email")
-    last_import_flag = fields.Char("Last import flag",help="")
+    sec_email = fields.Char("Secondary Email", help="Secondary Email")
+    last_import_flag = fields.Char("Last import flag", help="")
     is_display_chart = fields.Boolean("Display Chart in mobile")
     ext_tag_lines = fields.One2many("partner.extended.tag.level", "partner_id", string="Extended Tags")
 
     chart_preview = fields.Char('Preview')
     chart_data = fields.Char("Chart Data", compute='_compute_chart_data', compute_sudo=True)
+    chart_type = fields.Selection([('pie', 'Pie'), ('sunburst', 'Sunburst')], string="Chart Type", default="sunburst")
 
-    @api.depends("social_group_id")
+    @api.depends("social_group_id", "chart_type")
     def _compute_chart_data(self):
         for partner in self:
-            partner.chart_data = json.dumps({
-                'chart': {
-                    'styledMode': True,
-                    "renderTo": "chart_container"
-                },
-                'title': {
-                    'text': 'Social Groups'
-                },
-                'series': [{
-                    'type': 'pie',
-                    'allowPointSelect': True,
-                    'keys': ['name', 'y', 'selected', 'sliced'],
-                    'data': [[x.name, x.current_and_childs_subscribers_count] for x in partner.social_group_id],
-                    'showInLegend': False
-                }]
-            })
+            if partner.chart_type == "pie":
+                partner.chart_data = json.dumps({
+                    'chart': {
+                        'styledMode': True,
+                        "renderTo": "chart_container"
+                    },
+                    'title': {
+                        'text': 'Social Groups'
+                    },
+                    'series': [{
+                        'type': 'pie',
+                        'allowPointSelect': True,
+                        'keys': ['name', 'y', 'selected', 'sliced'],
+                        'data': [[x.name, x.current_and_childs_subscribers_count] for x in partner.social_group_id],
+                        'showInLegend': False
+                    }]
+                })
+            if partner.chart_type == "sunburst":
+                final_data = [{'id':str(0),'name': 'Social Groups','parent':''}]
+                social_group_type = partner.social_group_id.mapped("type_id")
+                print("-----------social_group_type--------------",social_group_type)
+                for gtype in social_group_type:
+                    final_data.append({'id':str(gtype.id),'name': gtype.name,'parent':str(0)})
+                for group in partner.social_group_id:
+                    final_data.append({'id':str(group.id),'name': group.name,'parent':str(group.type_id.id),'value': 1})
+                partner.chart_data = json.dumps({
+                    'chart': {
+                        "renderTo": "chart_container",
+                        # 'height': '100%'
+                    },
+                    'colors': ["transparent", "#7cb5ec", "#434348", "#90ed7d", "#f7a35c", "#8085e9", "#f15c80", "#e4d354", "#2b908f", "#f45b5b", "#91e8e1"],
+                    'title': {
+                        'text': 'Social Groups'
+                    },
+                    'series': [{
+                        'type': 'sunburst',
+                        'panning': True,
+                        'pinchType': 'none',
+                        'resetZoomButton': {
+                            'theme': {
+                                'display': 'none'
+                            }
+                        },
+                        'data': final_data,
+                        "allowDrillToNode": True,
+                        'cursor': 'pointer',
+                        'dataLabels': {
+                            'style': {
+                                'textOutline': "0px",
+                            },
+                            'format': '{point.name}',
+                            'filter': {
+                                'property': 'innerArcLength',
+                                'operator': '>',
+                                'value': 16
+                            },
+                            'rotationMode': 'circular'
+                        },
+                        'levels': [{
+                            'level': 1,
+                            'levelIsConstant': True,
+                            'dataLabels': {
+                                'style': {'color': 'black'},
+                                'filter': {
+                                    'property': 'outerArcLength',
+                                    'operator': '>',
+                                    'value': 64
+                                }
+                            }
+                        }, {
+                            'level': 2,
+                            'colorByPoint': True
 
+                        }],
+                        # 'tooltip': {
+                        #     'headerFormat': '',
+                        #     'pointFormat': 'The head count of <b>{point.name}</b> is <b>{point.value}</b>'
+                        # }
+                    }]
+                })
 
     def update_store_fields(self):
         for part in self:
@@ -121,25 +187,25 @@ class ResPartner(models.Model):
     def _set_category_name(self):
         for part in self:
             if part.category_id:
-                part.category_id_name = ",".join([x.name+":"+str(x.id) for x in part.category_id])
+                part.category_id_name = ",".join([x.name + ":" + str(x.id) for x in part.category_id])
 
     @api.depends("category_skill_ids")
     def _set_category_skill_ids_name(self):
         for part in self:
             if part.category_skill_ids:
-                part.category_skill_id_name = ",".join([x.name+":"+str(x.id) for x in part.category_skill_ids])
+                part.category_skill_id_name = ",".join([x.name + ":" + str(x.id) for x in part.category_skill_ids])
 
     @api.depends("social_group_id")
     def _set_category_social_ids_name(self):
         for part in self:
             if part.social_group_id:
-                part.category_social_id_name = ",".join([x.name+":"+str(x.id) for x in part.social_group_id])
+                part.category_social_id_name = ",".join([x.name + ":" + str(x.id) for x in part.social_group_id])
 
     @api.depends("category_res_ids")
     def _set_category_res_ids_name(self):
         for part in self:
             if part.category_res_ids:
-                part.category_res_id_name = ",".join([x.name+":"+str(x.id) for x in part.category_res_ids])
+                part.category_res_id_name = ",".join([x.name + ":" + str(x.id) for x in part.category_res_ids])
 
     @api.depends("partner_token_lines")
     def _get_token_available(self):
@@ -162,16 +228,16 @@ class ResPartner(models.Model):
                         partner_id.write({'lang': 'en_US'})
                 # partner_id.lang = "de_CH"
                 partner_token_id = self.env['res.partner.token'].search([('partner_id', '=', partner_id.id),
-                                                                         ('push_token','=',token)])
+                                                                         ('push_token', '=', token)])
                 if not partner_token_id:
                     self.env['res.partner.token'].create(
-                        {'partner_id': partner_id.id,"push_token": token,"device_type": device_type})
+                        {'partner_id': partner_id.id, "push_token": token, "device_type": device_type})
                 partner_token_id.device_type = device_type
                 partner_id.set_otp_partner()
                 partner_id.send_otp_partner()
                 base_url = self.env['ir.config_parameter'].sudo().get_param(
                     'web.base.url')
-                image_url = url_join(base_url,'/web/myimage/res.partner/%s/image_128/?%s'%(partner_id.id,partner_id.file_name_custom))
+                image_url = url_join(base_url, '/web/myimage/res.partner/%s/image_128/?%s' % (partner_id.id, partner_id.file_name_custom))
                 data.append({
                     'id': partner_id.id,
                     'name': partner_id.name,
@@ -184,7 +250,7 @@ class ResPartner(models.Model):
                     'country_id': partner_id.country_id and partner_id.country_id.name or '',
                     'zip': partner_id.zip,
                     'image_1920': image_url,
-                    'change_connection':partner_id.change_connection,
+                    'change_connection': partner_id.change_connection,
                     'lang': LANG_CODE_APP.get(partner_id.lang)
                 })
 
@@ -193,7 +259,7 @@ class ResPartner(models.Model):
 
     def set_otp_partner(self):
         self.ensure_one()
-        if self.email in ("hello@digitaladvisorygroup.io","hello@dag.io"):
+        if self.email in ("hello@digitaladvisorygroup.io", "hello@dag.io"):
             self.otp_token = "966718"
             return True
         digits = "0123456789"
@@ -202,7 +268,6 @@ class ResPartner(models.Model):
             OTP += digits[math.floor(random.random() * 10)]
         if OTP:
             self.otp_token = OTP
-
 
     def send_otp_partner(self):
         self.ensure_one()
@@ -220,17 +285,16 @@ class ResPartner(models.Model):
             return True
         return False
 
-
-    def get_partner_otp_verify(self,email,otp):
+    def get_partner_otp_verify(self, email, otp):
         if otp:
-            partner_id = self.search([('email','=',email.lower()),("otp_token","=",otp)])
+            partner_id = self.search([('email', '=', email.lower()), ("otp_token", "=", otp)])
             if partner_id:
                 return True
         return False
 
-    def set_logout_app(self,token):
+    def set_logout_app(self, token):
         if token:
-            partner_device_id = self.env["res.partner.token"].search([("partner_id","=",self.id),("push_token","=",token)])
+            partner_device_id = self.env["res.partner.token"].search([("partner_id", "=", self.id), ("push_token", "=", token)])
             if partner_device_id:
                 partner_device_id.unlink()
             return True
@@ -277,26 +341,26 @@ class ResPartner(models.Model):
     def get_resp_members_data(self):
         data = []
         if self.id_code:
-            contacts = self.search([('is_company','=',False),('category_res_ids.name','=',self.id_code)])
+            contacts = self.search([('is_company', '=', False), ('category_res_ids.name', '=', self.id_code)])
             if contacts:
                 for part in contacts:
                     base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
                     image_url = url_join(base_url,
                                          '/web/myimage/res.partner/%s/image_128/?%s' % (part.id, part.file_name_custom))
                     data.append({
-                        "id" : part.id,
+                        "id": part.id,
                         "name": part.name,
                         "function": part.function,
                         "image_url": image_url
                     })
-        print("--------data---------asdasd-----------",data)
+        print("--------data---------asdasd-----------", data)
         return data
 
     def get_resp_contact_data(self):
         final_list = []
         if self.category_res_ids:
             for cat in self.category_res_ids:
-                contact = self.search([('is_company', '=', True), ('id_code', '=', cat.name)],limit=1)
+                contact = self.search([('is_company', '=', True), ('id_code', '=', cat.name)], limit=1)
                 if contact:
                     base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
                     image_url = url_join(base_url,
@@ -314,12 +378,12 @@ class ResPartner(models.Model):
         field_help = ''
         if field_name:
             partner_browse = self.env['res.partner'].browse(int(partner_id))
-            field_id = self.env['ir.model.fields'].with_context(lang=partner_browse.lang).search([('model_id.model','=',self._name),('name','=',field_name)])
+            field_id = self.env['ir.model.fields'].with_context(lang=partner_browse.lang).search([('model_id.model', '=', self._name), ('name', '=', field_name)])
             if field_id:
                 field_value = self[field_name] or ''
                 field_string = field_id.field_description or ''
                 field_help = field_id.help or ''
-        return {"data": {"field_value": field_value,"field_string": field_string, "field_help": field_help}}
+        return {"data": {"field_value": field_value, "field_string": field_string, "field_help": field_help}}
 
     def get_and_field_edit_help(self, field_name=False, partner_id=False):
         field_value = ''
@@ -327,37 +391,38 @@ class ResPartner(models.Model):
         field_help = ''
         if field_name:
             partner_browse = self.env['res.partner'].browse(int(partner_id))
-            field_id = self.env['ir.model.fields'].with_context(lang=partner_browse.lang).search([('model_id.model','=',self._name),('name','=',field_name)])
+            field_id = self.env['ir.model.fields'].with_context(lang=partner_browse.lang).search([('model_id.model', '=', self._name), ('name', '=', field_name)])
             if field_id:
                 field_value = self[field_name] or ''
                 field_string = field_id.field_description or ''
                 field_help = field_id.help or ''
-        return {"data": [{"field_value": field_value,"field_string": field_string, "field_help": field_help}]}
+        return {"data": [{"field_value": field_value, "field_string": field_string, "field_help": field_help}]}
 
     def get_partner_profile_data(self):
         data = []
         if self:
+            # partner_browse = self.env['res.partner'].browse(int(partner_id))
             base_url = self.env['ir.config_parameter'].sudo().get_param(
                 'web.base.url')
             image_url = url_join(base_url,
-                                 '/web/myimage/res.partner/%s/image_128/?%s' % (self.id,self.file_name_custom))
+                                 '/web/myimage/res.partner/%s/image_128/?%s' % (self.id, self.file_name_custom))
             data.append({
                 'id': self.id,
                 'name': self.name,
                 'function': self.function or '',
-                #first slide
+                # first slide
                 'phone': self.phone or '',
                 'fax': self.fax or '',
                 'mobile': self.mobile or '',
                 'phone2': self.phone2 or '',
-                #second slide
+                # second slide
 
                 'email': self.email or '',
-                'linkedin' : self.linkedin or '',
+                'linkedin': self.linkedin or '',
                 'msteams': self.msteams or '',
                 'skype': self.skype or '',
                 'sec_email': self.sec_email or '',
-                #third slide
+                # third slide
                 'street': self.street or '',
                 'street2': self.street2 or '',
                 'zip': self.zip or '',
@@ -373,11 +438,11 @@ class ResPartner(models.Model):
                 'image_1920': image_url,
                 'change_connection': self.change_connection,
                 'lang': LANG_CODE_APP.get(self.lang),
-                #extra parameters
-                'app_basic_info' : self.app_basic_info,
+                # extra parameters
+                'app_basic_info': self.app_basic_info,
                 'app_extended_info': self.app_extended_info,
                 # 'responsbility': ",".join([x.name for x in self.category_res_ids]),
-                'responsbility' : self.self.get_resp_contact_data(),
+                'responsbility': self.self.get_resp_contact_data(),
                 # 'org_data': self.get_all_heirarchy_data(),
                 'org_data': self.get_group_data(),
                 'org_data_latest': self.with_context(lang=self.lang).get_group_data_latest(),
@@ -391,7 +456,7 @@ class ResPartner(models.Model):
     def get_last_data(self, group):
         # if not group.parent2_id:
         #     return group
-        parent_sg_id = self.env['social.partner.group'].sudo().search([('is_org_unit','=',True),('code', '=', group.parent2_id)], limit=1)
+        parent_sg_id = self.env['social.partner.group'].sudo().search([('is_org_unit', '=', True), ('code', '=', group.parent2_id)], limit=1)
         if parent_sg_id.parent2_id:
             return self.get_last_data(parent_sg_id)
         return parent_sg_id
@@ -408,7 +473,7 @@ class ResPartner(models.Model):
                 "current_group": group.name,
                 "id": group.id
             })
-        _logger.info("0-------------group--profile--data------------%s",final_data)
+        _logger.info("0-------------group--profile--data------------%s", final_data)
         return final_data
 
     def get_group_data_latest(self):
@@ -417,9 +482,9 @@ class ResPartner(models.Model):
         if self.social_group_id:
             gtype_final_data = []
             for group in self.social_group_id:
-                _logger.info("------------group------profile---1----%s",group)
-                _logger.info("------------group------profile---2----%s",group.name)
-                _logger.info("------------group------profile---3----%s",group.is_org_unit)
+                _logger.info("------------group------profile---1----%s", group)
+                _logger.info("------------group------profile---2----%s", group.name)
+                _logger.info("------------group------profile---3----%s", group.is_org_unit)
                 if group.is_org_unit:
                     parent_sg_id = False
                     if group.parent2_id:
@@ -428,10 +493,10 @@ class ResPartner(models.Model):
                         for l in final_data:
                             if l['name'] == group.type_id.name:
                                 l['data'].append({
-                                "root_group": parent_sg_id and parent_sg_id.name or '',
-                                "current_group": group.name,
-                                "id": group.id
-                            })
+                                    "root_group": parent_sg_id and parent_sg_id.name or '',
+                                    "current_group": group.name,
+                                    "id": group.id
+                                })
                     else:
                         final_data.append({
                             "name": group.type_id and group.type_id.name or '',
@@ -464,7 +529,7 @@ class ResPartner(models.Model):
                         "id": gtype.id or '',
                         "data": []
                     })
-        _logger.info("0-------------group--profile--data---latest---------%s",final_data)
+        _logger.info("0-------------group--profile--data---latest---------%s", final_data)
         return final_data
 
     def get_extended_tags_data(self):
@@ -472,18 +537,17 @@ class ResPartner(models.Model):
         if self.ext_tag_lines:
             for line in self.ext_tag_lines:
 
-                if data and  line.tag_type_id.name in [x['type'] for x in data]:
+                if data and line.tag_type_id.name in [x['type'] for x in data]:
                     for l in data:
                         if line.tag_type_id.name == l['type']:
-                            l['lines'].append({"name": line.tag_id.name,"level": line.level_id.name})
+                            l['lines'].append({"name": line.tag_id.name, "level": line.level_id.name})
                 else:
                     data.append({
                         "type": line.tag_type_id.name,
-                        "lines": [{"name": line.tag_id.name,"level": line.level_id.name}]
+                        "lines": [{"name": line.tag_id.name, "level": line.level_id.name}]
                     })
-        _logger.info("------------------ext-tags---------%s",data)
+        _logger.info("------------------ext-tags---------%s", data)
         return data
-
 
     # def get_all_heirarchy_data(self):
     #
@@ -524,19 +588,19 @@ class ResPartner(models.Model):
     #             else:
     #                 return {'id' : parent_sg_id.id,'name' :parent_sg_id.name,'children' : []}
 
-    def set_partner_language(self,lang_code):
-        if self and LANG_CODE_ODOO.get(lang_code,False):
-            self.lang = LANG_CODE_ODOO.get(lang_code,"en_US")
+    def set_partner_language(self, lang_code):
+        if self and LANG_CODE_ODOO.get(lang_code, False):
+            self.lang = LANG_CODE_ODOO.get(lang_code, "en_US")
         return True
 
     @api.model
-    def add_contact_posts(self,new_partner_ids=False):
+    def add_contact_posts(self, new_partner_ids=False):
         if not new_partner_ids:
             current_date = datetime.date.today().strftime(DEFAULT_SERVER_DATE_FORMAT)
-            new_partner_ids = self.search([('create_date','>=',current_date)]).ids
+            new_partner_ids = self.search([('create_date', '>=', current_date)]).ids
         if new_partner_ids:
             for part in new_partner_ids:
-                post_ids = self.env['social.post'].search([('utm_campaign_id.stage_id.is_active','=',True),('state','=','posted'),('utm_campaign_id.is_public_campaign','=',True)])
+                post_ids = self.env['social.post'].search([('utm_campaign_id.stage_id.is_active', '=', True), ('state', '=', 'posted'), ('utm_campaign_id.is_public_campaign', '=', True)])
                 if post_ids:
                     for post in post_ids:
                         if part not in post.social_partner_ids.ids:
@@ -548,10 +612,10 @@ class ResPartnerToken(models.Model):
     _name = 'res.partner.token'
     _description = "Res Partner Token"
     _rec_name = "partner_id"
-    
-    partner_id = fields.Many2one("res.partner","Partner")
+
+    partner_id = fields.Many2one("res.partner", "Partner")
     push_token = fields.Char("Firebase Token")
-    device_type = fields.Selection([("ios","Apple"),("android","Android")],string="Device Type", default="android")
+    device_type = fields.Selection([("ios", "Apple"), ("android", "Android")], string="Device Type", default="android")
     active = fields.Boolean("Active", default=True)
 
     @api.model
@@ -587,7 +651,7 @@ class ResPartnerToken(models.Model):
                         continue
         return res
 
-    def get_arrange_dict(self,lst):
+    def get_arrange_dict(self, lst):
         final_list = []
         for k, v in groupby(lst, key=lambda x: x['create_date:week']):
             same_week_list = list(v)
@@ -609,6 +673,7 @@ class ResPartnerToken(models.Model):
                     final_list.append(i)
                     final_list.append(android_dict)
         return final_list
+
 
 class PartnerMlevel(models.Model):
     _name = "partner.mlevel"
