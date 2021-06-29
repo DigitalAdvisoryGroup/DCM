@@ -59,6 +59,7 @@ odoo.define('dcm_customization.social_group_heirarchy', function(require) {
             }).then(function(result) {
                 // Splice in transparent for the center circle
                 Highcharts.getOptions().colors.splice(0, 0, 'transparent');
+                console.log("----asdasd--------------",Highcharts.getOptions().colors)
                 Highcharts.chart('sunburst-container', {
                 plotOptions: {
                      sunburst: {

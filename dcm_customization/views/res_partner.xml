@@ -385,6 +385,7 @@
                     </page>
                     <page name="char_view" string="Chart">
                         <field name="chart_data" invisible="1"/>
+                        <field name="chart_type" invisible="0"/>
                         <group  style="text-align:center">
                             <field name="chart_preview" nolabel="1" style="display:inline-block !important;"
                                    widget="dashboard_chart_preview_social_group"/>

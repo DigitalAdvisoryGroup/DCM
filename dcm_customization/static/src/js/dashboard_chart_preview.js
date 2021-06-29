@@ -9,6 +9,9 @@ odoo.define('dcm_customization.dashboard_chart_preview_social_group', function (
     var dashboard_chart_preview_social_group = AbstractField.extend({
         supportedFieldTypes: ['char'],
         resetOnAnyFieldChange: true,
+//        cssLibs:[
+//            '/dcm_customization/static/src/css/highchart_dashboard.css',
+//        ],
         start: function () {
             var self = this;
             return this._super();

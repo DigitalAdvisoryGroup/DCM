@@ -4,7 +4,7 @@
         <xpath expr="." position="inside">
             <script src="https://code.highcharts.com/highcharts.js"></script>
             <script src="https://code.highcharts.com/modules/sunburst.js"></script>
-            <link rel="stylesheet" type="text/css" href="https://code.highcharts.com/css/highcharts.css"/>
+<!--            <link rel="stylesheet" type="text/css" href="https://code.highcharts.com/css/highcharts.css"/>-->
         </xpath>
     </template>
 
