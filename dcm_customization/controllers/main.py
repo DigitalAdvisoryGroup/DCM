@@ -150,6 +150,7 @@ class MidarVideoAttachment(http.Controller):
 
     @http.route('/midardir/post/<model("social.post"):post>', type='http', auth='public', website=True)
     def midardir_post(self, post, **kw):
+        post = post.sudo()
         print("--------post-------------",post)
         if request.env.company.iframe_acess_token != kw.get("token"):
             return request.render("http_routing.403", {})
@@ -160,7 +161,6 @@ class MidarVideoAttachment(http.Controller):
         after_msg = string_after(post.message, data)[-40:]
         prevpath = request.httprequest.referrer
         parent = kw.get('parent')
-        print("--------here000000000000000")
         return request.render("dcm_customization.midardir_post", {'record': post,
                                                                      'search': kw.get("search"),
                                                                      'parent': parent,
@@ -234,10 +234,12 @@ class MidarVideoAttachment(http.Controller):
         if social_group:
             if social_group.parent2_id:
                 parent_sg_id = request.env['social.partner.group'].sudo().search([('code', '=', social_group.parent2_id)], limit=1)
+            members = social_group.partner_ids.filtered(lambda x: x.id != social_group.group_owner_id.id)
         return request.render("dcm_customization.midardir_social_group", {'record': social_group,
                                                                           'parent_sg_id': parent_sg_id and parent_sg_id.id or False,
                                                                           'search': kw.get("search"),
                                                                           'parent': parent,
+                                                                          'members': members,
                                                                           'prevpath': prevpath,
                                                                           'token': kw.get("token"),
                                                                      })

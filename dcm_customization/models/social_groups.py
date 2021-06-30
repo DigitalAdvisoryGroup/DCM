@@ -171,7 +171,7 @@ class SocialPartnerGroups(models.Model):
                 "total_count": len(self.partner_ids),
                 "code": self.code,
                 "members": [{"image_url": url_join(base_url,
-                                 '/web/myimage/res.partner/%s/image_128/?%s' % (x.id, x.file_name_custom)),"id": x.id,"name": x.name,"function": x.function} for x in self.partner_ids],
+                                 '/web/myimage/res.partner/%s/image_128/?%s' % (x.id, x.file_name_custom)),"id": x.id,"name": x.name,"function": x.function} for x in self.partner_ids if x.id != self.group_owner_id.id],
                 "org_data": self.with_context(lang=partner_browse.lang).get_all_heirarchy_data(),
                 "org_data_latest": self.with_context(lang=partner_browse.lang).get_all_heirarchy_data_latest(),
                 'is_display_chart': partner_browse and partner_browse.is_display_chart or False,

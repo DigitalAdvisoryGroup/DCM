@@ -179,11 +179,11 @@
                                         <br/>
                                         <h3 class="card-title">Team Members
                                             <span class="badge badge-primary badge-pill">
-                                                <t t-esc="len(record.partner_ids)"/>
+                                                <t t-esc="len(members)"/>
                                             </span>
                                         </h3>
                                         <ul class="list-group list-group-flush">
-                                            <t t-foreach="record.partner_ids" t-as="part">
+                                            <t t-foreach="members" t-as="part">
                                                 <li class="list-group-item row d-flex px-0">
                                                     <div class="col-1">
                                                         <img class="rounded-circle" alt="Avatar"
