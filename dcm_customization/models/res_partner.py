@@ -85,11 +85,16 @@ class ResPartner(models.Model):
     sec_email = fields.Char("Secondary Email", help="Secondary Email")
     last_import_flag = fields.Char("Last import flag", help="")
     is_display_chart = fields.Boolean("Display Chart in mobile")
+    is_external_employee = fields.Boolean("Is External Employee")
     ext_tag_lines = fields.One2many("partner.extended.tag.level", "partner_id", string="Extended Tags")
 
     chart_preview = fields.Char('Preview')
     chart_data = fields.Char("Chart Data", compute='_compute_chart_data', compute_sudo=True)
     chart_type = fields.Selection([('pie', 'Pie'), ('sunburst', 'Sunburst')], string="Chart Type", default="sunburst")
+
+    def _get_contact_name(self, partner, name):
+        # return "%s, %s" % (partner.commercial_company_name or partner.sudo().parent_id.name, name)
+        return "%s" % (name)
 
     @api.depends("social_group_id", "chart_type")
     def _compute_chart_data(self):

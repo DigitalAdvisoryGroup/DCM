@@ -79,6 +79,8 @@ class SocialPartnerGroups(models.Model):
     child_total_count = fields.Integer("Child Subscribers",compute="compute_total_count")
     current_subscribers_count = fields.Integer("Child Subscribers", compute="_compute_subscriber_count")
     current_and_childs_subscribers_count = fields.Integer("Child Subscribers", compute="_compute_subscriber_count")
+    current_ext_subscribers_count = fields.Integer("External Child Subscribers", compute="_compute_ext_subscriber_count")
+    current_and_childs_ext_subscribers_count = fields.Integer("External Total Child Subscribers", compute="_compute_ext_subscriber_count")
     group_owner_id = fields.Many2one("res.partner", string="Group Owner")
     is_org_unit = fields.Boolean(string="Org Unit Flag")
     parent2_id = fields.Char("Parent (new)")
@@ -125,12 +127,30 @@ class SocialPartnerGroups(models.Model):
         else:
             return len(self.partner_ids.ids)
 
+    def get_ext_child_count(self):
+        if self.code:
+            child_sg_ids = self.env['social.partner.group'].sudo().search([('is_org_unit', '=', True), ('parent2_id', '=', self.code)])
+            if child_sg_ids:
+                count = 0
+                for cs in child_sg_ids:
+                    count += cs.get_child_count()
+                return len(self.partner_ids.filtered(lambda x: x.is_external_employee).ids) + count
+            else:
+                return len(self.partner_ids.filtered(lambda x: x.is_external_employee).ids)
+        else:
+            return len(self.partner_ids.filtered(lambda x: x.is_external_employee).ids)
+
     @api.depends('partner_ids')
     def _compute_subscriber_count(self):
         for record in self:
             record.current_subscribers_count = len(record.partner_ids.ids)
-            record.get_child_count()
             record.current_and_childs_subscribers_count = record.get_child_count()
+
+    @api.depends('partner_ids')
+    def _compute_ext_subscriber_count(self):
+        for record in self:
+            record.current_ext_subscribers_count = len(record.partner_ids.filtered(lambda x: x.is_external_employee).ids)
+            record.current_and_childs_ext_subscribers_count = record.get_ext_child_count()
 
     def action_subscriber_list(self):
         action = self.env.ref('contacts.action_contacts').read()[0]
