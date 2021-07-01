@@ -35,7 +35,7 @@
                                 <field name="field_description"/>
                             </tree>
                         </field>
-                        <field name="result_fields_lines" domain="[('model_id','=',model_id),('ttype','in',('char','text'))]" required="1">
+                        <field name="result_fields_lines" domain="[('model_id','=',model_id),('ttype','in',('char','text','many2one'))]" required="1">
                             <tree string="Result Fields" editable="bottom">
                                 <field name="name"/>
                                 <field name="field_description"/>

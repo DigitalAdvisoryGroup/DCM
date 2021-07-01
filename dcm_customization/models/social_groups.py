@@ -133,7 +133,7 @@ class SocialPartnerGroups(models.Model):
             if child_sg_ids:
                 count = 0
                 for cs in child_sg_ids:
-                    count += cs.get_child_count()
+                    count += cs.get_ext_child_count()
                 return len(self.partner_ids.filtered(lambda x: x.is_external_employee).ids) + count
             else:
                 return len(self.partner_ids.filtered(lambda x: x.is_external_employee).ids)
