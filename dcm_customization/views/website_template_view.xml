@@ -270,10 +270,10 @@
                         <p style="margin: 0px;" id="headcount_total">Persons:
                             <t t-esc="record.current_and_childs_subscribers_count"/>
                         </p>
-                        <p style="margin: 0px;" id="headcount_total">BIT:
+                        <p style="margin: 0px;" id="headcount_bit">BIT:
                             <t t-esc="(record.current_and_childs_subscribers_count - record.current_and_childs_ext_subscribers_count)"/>
                         </p>
-                        <p style="margin: 0px;" id="headcount_total">External:
+                        <p style="margin: 0px;" id="headcount_external">External:
                             <t t-esc="record.current_and_childs_ext_subscribers_count"/>
                         </p>
                     </h4>
