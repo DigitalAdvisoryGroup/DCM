@@ -175,6 +175,9 @@ class GlobalSearchConfig(models.Model):
                     results = self.env[model.split('-')[0]].sudo().search_read(domains[model], self.result_fields_lines.mapped("name"))
                 if results:
                     for r in results:
+                        for k,d in r.items():
+                            if isinstance(d,tuple):
+                                r[k] = d[1]
                         base_url = self.env['ir.config_parameter'].sudo().get_param(
                             'web.base.url')
                         if IMAGE_FIELDS.get(model):

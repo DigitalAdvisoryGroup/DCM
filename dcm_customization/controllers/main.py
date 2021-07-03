@@ -150,6 +150,7 @@ class MidarVideoAttachment(http.Controller):
 
     @http.route('/midardir/post/<model("social.post"):post>', type='http', auth='public', website=True)
     def midardir_post(self, post, **kw):
+        post = post.sudo()
         print("--------post-------------",post)
         if request.env.company.iframe_acess_token != kw.get("token"):
             return request.render("http_routing.403", {})
@@ -160,7 +161,6 @@ class MidarVideoAttachment(http.Controller):
         after_msg = string_after(post.message, data)[-40:]
         prevpath = request.httprequest.referrer
         parent = kw.get('parent')
-        print("--------here000000000000000")
         return request.render("dcm_customization.midardir_post", {'record': post,
                                                                      'search': kw.get("search"),
                                                                      'parent': parent,
@@ -234,10 +234,12 @@ class MidarVideoAttachment(http.Controller):
         if social_group:
             if social_group.parent2_id:
                 parent_sg_id = request.env['social.partner.group'].sudo().search([('code', '=', social_group.parent2_id)], limit=1)
+            members = social_group.partner_ids.filtered(lambda x: x.id != social_group.group_owner_id.id)
         return request.render("dcm_customization.midardir_social_group", {'record': social_group,
                                                                           'parent_sg_id': parent_sg_id and parent_sg_id.id or False,
                                                                           'search': kw.get("search"),
                                                                           'parent': parent,
+                                                                          'members': members,
                                                                           'prevpath': prevpath,
                                                                           'token': kw.get("token"),
                                                                      })
@@ -439,6 +441,10 @@ class MidarVideoAttachment(http.Controller):
             'parent_group_owner_name': main_sc_group.group_owner_id.name,
             'parent_value': main_sc_group.current_and_childs_subscribers_count,
             'parent_current_subscribers_count': main_sc_group.current_subscribers_count,
+            'current_ext_subscribers_count': (main_sc_group.current_and_childs_subscribers_count - main_sc_group.current_and_childs_ext_subscribers_count),
+            'current_and_childs_ext_subscribers_count': main_sc_group.current_and_childs_ext_subscribers_count,
+            'parent_current_ext_subscribers_count': (main_sc_group.current_and_childs_subscribers_count - main_sc_group.current_and_childs_ext_subscribers_count),
+            'parent_current_and_childs_ext_subscribers_count': main_sc_group.current_and_childs_ext_subscribers_count,
         }]
         if main_sc_group.code:
             child_sg_ids = request.env['social.partner.group'].sudo().search([('is_org_unit', '=', True), ('parent2_id', '=', main_sc_group.code)])
@@ -459,6 +465,10 @@ class MidarVideoAttachment(http.Controller):
                         'parent_group_owner_name': main_sc_group.group_owner_id.name,
                         'parent_value': main_sc_group.current_and_childs_subscribers_count,
                         'parent_current_subscribers_count': main_sc_group.current_subscribers_count,
+                        'current_ext_subscribers_count': (child_sg.current_and_childs_subscribers_count - child_sg.current_and_childs_ext_subscribers_count),
+                        'current_and_childs_ext_subscribers_count': child_sg.current_and_childs_ext_subscribers_count,
+                        'parent_current_ext_subscribers_count': (main_sc_group.current_and_childs_subscribers_count - main_sc_group.current_and_childs_ext_subscribers_count),
+                        'parent_current_and_childs_ext_subscribers_count': main_sc_group.current_and_childs_ext_subscribers_count,
                     })
 
                 for second_level_sg in child_sg_ids:
@@ -469,16 +479,16 @@ class MidarVideoAttachment(http.Controller):
         if sc_group and sc_group.code:
             child_sg_ids = request.env['social.partner.group'].sudo().search([('is_org_unit', '=', True), ('parent2_id', '=', sc_group.code)])
             if child_sg_ids:
-                group_data.append({
-                    'id': str(sc_group.id)+"dummy",
-                    'current_subscribers_count': sc_group.current_subscribers_count,
-                    'group_owner_id': sc_group.group_owner_id.id,
-                    'group_owner_name': sc_group.group_owner_id.name,
-                    'name': sc_group.name,
-                    'parent': sc_group.id,
-                    'value': len(sc_group.partner_ids.ids),
-                    'token': token,
-                })
+                # group_data.append({
+                #     'id': str(sc_group.id)+"dummy",
+                #     'current_subscribers_count': sc_group.current_subscribers_count,
+                #     'group_owner_id': sc_group.group_owner_id.id,
+                #     'group_owner_name': sc_group.group_owner_id.name,
+                #     'name': sc_group.name,
+                #     'parent': sc_group.id,
+                #     'value': len(sc_group.partner_ids.ids),
+                #     'token': token,
+                # })
                 for child_sg in child_sg_ids:
                     group_data.append({
                         'id': str(child_sg.id),
@@ -495,6 +505,10 @@ class MidarVideoAttachment(http.Controller):
                         'parent_group_owner_name': sc_group.group_owner_id.name,
                         'parent_value': sc_group.current_and_childs_subscribers_count,
                         'parent_current_subscribers_count': sc_group.current_subscribers_count,
+                        'current_ext_subscribers_count': (child_sg.current_and_childs_subscribers_count - child_sg.current_and_childs_ext_subscribers_count),
+                        'current_and_childs_ext_subscribers_count': child_sg.current_and_childs_ext_subscribers_count,
+                        'parent_current_ext_subscribers_count': (sc_group.current_and_childs_subscribers_count - sc_group.current_and_childs_ext_subscribers_count),
+                        'parent_current_and_childs_ext_subscribers_count': sc_group.current_and_childs_ext_subscribers_count,
                     })
                     self.get_sunburst_children_data(child_sg, group_data, search, token)
                 return group_data

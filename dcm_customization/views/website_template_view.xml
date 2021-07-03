@@ -179,11 +179,11 @@
                                         <br/>
                                         <h3 class="card-title">Team Members
                                             <span class="badge badge-primary badge-pill">
-                                                <t t-esc="len(record.partner_ids)"/>
+                                                <t t-esc="len(members)"/>
                                             </span>
                                         </h3>
                                         <ul class="list-group list-group-flush">
-                                            <t t-foreach="record.partner_ids" t-as="part">
+                                            <t t-foreach="members" t-as="part">
                                                 <li class="list-group-item row d-flex px-0">
                                                     <div class="col-1">
                                                         <img class="rounded-circle" alt="Avatar"
@@ -240,10 +240,15 @@
                                 </li>
                             </ol>
                         </div>
+
                     </div>
                 </div>
-                <center>
-                    <h2>
+
+                <div class="oe_structure">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-12 p-0">
+                                <h2>
                         <p style="margin: 0px;" id="group_name">
                             <a style="text-decoration: none;"
                                t-att-href="'/midardir/socialgroup/%s?token=%s&amp;search=%s&amp;parent=%s' % (record.id,token,search,'')">
@@ -259,11 +264,17 @@
                                 <t t-esc="record.group_owner_id.name"/>
                             </a>
                         </p>
-                        <p style="margin: 0px;" id="headcount_direct">Headcount Direct:
+                        <p style="margin: 0px;" id="headcount_direct">Unit Headcount:
                             <t t-esc="record.current_subscribers_count"/>
                         </p>
-                        <p style="margin: 0px;" id="headcount_total">Headcount Total:
+                        <p style="margin: 0px;" id="headcount_total">Persons:
                             <t t-esc="record.current_and_childs_subscribers_count"/>
+                        </p>
+                        <p style="margin: 0px;" id="headcount_bit">BIT:
+                            <t t-esc="(record.current_and_childs_subscribers_count - record.current_and_childs_ext_subscribers_count)"/>
+                        </p>
+                        <p style="margin: 0px;" id="headcount_external">External:
+                            <t t-esc="record.current_and_childs_ext_subscribers_count"/>
                         </p>
                     </h4>
                     <t t-if="parent_sc_group">
@@ -272,12 +283,9 @@
                             Upper Level
                         </a>
                     </t>
-                </center>
                 <!--                <div id="chart-container" t-att-group-id="social_group_id"></div>-->
                 <br/>
-                <div class="oe_structure">
-                    <div class="container">
-                        <div class="row">
+                            </div>
                             <div class="col-md-8 offset-md-2 col-12">
                                 <figure class="highcharts-figure">
                                     <div id="sunburst-container" style="height:50%;" t-att-group-id="social_group_id"
