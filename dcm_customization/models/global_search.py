@@ -168,7 +168,6 @@ class GlobalSearchConfig(models.Model):
             _logger.info("-------models--------%s",models)
             _logger.info("-------domains---------%s",domains)
             for model in models.keys():
-                print("-------model----------",model)
                 if partner_browse:
                     results = self.env[model.split('-')[0]].sudo().with_context(lang=partner_browse.lang).search_read(domains[model], self.result_fields_lines.mapped("name"))
                 else:

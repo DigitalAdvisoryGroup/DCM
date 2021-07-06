@@ -119,7 +119,6 @@ class ResPartner(models.Model):
             if partner.chart_type == "sunburst":
                 final_data = [{'id':str(0),'name': 'Social Groups','parent':''}]
                 social_group_type = partner.social_group_id.mapped("type_id")
-                print("-----------social_group_type--------------",social_group_type)
                 for gtype in social_group_type:
                     final_data.append({'id':str(gtype.id),'name': gtype.name,'parent':str(0)})
                 for group in partner.social_group_id:
@@ -358,7 +357,6 @@ class ResPartner(models.Model):
                         "function": part.function,
                         "image_url": image_url
                     })
-        print("--------data---------asdasd-----------", data)
         return data
 
     def get_resp_contact_data(self):

@@ -135,8 +135,6 @@ class MidarVideoAttachment(http.Controller):
                 page = global_search_config_id.page
 
         # global_search_config = request.env['global.search.config'].sudo().search([])
-        print("----------global_search_config------------\n\n\n\n\--",data_result)
-        print ('-------result_fields---------------',result_fields)
         return request.render("dcm_customization.midardir_search_menu_result", {'search_models': data.keys(),'records': data,
                                                                     'search': kw.get("search"),
                                                                     'results' : data_result,
@@ -151,7 +149,6 @@ class MidarVideoAttachment(http.Controller):
     @http.route('/midardir/post/<model("social.post"):post>', type='http', auth='public', website=True)
     def midardir_post(self, post, **kw):
         post = post.sudo()
-        print("--------post-------------",post)
         if request.env.company.iframe_acess_token != kw.get("token"):
             return request.render("http_routing.403", {})
         data = kw.get("search")
@@ -180,7 +177,6 @@ class MidarVideoAttachment(http.Controller):
         if request.env.company.iframe_acess_token != kw.get("token"):
             return request.render("http_routing.403", {})
         partner = partner.sudo()
-        print("-------partner.display_name---------",partner.display_name)
         if partner.social_group_id:
             level_3_dict = {'id': partner.social_group_id[0].id, 'name': partner.social_group_id[0].name, 'code': partner.social_group_id[0].code}
             if partner.social_group_id[0].parent2_id:
@@ -286,7 +282,6 @@ class MidarVideoAttachment(http.Controller):
 
     def get_parent_data(self,group_id,group_data,search):
         sc_groups = request.env['social.partner.group'].sudo().browse(group_id)
-        print("--------sc_groups.name---------",sc_groups.name)
         if sc_groups:
             parent_sg_id = request.env['social.partner.group'].sudo().search([('is_org_unit','=',True),('code', '=', sc_groups.parent2_id)], limit=1)
             if parent_sg_id.parent2_id:
@@ -376,7 +371,6 @@ class MidarVideoAttachment(http.Controller):
         if sc_groups:
             if sc_groups.code:
                 child_sg_ids = request.env['social.partner.group'].sudo().search([('is_org_unit','=',True),('parent2_id', '=', sc_groups.code)])
-                print("CHIld SG IDS===",child_sg_ids)
                 if child_sg_ids:
                     for child_sg in child_sg_ids:
                         child_group_data = self.get_tree_children_data(child_sg.id,{'id' : child_sg.id,'label' : '<a href="/midardir/socialgroup/%d?search=%s">%s</a>' %(child_sg.id,search,child_sg.name),'children' : []},search)
@@ -425,7 +419,6 @@ class MidarVideoAttachment(http.Controller):
             search = kw.get('search')
             sc_groups = request.env['social.partner.group'].sudo().browse(int(kw.get('social_group_id')))
             data = self.get_sunburst_data(sc_groups,search, kw.get("token"))
-            print("--------data--------------------",data)
             return {"data": data, "header": sc_groups.name, "current_group": sc_groups.name}
 
     def get_sunburst_data(self, main_sc_group, search, token):

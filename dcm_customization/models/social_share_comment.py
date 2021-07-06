@@ -118,7 +118,6 @@ class SocialBitComments(models.Model):
                     cap = cv2.VideoCapture(video_file_path)
                     while success:
                         success, image = cap.read()
-                        print('read a new frame:', success)
                         image_file_path = tempfile.gettempdir() + "/%s.jpg" % (media.name).split(".")[0]
                         cv2.imwrite(image_file_path, image)
                         success = False
